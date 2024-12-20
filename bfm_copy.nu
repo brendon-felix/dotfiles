@@ -1,5 +1,4 @@
-# let repo_loc = 'C:\Users\felixb\BIOS\HpSpringsWks'
-let repo_loc = 'C:\Users\felixb\BIOS\Springs18'
+let repo_loc = 'C:\Users\felixb\BIOS\HpSpringsWks'
 # let repo_loc = 'C:\Users\felixb\BIOS\HpSpringsA'
 # let repo_loc = 'C:\Users\felixb\BIOS\HpAvalancheWks'
 # let repo_loc = 'C:\Users\felixb\BIOS\HpWintersWks'
@@ -13,13 +12,7 @@ let plt_pkg = [$repo_loc, 'HpPlatformPkg'] | path join
 def build [] {
     print $"(ansi purple)Building binary...(ansi reset)"
     cd $plt_pkg
-    try {
-        HpBldSprings.bat
-        print print $"\n\n(ansi red)Build successful(ansi reset)"
-    } catch {
-        print print $"\n\n(ansi red)Build failed(ansi reset)"
-        exit 1
-    }
+    HpBldSprings.bat
     cd ~
 }
 
@@ -85,12 +78,11 @@ def find_path [path] {
 
 def flash [binary] {
     print $"(ansi purple)Flashing binary...(ansi reset)"
-    try {
-        do {dpcmd --batch $binary.name --verify}
-        print $"\n(ansi green_bold)Flash successful(ansi reset)"
-    } catch {
-        print $"(ansi red)Flash failed(ansi reset)"
-        exit 1
+    do {dpcmd --batch $binary.name --verify}
+    if $env.LAST_EXIT_CODE == 0 {
+        print $"\n\n!! (ansi green_bold)Successfully flashed(ansi reset) !!"
+    } else {
+        print $"\n\n!! (ansi red)Failed to flash(ansi reset) !!"
     }
 }
 
@@ -110,7 +102,7 @@ def main [
     } else if $path != null {
         find_path $path
     } else {
-        print $"(ansi yellow)No binary provided(ansi reset)"
+        print $"(ansi yellow)No binary provided(ansi reset)\nChecking for existing build..."
         find_build
     }
     if $binary == null {

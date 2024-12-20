@@ -1,0 +1,16 @@
+	Subttl	Copyright (c) 2014, 2024 HP Inc. Development Company.  All rights reserved
+;******************************************************************************
+;
+;	Segment definitions
+;
+;	Super I/O & FireBird Firmware version equate which should be updated 
+;	every time the SIO24 & FireBird F/W binary image is updated.
+;
+;******************************************************************************
+
+;
+; Super I/O Firmware / FireBird firmware version
+;
+SioFwVersion	equ	0141200h	; Sio Firmware Version (i.e. 0D40700h - 'D4.7.0')
+
+;******************************************************************************
