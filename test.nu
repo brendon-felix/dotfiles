@@ -56,21 +56,53 @@
 
 
 
-def spewcap [port] {
-    match $port {
-        'bios' => {
-            ~\Projects\spewcap\target\release\spewcap.exe -p COM5
-        }
-        'sio' => {
-            ~\Projects\spewcap\target\release\spewcap.exe -p COM5
-        }
-        _ => {
-            ~\Projects\spewcap\target\release\spewcap.exe -p $port
-        }
-    }
+# def spewcap [port] {
+#     match $port {
+#         'bios' => {
+#             ~\Projects\spewcap\target\release\spewcap.exe -p COM5
+#         }
+#         'sio' => {
+#             ~\Projects\spewcap\target\release\spewcap.exe -p COM5
+#         }
+#         _ => {
+#             ~\Projects\spewcap\target\release\spewcap.exe -p $port
+#         }
+#     }
     
-}
+# }
 
-def main [] {
-    spewcap bios
+# def main [] {
+#     spewcap bios
+# }
+
+
+
+# def main [platform] {
+#     match $platform {
+#         'U60' => {
+
+#         }
+#         'U61' => {
+
+#         }
+#         'U65' => {
+
+#         }
+#         'X60' => {
+
+#         }
+#         _ => {
+#             exit 1
+#         }
+#     }
+# }
+
+
+def main [filename?] {
+    # if $filename =~ '^(?i)(?!.*pvt).*?(32|64).*\.bin$' {
+    #     echo true
+    # } else {
+    #     echo false
+    # }
+    ls 'C:/Users/felixb/BIOS/Bootlegs/Springs' | where name =~ '^(?i)(?!.*pvt).*?(32|64).*\.bin$' | sort-by modified | last
 }
