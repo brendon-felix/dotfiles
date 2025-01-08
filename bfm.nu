@@ -52,8 +52,6 @@ def get_config [platform, tree] {
             } else {
                 ([$dev_loc, 'HpSpringsWks'] | path join)
             }
-            # print ['C:\Users\felixb\BIOS', $tree]
-            # let repo_loc = 'C:\Users\felixb\BIOS\HpSpringsWks'
             let pltpkg_loc = [$repo_loc, 'HpPlatformPkg'] | path join
             let bld_path = [$pltpkg_loc, 'BLD\FV'] | path join
             {
