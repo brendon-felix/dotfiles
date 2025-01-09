@@ -1,70 +1,38 @@
 let dev_loc = 'C:\Users\felixb\BIOS'
 
-def get_config [platform, tree] {
-    
-    match $platform {
-        
-        'U60' => {
-            let repo_loc = [$dev_loc, 'HpWintersWks'] | path join
-            let pltpkg_loc = [$repo_loc, 'HpPlatformPkg'] | path join
-            let bld_path = [$pltpkg_loc, 'BLD\Fv'] | path join
-            {
-                name: "Glacier",
-                repo_loc: $repo_loc,
-                pltpkg_loc: $pltpkg_loc,
-                bld_path: $bld_path,
-                bootleg_loc: ([$dev_loc, 'Bootlegs\Winters'] | path join),
-            }
-        }
-        'U61' => {
-            let repo_loc = [$dev_loc, 'HpWintersWks'] | path join
-            let pltpkg_loc = [$repo_loc, 'HpPlatformPkg'] | path join
-            let bld_path = [$pltpkg_loc, 'BLD\Fv'] | path join
-            {
-                name: "Winters",
-                repo_loc: $repo_loc,
-                pltpkg_loc: $pltpkg_loc,
-                bld_path: $bld_path,
-                bootleg_loc: ([$dev_loc, 'Bootlegs\Winters'] | path join),
-            }
-        }
-        'U65' => {
-            let repo_loc = [$dev_loc, 'HpAvalancheWks'] | path join
-            let pltpkg_loc = [$repo_loc, 'HpPlatformPkg'] | path join
-            let bld_path = [$pltpkg_loc, 'BLD\Fv'] | path join
-            {
-                name: "Avalanche",
-                repo_loc: $repo_loc,
-                pltpkg_loc: $pltpkg_loc,
-                bld_path: $bld_path,
-                bootleg_loc: ([$dev_loc, 'Bootlegs\Avalanche'] | path join),
-            }
-        }
-        'X60' | null => {
-            let repo_loc = if $tree != null {
-                let loc = [$dev_loc, $tree] | path join
-                if ($loc | path exists) {
-                    $loc
-                } else {
-                    print $"(ansi red_bold)Specified tree not found!(ansi reset)"
-                    exit 1
-                }
-            } else {
-                ([$dev_loc, 'HpSpringsWks'] | path join)
-            }
-            let pltpkg_loc = [$repo_loc, 'HpPlatformPkg'] | path join
-            let bld_path = [$pltpkg_loc, 'BLD\FV'] | path join
-            {
-                name: "Springs",
-                repo_loc: $repo_loc,
-                pltpkg_loc: $pltpkg_loc,
-                bld_path: $bld_path,
-                bootleg_loc: ([$dev_loc, 'Bootlegs\Springs'] | path join),
-            }
-        }
-        _ => {
+def get_repo_loc [tree, default] {
+    if $tree != null {
+        let loc = [$dev_loc, $tree] | path join
+        if ($loc | path exists) {
+            $loc
+        } else {
+            print $"(ansi red_bold)Specified tree not found!(ansi reset)"
             exit 1
         }
+    } else {
+        [$dev_loc, $default] | path join
+    }
+}
+
+def create_config [name, tree, default_tree] {
+    let repo_loc = get_repo_loc $tree $default_tree
+    let pltpkg_loc = [$repo_loc, 'HpPlatformPkg'] | path join
+    {
+        name: $name,
+        repo_loc: $repo_loc,
+        pltpkg_loc: $pltpkg_loc,
+        bld_path: ([$pltpkg_loc, 'BLD\FV'] | path join),
+        bootleg_loc: ([$dev_loc, 'Bootlegs', $name] | path join),
+    }
+}
+
+def get_config [platform, tree] {
+    match $platform {
+        'U60' => { create_config 'Glacier' $tree 'HpWintersWks' }
+        'U61' => { create_config 'Winters' $tree 'HpWintersWks' }
+        'U65' => { create_config 'Avalanche' $tree 'HpAvalancheWks' }
+        'X60' | null => { create_config 'Springs' $tree 'HpSpringsWks' }
+        _ => { exit 1 }
     }
 }
 
@@ -72,7 +40,6 @@ def build [config, release] {
     # print $"(ansi purple)Building binary...(ansi reset)"
     cd $config.pltpkg_loc
     try {
-        # print $release
         if $release {
             print $"(ansi purple)Building RELEASE binary...(ansi reset)"
             match $config.name {
@@ -171,14 +138,14 @@ def flash [binary] {
 
 def main [
     platform?: string
-    --build(-b) # Build the binary
-    --release(-r) # Build a release binary
-    --bootleg(-l) # Use the latest bootleg binary
-    --save(-s) # Save the build to the bootlegs folder
-    --flash(-f) # Flash the binary using DediProg
-    --tree(-t): string # Specify a specific tree to use
-    --path(-p): string # Manually specify a filepath for a binary to flash
-    --append(-a): string # Append a string to the bootleg basename
+    --build(-b) #           Build the binary
+    --release(-r) #         Build a release binary
+    --bootleg(-l) #         Use the latest bootleg binary
+    --save(-s) #            Save the build to the bootlegs folder
+    --flash(-f) #           Flash the binary using DediProg
+    --tree(-t): string #    Specify a specific tree to use
+    --path(-p): string #    Manually specify a filepath for a binary to flash
+    --append(-a): string #  Append a string to the bootleg basename
 ] {
     let config = get_config $platform $tree
     print $"Using config for (ansi blue)($config.name)(ansi reset) with tree ($config.repo_loc | path basename)"
