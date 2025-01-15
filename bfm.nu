@@ -33,7 +33,7 @@ def get_config [platform, tree] {
         'U60' => { create_config 'Glacier' $tree 'HpWintersWks' }
         'U61' => { create_config 'Winters' $tree 'HpWintersWks' }
         'U65' => { create_config 'Avalanche' $tree 'HpAvalancheWks' }
-        'X60' | null => { create_config 'Springs' $tree 'HpSpringsWks' }
+        'X60' | null => { create_config 'Springs' $tree 'HpSpringsWks' } # Use Springs config by default
         _ => { exit 1 }
     }
 }
@@ -60,34 +60,10 @@ def build [config, release] {
         exit 1
     }
 
-    # try {
-    #     if $release {
-    #         print $"(ansi purple)Building RELEASE binary...(ansi reset)"
-    #         match $config.name {
-    #             "Glacier" => {HpBldGlacier.bat r}
-    #             "Winters" => {HpBldBlizzard.bat r}
-    #             "Avalanche" => {HpBiosBuild.bat r}
-    #             "Springs" | null => {HpBldSprings.bat r}
-    #         }
-    #     } else {
-    #         print $"(ansi purple)Building DEBUG binary...(ansi reset)"
-    #         match $config.name {
-    #             "Glacier" => HpBldGlacier.bat
-    #             "Winters" => HpBldBlizzard.bat
-    #             "Avalanche" => HpBiosBuild.bat
-    #             "Springs" | null => HpBldSprings.bat
-    #         }
-    #     }
-        
-    #     print print $"\n\n(ansi green)Build successful(ansi reset)"
-    # } catch {
-    #     print print $"\n\n(ansi red)Build failed(ansi reset)"
-    #     exit 1
-    # }
     cd -
 }
 
-def save [bootleg_loc, binary_path, append?: string] {
+def save_bootleg [bootleg_loc, binary_path, append?: string] {
     let bootleg_basename = match $append {
         null => ($binary_path | path basename)
         _ => {
@@ -159,15 +135,15 @@ def flash [binary] {
 
 def main [
     platform?: string
-    --build(-b) #           Build the binary
-    --release(-r) #         Build a release binary
-    --bootleg(-l) #         Use the latest bootleg binary
-    --save(-s) #            Save the build to the bootlegs folder
-    --network(-n) #         Save the bootleg to the network drive
-    --flash(-f) #           Flash the binary using DediProg
-    --tree(-t): string #    Specify a specific tree to use
-    --path(-p): string #    Manually specify a filepath for a binary to flash
-    --append(-a): string #  Append a string to the bootleg basename
+    --build(-b)             # Build the binary
+    --release(-r)           # Build a release binary
+    --bootleg(-l)           # Use the latest bootleg binary
+    --save(-s)              # Save the build to the bootlegs folder
+    --network(-n)           # Save the bootleg to the network drive
+    --flash(-f)             # Flash the binary using DediProg
+    --tree(-t): string      # Specify a specific tree to use
+    --path(-p): string      # Manually specify a filepath for a binary to flash
+    --append(-a): string    # Append a string to the bootleg basename
 ] {
     let config = get_config $platform $tree
     print $"Using config for (ansi blue)($config.name)(ansi reset) with tree ($config.repo_loc | path basename)"
@@ -187,11 +163,11 @@ def main [
         exit 1
     }
     if $save {
-        save $config.bootleg_loc $binary.name $append
+        save_bootleg $config.bootleg_loc $binary.name $append
         print "local bootlegs folder"
     }
     if $network {
-        save $config.network_loc $binary.name $append
+        save_bootleg $config.network_loc $binary.name $append
         print "network bootlegs folder"
     }
     if $flash {
