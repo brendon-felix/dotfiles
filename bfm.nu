@@ -1,4 +1,5 @@
 let dev_loc = 'C:\Users\felixb\BIOS'
+let net_loc = '\\wks-file.ftc.rd.hpicorp.net\MAIN_LAB\SHARES\LAB\Brendon Felix\Bootlegs'
 
 def get_repo_loc [tree, default] {
     if $tree != null {
@@ -23,6 +24,7 @@ def create_config [name, tree, default_tree] {
         pltpkg_loc: $pltpkg_loc,
         bld_path: ([$pltpkg_loc, 'BLD\FV'] | path join),
         bootleg_loc: ([$dev_loc, 'Bootlegs', $name] | path join),
+        network_loc: ([$net_loc, $name] | path join)
     }
 }
 
@@ -95,7 +97,7 @@ def save [bootleg_loc, binary_path, append?: string] {
     }
     let bootleg_path = [$bootleg_loc, $bootleg_basename] | path join
     cp $binary_path $bootleg_path
-    print $"Saved bootleg (ansi blue)($bootleg_basename)(ansi reset)"
+    print -n $"Saved bootleg (ansi blue)($bootleg_basename)(ansi reset) to "
 }
 
 def get_binary [path] {
@@ -161,6 +163,7 @@ def main [
     --release(-r) #         Build a release binary
     --bootleg(-l) #         Use the latest bootleg binary
     --save(-s) #            Save the build to the bootlegs folder
+    --network(-n) #         Save the bootleg to the network drive
     --flash(-f) #           Flash the binary using DediProg
     --tree(-t): string #    Specify a specific tree to use
     --path(-p): string #    Manually specify a filepath for a binary to flash
@@ -185,6 +188,11 @@ def main [
     }
     if $save {
         save $config.bootleg_loc $binary.name $append
+        print "local bootlegs folder"
+    }
+    if $network {
+        save $config.network_loc $binary.name $append
+        print "network bootlegs folder"
     }
     if $flash {
         flash $binary
