@@ -39,30 +39,49 @@ def get_config [platform, tree] {
 def build [config, release] {
     # print $"(ansi purple)Building binary...(ansi reset)"
     cd $config.pltpkg_loc
+    let command = match $config.name {
+        'Glacier' => 'HpBldGlacier.bat'
+        "Winters" => 'HpBldBlizzard.bat'
+        "Avalanche" => 'HpBiosBuild.bat'
+        "Springs" | null => 'HpBldSprings.bat'
+    }
     try {
         if $release {
             print $"(ansi purple)Building RELEASE binary...(ansi reset)"
-            match $config.name {
-                "Glacier" => {HpBldGlacier.bat r}
-                "Winters" => {HpBldBlizzard.bat r}
-                "Avalanche" => {HpBiosBuild.bat r}
-                "Springs" | null => {HpBldSprings.bat r}
-            }
+            run-external $command 'r'
         } else {
             print $"(ansi purple)Building DEBUG binary...(ansi reset)"
-            match $config.name {
-                "Glacier" => HpBldGlacier.bat
-                "Winters" => HpBldBlizzard.bat
-                "Avalanche" => HpBiosBuild.bat
-                "Springs" | null => HpBldSprings.bat
-            }
+            run-external $command
         }
-        
-        print print $"\n\n(ansi green)Build successful(ansi reset)"
     } catch {
         print print $"\n\n(ansi red)Build failed(ansi reset)"
         exit 1
     }
+
+    # try {
+    #     if $release {
+    #         print $"(ansi purple)Building RELEASE binary...(ansi reset)"
+    #         match $config.name {
+    #             "Glacier" => {HpBldGlacier.bat r}
+    #             "Winters" => {HpBldBlizzard.bat r}
+    #             "Avalanche" => {HpBiosBuild.bat r}
+    #             "Springs" | null => {HpBldSprings.bat r}
+    #         }
+    #     } else {
+    #         print $"(ansi purple)Building DEBUG binary...(ansi reset)"
+    #         match $config.name {
+    #             "Glacier" => HpBldGlacier.bat
+    #             "Winters" => HpBldBlizzard.bat
+    #             "Avalanche" => HpBiosBuild.bat
+    #             "Springs" | null => HpBldSprings.bat
+    #         }
+    #     }
+        
+    #     print print $"\n\n(ansi green)Build successful(ansi reset)"
+    # } catch {
+    #     print print $"\n\n(ansi red)Build failed(ansi reset)"
+    #     exit 1
+    # }
     cd -
 }
 
