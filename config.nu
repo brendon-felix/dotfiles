@@ -61,6 +61,10 @@ alias chat = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/api_key.txt 
 
 # ------------------------------ misc commands ----------------------------- #
 
+def "config nu" [] {
+    code ~/Projects/nushell-scripts/config.nu
+}
+
 def srev [] {
 	$in | sort-by modified | reverse
 }
@@ -79,12 +83,12 @@ def mem_used_str [] {
 
 # ------------------------ machine specific commands ----------------------- #
 
-source ~/commands.nu
+source ~/Projects/nushell-scripts/commands.nu
 
 # --------------------------- banner/screenfetch --------------------------- #
 
 if $nu.is-interactive {
 	# requires asciibar: `cargo install asciibar`
 	# source ~/banner.nu
-	nu ~/banner.nu
+	nu ~/Projects/nushell-scripts/banner.nu
 }
