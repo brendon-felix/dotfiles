@@ -1,10 +1,6 @@
-# This script is used to import new Super I/O firmware
-# 
-# Usage:
-#   siofw [version]
-# 
-# Example:
-#   siofw 14.12.0
+# -------------------------------------------------------------------------- #
+#                                  siofw.nu                                  #
+# -------------------------------------------------------------------------- #
 
 let repo_path = 'C:\Users\felixb\BIOS\HpSpringsWks\'
 
