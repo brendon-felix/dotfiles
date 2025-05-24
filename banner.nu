@@ -43,8 +43,8 @@ def mem_used_str [] {
     let memory = (sys mem)
     let mem_used = $memory.used / $memory.total
     let mem_used_bar = (asciibar --empty '░' --half-filled '▓' --filled '█' --length 12 $mem_used)
-    # let memory_used_display_uncolored = $"($mem_used_bar) ($memory.used) \(($mem_used * 100 | math round --precision 0 )%\)"
-    let memory_used_display_uncolored = $"($memory.used) \(($mem_used * 100 | math round --precision 0 )%\) ($mem_used_bar)"
+    let memory_used_display_uncolored = $"($mem_used_bar) ($memory.used) \(($mem_used * 100 | math round --precision 0 )%\)"
+    # let memory_used_display_uncolored = $"($memory.used) \(($mem_used * 100 | math round --precision 0 )%\) ($mem_used_bar)"
     match $mem_used {
         _ if $mem_used < 0.6 => $"(ansi green)($memory_used_display_uncolored)(ansi reset)"
         _ if $mem_used < 0.8 => $"(ansi yellow)($memory_used_display_uncolored)(ansi reset)"
