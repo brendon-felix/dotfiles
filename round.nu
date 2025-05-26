@@ -4,7 +4,6 @@
 
 def "round duration" [unit?] {
     each { |e|
-        # let num_ns = $e | into int
         let unit_time = match $unit {
             ns => 1ns,
             us => 1us,
