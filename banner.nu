@@ -20,9 +20,13 @@ def user_str [] {
 }
 
 def version_str [] {
+    # match (version check).current {
+    #     true => $"(ansi green)v(version | get version) \(latest\)(ansi reset)"
+    #     false => $"(ansi yellow)v(version | get version)(ansi reset) \(v((version check).latest) available\)(ansi reset)"
+    # }
     match (version check).current {
-        true => $"(ansi green)v(version | get version) \(latest\)(ansi reset)"
-        false => $"(ansi yellow)v(version | get version)(ansi reset) \(update available\)(ansi reset)"
+        true => $"(ansi green)\(v(version | get version)\)(ansi reset)"
+        false => $"(ansi yellow)v(version | get version)(ansi reset) \(v((version check).latest) available\)(ansi reset)"
     }
 }
 
@@ -58,21 +62,24 @@ def print_banner [] {
         " .--()°'.'"
         "'|, . ,'  "
         ' !_-(_\   '
-        "          "
     ]
 
     let ellie = $ellie | each { |it| $"(ansi green)($it)(ansi reset)" }
 
-    # let nushell = [
-    # `                 _          _ _ `,
-    # ` _ __  _   _ ___| |__   ___| | |`,
-    # `| '_ \| | | / __| '_ \ / _ \ | |`,
-    # `| | | | |_| \__ \ | | |  __/ | |`,
-    # `|_| |_|\__,_|___/_| |_|\___|_|_|`,
-    # `                                `,
-    # ]
+    let nushell = [
+    `                 _          _ _ `,
+    ` _ __  _   _ ___| |__   ___| | |`,
+    `| '_ \| | | / __| '_ \ / _ \ | |`,
+    `| | | | |_| \__ \ | | |  __/ | |`,
+    `|_| |_|\__,_|___/_| |_|\___|_|_|`,
+    `                                `,
+    ]
     
-    # let nushell = $nushell | each { |it| $"(ansi black)($it)(ansi reset)" }
+    let nushell = $nushell | each { |it| $"(ansi green)($it)(ansi reset)" }
+
+    # for line in $nushell {
+    #     print $line
+    # }
 
     let user = user_str
 
@@ -85,7 +92,7 @@ def print_banner [] {
     print $" ($ellie.1)  ($user.separator)"
     print $" ($ellie.2)  (ansi light_blue)version:(ansi reset) ($info.version)"
     print $" ($ellie.3)  (ansi light_blue)uptime:(ansi reset)  ($info.uptime)"
-    print $" ($ellie.4)  (ansi light_blue)memory:(ansi reset)  ($info.memory)"
+    print $"             (ansi light_blue)memory:(ansi reset)  ($info.memory)"
 
     # print $"           ($nushell.0)"
     # print $"($ellie.0) ($nushell.1)"
@@ -94,6 +101,14 @@ def print_banner [] {
     # print $"($ellie.3) ($nushell.4)"
     # print $"           ($nushell.5)"
     # print $info
+
+
+    # print $"           ($nushell.0)"
+    # print $"($ellie.0) ($nushell.1)   ($user.user)"
+    # print $"($ellie.1) ($nushell.2)   ($user.separator)"
+    # print $"($ellie.2) ($nushell.3)   (ansi light_blue)version:(ansi reset) ($info.version)"
+    # print $"($ellie.3) ($nushell.4)   (ansi light_blue)uptime:(ansi reset)  ($info.uptime)"
+    # print $"           ($nushell.5)   (ansi light_blue)memory:(ansi reset)  ($info.memory)"
 
 }
 

@@ -19,7 +19,7 @@ $env.PROMPT_COMMAND_RIGHT = { || date now | format date "%a-%d %r" }
 
 $env.config.history.isolation = true
 
-$env.config.show_banner = false
+$env.config.show_banner = "short"
 
 $env.config.completions.algorithm = "fuzzy"
 
@@ -81,6 +81,8 @@ def mem_used_str [] {
     }
 }
 
+source ~/Projects/nushell-scripts/round.nu
+
 # ------------------------ machine specific commands ----------------------- #
 
 source ~/Projects/nushell-scripts/commands.nu
@@ -91,4 +93,5 @@ if $nu.is-interactive {
 	# requires asciibar: `cargo install asciibar`
 	# source ~/banner.nu
 	nu ~/Projects/nushell-scripts/banner.nu
+    print ""
 }
