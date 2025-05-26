@@ -1,0 +1,10 @@
+
+def exp [x] {
+    $x | math exp
+}
+def ln [x] {
+    $x | math ln
+}
+def log [x] {
+    $x | math log 10
+}

@@ -81,6 +81,7 @@ def mem_used_str [] {
     }
 }
 
+source ~/Projects/nushell-scripts/math.nu
 source ~/Projects/nushell-scripts/round.nu
 
 # ------------------------ machine specific commands ----------------------- #
