@@ -1,24 +1,46 @@
-
+# -------------------------------------------------------------------------- #
+#                                  round.nu                                  #
+# -------------------------------------------------------------------------- #
 
 def "round duration" [unit?] {
     each { |e|
-        let num_ns = $e | into int
-        let unit_ns = match $unit {
-            ns => (1ns | into int),
-            us => (1us | into int),
-            ms => (1ms | into int),
-            sec => (1sec | into int),
-            min => (1min | into int),
-            hr => (1hr | into int),
-            day => (1day | into int),
-            wk => (1wk | into int),
-            _ => (return (auto_round_duration $num_ns)), # If the unit is not recognized, return the original duration
+        # let num_ns = $e | into int
+        let unit_time = match $unit {
+            ns => 1ns,
+            us => 1us,
+            ms => 1ms,
+            sec => 1sec,
+            min => 1min,
+            hr => 1hr,
+            day => 1day,
+            wk => 1wk,
+            null => {
+                match $e {
+                    _ if ($e mod 1day == 0sec) => 1wk,
+                    _ if ($e mod 1hr == 0sec) => 1day,
+                    _ if ($e mod 1min == 0sec) => 1hr,
+                    _ if ($e mod 1sec == 0sec) => 1min,
+                    _ if ($e mod 1ms == 0sec) => 1sec,
+                    _ if ($e mod 1us == 0sec) => 1ms,
+                    _ if ($e mod 1ns == 0sec) => 1us,
+                    _ => 1ns
+                }
+            }
+            _ => {
+                throw "Invalid unit: $unit"
+            }
         }
-        let rounded_ns = ($num_ns / $unit_ns | math round) * $unit_ns
+        let rounded_ns = ($e / $unit_time | math round) * $unit_time
         $rounded_ns | into duration
     }
 }
 
-def auto_round_duration [num_ns] {
-    
+def round [] {
+    each { |e|
+        if ($e | describe) == "duration" {
+            $e | round duration
+        } else {
+            $e | math round
+        }
+    }
 }
