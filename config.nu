@@ -4,6 +4,10 @@
 
 # See https://www.nushell.sh/book/configuration.html
 
+# --------------------------------- modules -------------------------------- #
+use round.nu *
+use banner.nu *
+
 # --------------------------- environment config --------------------------- #
 
 $env.EDITOR = 'code'
@@ -19,7 +23,7 @@ $env.PROMPT_COMMAND_RIGHT = { || date now | format date "%a-%d %r" }
 
 $env.config.history.isolation = true
 
-$env.config.show_banner = "short"
+$env.config.show_banner = false
 
 $env.config.completions.algorithm = "fuzzy"
 
@@ -31,6 +35,9 @@ $env.config.cursor_shape.emacs = "line"
 
 $env.config.color_config
 
+$env.config.hooks = {
+    env_change: { HOMEPATH: [{|| banner}] }
+}
 
 # ---------------------------- built-in aliases ---------------------------- #
 
@@ -82,7 +89,7 @@ def mem_used_str [] {
 }
 
 source ~/Projects/nushell-scripts/math.nu
-source ~/Projects/nushell-scripts/round.nu
+# source ~/Projects/nushell-scripts/round.nu
 
 # ------------------------ machine specific commands ----------------------- #
 
@@ -93,6 +100,17 @@ source ~/Projects/nushell-scripts/commands.nu
 if $nu.is-interactive {
 	# requires asciibar: `cargo install asciibar`
 	# source ~/banner.nu
-	nu ~/Projects/nushell-scripts/banner.nu
-    print ""
+	# nu ~/Projects/nushell-scripts/banner.nu
+    # print ""
+
 }
+
+# let nushell_text = [
+# `                 _          _ _ `,
+# ` _ __  _   _ ___| |__   ___| | |`,
+# `| '_ \| | | / __| '_ \ / _ \ | |`,
+# `| | | | |_| \__ \ | | |  __/ | |`,
+# `|_| |_|\__,_|___/_| |_|\___|_|_|`,
+# `                                `,
+# ]
+# let nushell_text = $nushell_text | each { |it| $"(ansi green)($it)(ansi reset)" }

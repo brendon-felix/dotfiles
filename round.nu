@@ -2,7 +2,7 @@
 #                                  round.nu                                  #
 # -------------------------------------------------------------------------- #
 
-def "round duration" [unit?] {
+export def "round duration" [unit?] {
     each { |e|
         let unit_time = match $unit {
             ns => 1ns,
@@ -34,7 +34,7 @@ def "round duration" [unit?] {
     }
 }
 
-def round [] {
+export def main [] {
     each { |e|
         if ($e | describe) == "duration" {
             $e | round duration

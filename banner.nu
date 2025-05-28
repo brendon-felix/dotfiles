@@ -5,6 +5,27 @@
 # requires asciibar: `cargo install asciibar`
 
 use std repeat
+use round.nu *
+
+def header_str [] {
+    let installed_version_str = $"v(version | get version)"
+    let header_start = "Nushell "
+
+    # calculate before coloring
+    let length = ($installed_version_str | str length) + ($header_start | str length)
+    let separator = ('─' | repeat $length | str join)
+
+    let header_start = $"(ansi green)($header_start)(ansi reset)"
+    let installed_version_str = match (version check).current {
+        true => $"(ansi green)($installed_version_str)(ansi reset)"
+        false => $"(ansi yellow)($installed_version_str)(ansi reset)" # yellow when outdated
+    }
+
+    {
+        header: $"($header_start)($installed_version_str)",
+        separator: $separator,
+    }
+}
 
 def user_str [] {
     # let computer_name = ($env.COMPUTERNAME | str trim) # 'KEPLER'
@@ -19,40 +40,44 @@ def user_str [] {
     }
 }
 
-def version_str [] {
-    # match (version check).current {
-    #     true => $"(ansi green)v(version | get version) \(latest\)(ansi reset)"
-    #     false => $"(ansi yellow)v(version | get version)(ansi reset) \(v((version check).latest) available\)(ansi reset)"
-    # }
-    match (version check).current {
-        true => $"(ansi green)\(v(version | get version)\)(ansi reset)"
-        false => $"(ansi yellow)v(version | get version)(ansi reset) \(v((version check).latest) available\)(ansi reset)"
+def startup_str [] {
+    let startup_time = ($nu.startup-time | round duration ms)
+    match $startup_time {
+        _ if $startup_time < 100ms => $"(ansi green)($startup_time)(ansi reset)"
+        _ if $startup_time < 500ms => $"(ansi yellow)($startup_time)(ansi reset)"
+        _ => $"(ansi red)($startup_time)(ansi reset)"
     }
 }
 
 def uptime_str [] {
-
     let uptime = (sys host).uptime
-    # let uptime = 8day + 2hr + 43min + 31sec
-    # let uptime = 0.85day
-    let uptime_display_uncolored = ($uptime)
+    # let uptime = (2wk + 3day + 4hr + 5min + 6sec)
     match $uptime {
-        _ if $uptime < 1day => $"(ansi green)($uptime_display_uncolored)(ansi reset)"
-        _ if $uptime < 1wk => $"(ansi yellow)($uptime_display_uncolored)(ansi reset)"
-        _ => $"(ansi red)($uptime_display_uncolored)(ansi reset)"
+        _ if $uptime < 1day => $"(ansi green)($uptime | round duration min)(ansi reset)"
+        _ if $uptime < 1wk => $"(ansi yellow)($uptime | round duration hr)(ansi reset)"
+        _ => $"(ansi red)($uptime | round duration day)(ansi reset)"
     }
 }
 
-def mem_used_str [] {
+def memory_str [] {
     let memory = (sys mem)
-    let mem_used = $memory.used / $memory.total
-    let mem_used_bar = (asciibar --empty '░' --half-filled '▓' --filled '█' --length 12 $mem_used)
-    let memory_used_display_uncolored = $"($mem_used_bar) ($memory.used) \(($mem_used * 100 | math round --precision 0 )%\)"
-    # let memory_used_display_uncolored = $"($memory.used) \(($mem_used * 100 | math round --precision 0 )%\) ($mem_used_bar)"
-    match $mem_used {
-        _ if $mem_used < 0.6 => $"(ansi green)($memory_used_display_uncolored)(ansi reset)"
-        _ if $mem_used < 0.8 => $"(ansi yellow)($memory_used_display_uncolored)(ansi reset)"
-        _ => $"(ansi red)($memory_used_display_uncolored)(ansi reset)"
+    let proportion_used = $memory.used / $memory.total
+    let percent_used = ($proportion_used * 100 | math round --precision 0 )
+    let memory_bar = (asciibar --empty '░' --half-filled '▓' --filled '█' --length 12 $proportion_used)
+    let memory_text = $"($memory.used) \(($percent_used)%\)"
+    match $proportion_used {
+        _ if $proportion_used < 0.6 => {
+            text: $"(ansi green)($memory_text)(ansi reset)"
+            bar: $"(ansi green)($memory_bar)(ansi reset)"
+        }
+        _ if $proportion_used < 0.8 => {
+            text: $"(ansi yellow)($memory_text)(ansi reset)"
+            bar: $"(ansi yellow)($memory_bar)(ansi reset)"
+        }
+        _ => {
+            text: $"(ansi red)($memory_text)(ansi reset)"
+            bar: $"(ansi red)($memory_bar)(ansi reset)"
+        }
     }
 }
 
@@ -62,56 +87,36 @@ def print_banner [] {
         " .--()°'.'"
         "'|, . ,'  "
         ' !_-(_\   '
+        "          "
     ]
-
     let ellie = $ellie | each { |it| $"(ansi green)($it)(ansi reset)" }
 
-    let nushell = [
-    `                 _          _ _ `,
-    ` _ __  _   _ ___| |__   ___| | |`,
-    `| '_ \| | | / __| '_ \ / _ \ | |`,
-    `| | | | |_| \__ \ | | |  __/ | |`,
-    `|_| |_|\__,_|___/_| |_|\___|_|_|`,
-    `                                `,
-    ]
-    
-    let nushell = $nushell | each { |it| $"(ansi green)($it)(ansi reset)" }
-
-    # for line in $nushell {
-    #     print $line
-    # }
-
     let user = user_str
+    let header = header_str
+    let header_lines = [
+        "",
+        $header.header,
+        $header.separator,
+        $user.user,
+        "",
+    ]
 
-    let info = {
-        version: (version_str),
-        uptime: (uptime_str),
-        memory: (mem_used_str)
+    for line in ($ellie | zip $header_lines) {
+        print $" ($line.0)  ($line.1)"
     }
-    print $" ($ellie.0)  ($user.user)"
-    print $" ($ellie.1)  ($user.separator)"
-    print $" ($ellie.2)  (ansi light_blue)version:(ansi reset) ($info.version)"
-    print $" ($ellie.3)  (ansi light_blue)uptime:(ansi reset)  ($info.uptime)"
-    print $"             (ansi light_blue)memory:(ansi reset)  ($info.memory)"
-
-    # print $"           ($nushell.0)"
-    # print $"($ellie.0) ($nushell.1)"
-    # print $"($ellie.1) ($nushell.2)"
-    # print $"($ellie.2) ($nushell.3)"
-    # print $"($ellie.3) ($nushell.4)"
-    # print $"           ($nushell.5)"
-    # print $info
-
-
-    # print $"           ($nushell.0)"
-    # print $"($ellie.0) ($nushell.1)   ($user.user)"
-    # print $"($ellie.1) ($nushell.2)   ($user.separator)"
-    # print $"($ellie.2) ($nushell.3)   (ansi light_blue)version:(ansi reset) ($info.version)"
-    # print $"($ellie.3) ($nushell.4)   (ansi light_blue)uptime:(ansi reset)  ($info.uptime)"
-    # print $"           ($nushell.5)   (ansi light_blue)memory:(ansi reset)  ($info.memory)"
-
 }
 
-def main [] {
+def print_info [] {
+    let startup = startup_str
+    let uptime = uptime_str
+    let memory = memory_str
+    print $" It took ($startup) to start this shell."
+    print $" This system has been up for ($uptime)."
+    print $" RAM: ($memory.bar) ($memory.text)"
+    print ""
+}
+
+export def "main" [] {
     print_banner
+    print_info
 }
