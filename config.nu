@@ -1,15 +1,20 @@
-# -------------------------------------------------------------------------- #
-#                                  config.nu                                 #
-# -------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
+#                                   config.nu                                  #
+# ---------------------------------------------------------------------------- #
 
 # See https://www.nushell.sh/book/configuration.html
 
-# --------------------------------- modules -------------------------------- #
 use round.nu *
 use banner.nu *
-use memory.nu *
+use system.nu *
+source winget.nu
 
-# --------------------------- environment config --------------------------- #
+source misc.nu
+source math.nu
+source commands.nu
+source applications.nu
+
+# ---------------------------- environment config ---------------------------- #
 
 $env.EDITOR = 'code'
 $env.config.buffer_editor = 'code'
@@ -32,6 +37,12 @@ $env.config.completions.algorithm = "fuzzy"
 
 $env.config.float_precision = 3
 
+$env.config.filesize = {
+    unit: "metric",
+    show_unit: true,
+    precision: 1,
+}
+
 $env.config.cursor_shape.emacs = "line"
 
 $env.config.color_config
@@ -40,14 +51,16 @@ $env.config.hooks = {
     env_change: { HOMEPATH: [{|| banner}] }
 }
 
-# ---------------------------- built-in aliases ---------------------------- #
+# ---------------------------------------------------------------------------- #
 
 alias ll = ls -l
 alias r = nu ./run.nu
 alias cr = cargo run
 alias c = clear
 
-# ------------------------------ git commands ------------------------------ #
+alias du = dust
+
+# ------------------------------------ git ----------------------------------- #
 
 alias gsw = git switch
 alias gbr = git branch
@@ -56,8 +69,7 @@ alias gcl = git clean -fd
 def grst [] { git reset --hard; git clean -fd }
 def gpsh [] { git add .; git commit -m "quick update"; git push }
 
-
-# ------------------------------ tool aliases ------------------------------ #
+# ---------------------------------- scripts --------------------------------- #
 
 alias bfm = nu ~/Projects/nushell-scripts/bfm.nu
 alias siofw = nu ~/Projects/nushell-scripts/siofw.nu
@@ -67,51 +79,22 @@ alias spewcap = ~/Projects/spewcap2/target/release/spewcap2.exe
 alias size = ~/Projects/size-converter/target/release/size-converter.exe
 alias chat = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/api_key.txt -p ~/system_prompt.txt
 
-# ------------------------------ misc commands ----------------------------- #
-
-def "config nu" [] {
-    code ~/Projects/nushell-scripts/config.nu
-}
-
-def srev [] {
-	$in | sort-by modified | reverse
-}
-
-def mem_used_str [] {
-    let memory = (sys mem)
-    let mem_used = $memory.used / $memory.total
-    let mem_used_bar = (asciibar --empty '░' --half-filled '▓' --filled '█' --length 12 $mem_used)
-    let memory_used_display_uncolored = $"($mem_used_bar) ($memory.used) \(($mem_used * 100 | math round --precision 0 )%\)"
-    match $mem_used {
-        _ if $mem_used < 0.6 => $"(ansi green)($memory_used_display_uncolored)(ansi reset)"
-        _ if $mem_used < 0.8 => $"(ansi yellow)($memory_used_display_uncolored)(ansi reset)"
-        _ => $"(ansi red)($memory_used_display_uncolored)(ansi reset)"
-    }
-}
-
-source ~/Projects/nushell-scripts/math.nu
-# source ~/Projects/nushell-scripts/round.nu
-
-# ------------------------ machine specific commands ----------------------- #
-
-source ~/Projects/nushell-scripts/commands.nu
-
-# --------------------------- banner/screenfetch --------------------------- #
+# ---------------------------------- banner ---------------------------------- #
 
 if $nu.is-interactive {
-	# requires asciibar: `cargo install asciibar`
-	# source ~/banner.nu
-	# nu ~/Projects/nushell-scripts/banner.nu
-    # print ""
+    # let nushell_text = [
+    # `                 _          _ _ `,
+    # ` _ __  _   _ ___| |__   ___| | |`,
+    # `| '_ \| | | / __| '_ \ / _ \ | |`,
+    # `| | | | |_| \__ \ | | |  __/ | |`,
+    # `|_| |_|\__,_|___/_| |_|\___|_|_|`,
+    # `                                `,
+    # ]
+    # let nushell_text = $nushell_text | each { |it| $"(ansi green)($it)(ansi reset)" }
 
+    # banner
+    
+    # for line in $nushell_text {
+    #     print $" ($line)"
+    # }
 }
-
-# let nushell_text = [
-# `                 _          _ _ `,
-# ` _ __  _   _ ___| |__   ___| | |`,
-# `| '_ \| | | / __| '_ \ / _ \ | |`,
-# `| | | | |_| \__ \ | | |  __/ | |`,
-# `|_| |_|\__,_|___/_| |_|\___|_|_|`,
-# `                                `,
-# ]
-# let nushell_text = $nushell_text | each { |it| $"(ansi green)($it)(ansi reset)" }
