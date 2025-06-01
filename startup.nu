@@ -14,3 +14,5 @@ try {
     pause
 }
 print $"(ansi green)Done(ansi reset)"
+
+sleep 1sec
