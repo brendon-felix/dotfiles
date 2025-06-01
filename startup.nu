@@ -12,7 +12,4 @@ try {
     print $"  (ansi green)Done(ansi reset)"
 } catch {|err|
     print -e $"(ansi yellow)Warning:(ansi reset) Could not update Nushell scripts"
-    pause
 }
-
-sleep 5sec

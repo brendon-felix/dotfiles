@@ -4,12 +4,13 @@
 
 # See https://www.nushell.sh/book/configuration.html
 
+use misc.nu *
+use system.nu *
 use round.nu *
 use banner.nu *
-use system.nu *
+
 source winget.nu
 
-source misc.nu
 source math.nu
 source commands.nu
 source applications.nu
@@ -59,6 +60,7 @@ alias cr = cargo run
 alias c = clear
 
 alias du = dust
+
 
 # ------------------------------------ git ----------------------------------- #
 

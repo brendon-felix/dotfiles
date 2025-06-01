@@ -1,3 +1,5 @@
+use misc.nu bar
+
 const UPDATE_INTERVAL = 200ms
 
 # ---------------------------------- memory ---------------------------------- #
@@ -6,7 +8,7 @@ def memory_str [] {
     let memory = (sys mem)
     let proportion_used = $memory.used / $memory.total
     let percent_used = ($proportion_used * 100 | math round --precision 0 )
-    let memory_bar = (asciibar --empty '░' --half-filled '▓' --filled '█' --length 12 $proportion_used)
+    let memory_bar = bar $proportion_used
     let memory_text = $"($memory.used) \(($percent_used)%\)"
     match $proportion_used {
         _ if $proportion_used < 0.6 => {
@@ -53,7 +55,7 @@ def disks_str [disk] {
         let amount_used = $disk.total - $disk.free
         let proportion_used = $amount_used / $disk.total
         let percent_used = ($proportion_used * 100 | math round --precision 0)
-        let disk_bar = (asciibar --empty '░' --half-filled '▓' --filled '█' --length 12 $proportion_used)
+        let disk_bar = bar $proportion_used
         let disk_status = $"($disk_bar) ($amount_used) \(($percent_used)%\)"
         match $proportion_used {
             _ if $proportion_used < 0.6 => $"($disk_label): (ansi green)($disk_status)(ansi reset)"
@@ -71,7 +73,7 @@ def disks_strs [] {
         let amount_used = $disk.total - $disk.free
         let proportion_used = $amount_used / $disk.total
         let percent_used = ($proportion_used * 100 | math round --precision 0)
-        let disk_bar = (asciibar --empty '░' --half-filled '▓' --filled '█' --length 12 $proportion_used)
+        let disk_bar = bar $proportion_used
         let disk_status = $"($disk_bar) ($amount_used) \(($percent_used)%\)"
         match $proportion_used {
             _ if $proportion_used < 0.6 => $"($disk_label): (ansi green)($disk_status)(ansi reset)"
@@ -92,7 +94,7 @@ export def "disk monitor" [] {
         let amount_used = $disk.total - $disk.free
         let proportion_used = $amount_used / $disk.total
         let percent_used = ($proportion_used * 100 | math round --precision 0)
-        let disk_bar = (asciibar --empty '░' --half-filled '▓' --filled '█' --length 12 $proportion_used)
+        let disk_bar = bar $proportion_used
         let disk_status = $"($disk_bar) ($amount_used) \(($percent_used)%\)"
         let disk_str = match $proportion_used {
             _ if $proportion_used < 0.6 => $"($disk_label): (ansi green)($disk_status)(ansi reset)"
