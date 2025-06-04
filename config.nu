@@ -4,16 +4,19 @@
 
 # See https://www.nushell.sh/book/configuration.html
 
-use misc.nu *
-use system.nu *
-use round.nu *
-use banner.nu *
+use external/misc.nu *
+use external/status.nu *
+use external/round.nu *
+use external/banner.nu *
+use external/applications.nu *
 
-source winget.nu
+use internal/utils.nu bar
+use internal/info.nu memory_str
 
-source math.nu
-source commands.nu
-source applications.nu
+source bios/bfm.nu
+source bios/siofw.nu
+
+source completions/winget.nu
 
 # ---------------------------- environment config ---------------------------- #
 
@@ -23,7 +26,7 @@ $env.config.buffer_editor = 'code'
 # $env.PROMPT_COMMAND = { || pwd }
 
 $env.PROMPT_COMMAND_RIGHT = { || date now | format date "%a-%d %r" }
-# $env.PROMPT_COMMAND_RIGHT = { || mem_used_str }
+# $env.PROMPT_COMMAND_RIGHT = { || (memory) }
 # $env.PROMPT_COMMAND_RIGHT = { || } # no right prompt
 
 # $env.PROMPT_INDICATOR = " "
@@ -59,8 +62,13 @@ alias r = nu ./run.nu
 alias cr = cargo run
 alias c = clear
 
+alias vim = nvim
 alias du = dust
 
+# alias calc = ~/Projects/qalculate/qalc.exe -c
+alias qalc = ~/Projects/qalculate/qalc.exe -c
+alias calc = ~/kalc.exe
+alias kalc = ~/kalc.exe
 
 # ------------------------------------ git ----------------------------------- #
 
@@ -73,6 +81,8 @@ def gpsh [] { git add .; git commit -m "quick update"; git push }
 
 # ---------------------------------- scripts --------------------------------- #
 
+alias scripts = cd ~/Projects/nushell-scripts
+
 alias bfm = nu ~/Projects/nushell-scripts/bfm.nu
 alias siofw = nu ~/Projects/nushell-scripts/siofw.nu
 # alias mfit = nu ~/Projects/nushell-scripts/mfit.nu
@@ -83,20 +93,6 @@ alias chat = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/api_key.txt 
 
 # ---------------------------------- banner ---------------------------------- #
 
-if $nu.is-interactive {
-    # let nushell_text = [
-    # `                 _          _ _ `,
-    # ` _ __  _   _ ___| |__   ___| | |`,
-    # `| '_ \| | | / __| '_ \ / _ \ | |`,
-    # `| | | | |_| \__ \ | | |  __/ | |`,
-    # `|_| |_|\__,_|___/_| |_|\___|_|_|`,
-    # `                                `,
-    # ]
-    # let nushell_text = $nushell_text | each { |it| $"(ansi green)($it)(ansi reset)" }
-
-    # banner
-    
-    # for line in $nushell_text {
-    #     print $" ($line)"
-    # }
-}
+# if $nu.is-interactive {
+#     banner
+# }

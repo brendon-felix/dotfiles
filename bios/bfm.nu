@@ -137,7 +137,7 @@ def flash [binary] {
     }
 }
 
-def main [
+def bfm [
     platform?: string
     --build(-b)             # Build the binary
     --release(-r)           # Build a release binary

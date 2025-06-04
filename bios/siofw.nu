@@ -29,7 +29,7 @@ def update_equ [filepath, version] {
     print $"(ansi green)Successfully updated(ansi reset) ($filepath | path basename)"
 }
 
-def main [
+def siofw [
     version,
     --all(-a) # Update all binary and .equ files in the repo
     --sig(-s) # Update the signature files
