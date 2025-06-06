@@ -34,7 +34,7 @@ export def "fill line" [char?] {
 
 
 export def box [--alignment(-a): string = 'l'] {
-    let input = [$in] | flatten
+    let input = [$in] | each {|e| $e | into string | lines} | flatten
     # debug $input
     let max_length = $input | ansi strip | str length -g | math max
     let top_bottom = ("" | fill -c '─' -w ($max_length + 2) | str join)
@@ -45,8 +45,8 @@ export def box [--alignment(-a): string = 'l'] {
     $"╭($top_bottom)╮" | append $middle | append $"╰($top_bottom)╯"
 }
 
-export def "print box" [input, --alignment(-a): string = 'l'] {
-    let boxed = ($"($input)" | box --alignment $alignment)
+export def "print box" [--alignment(-a): string = 'l', ...input] {
+    let boxed = ($input | box --alignment $alignment)
     for line in $boxed {
         print $line
     }
@@ -65,6 +65,7 @@ export def countdown [duration: duration, --bar(-b)] {
     let start_time = date now
     let end_time = $start_time + $duration
     mut $remaining = $duration
+    cursor off
     while $remaining > 0sec {
         let proportion = $remaining / $duration
         mut status = $"($remaining | round duration sec)"
@@ -72,10 +73,11 @@ export def countdown [duration: duration, --bar(-b)] {
             let bar = bar ($remaining / $duration)
             $status = $"($bar) ($status)"
         }
-        print -n $"($status | fill line ' ')\r"
+        print -n $"($status)(ansi erase_line_from_cursor_to_end)\r"
         $remaining = $end_time - (date now)
     }
     print $"(ansi green)("Done" | fill line ' ')(ansi reset)"
+    # print -n $"(ansi reset)"
 }
 
 export def shutdown [] {

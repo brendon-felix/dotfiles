@@ -9,9 +9,11 @@ use external/status.nu *
 use external/round.nu *
 use external/banner.nu *
 use external/applications.nu *
+use external/terminal.nu *
 
 use internal/utils.nu bar
 use internal/info.nu memory_str
+
 
 source bios/bfm.nu
 source bios/siofw.nu
@@ -51,9 +53,8 @@ $env.config.cursor_shape.emacs = "line"
 
 $env.config.color_config
 
-$env.config.hooks = {
-    env_change: { HOMEPATH: [{|| banner}] }
-}
+# $env.config.hooks.pre_prompt = [{|| print (memory)}] 
+$env.config.hooks.env_change = { HOMEPATH: [{|| banner}] }
 
 # ---------------------------------------------------------------------------- #
 
@@ -83,8 +84,8 @@ def gpsh [] { git add .; git commit -m "quick update"; git push }
 
 alias scripts = cd ~/Projects/nushell-scripts
 
-alias bfm = nu ~/Projects/nushell-scripts/bfm.nu
-alias siofw = nu ~/Projects/nushell-scripts/siofw.nu
+# alias bfm = nu ~/Projects/nushell-scripts/bfm.nu
+# alias siofw = nu ~/Projects/nushell-scripts/siofw.nu
 # alias mfit = nu ~/Projects/nushell-scripts/mfit.nu
 
 alias spewcap = ~/Projects/spewcap2/target/release/spewcap2.exe
