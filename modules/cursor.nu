@@ -41,7 +41,3 @@ export def "cursor up" [] {
 export def "cursor down" [] {
     print -n $"(ansi cursor_down)"
 }
-
-export def cursor [] {
-    
-}

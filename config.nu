@@ -3,17 +3,15 @@
 # ---------------------------------------------------------------------------- #
 
 # See https://www.nushell.sh/book/configuration.html
-
-use external/misc.nu *
-use external/status.nu *
-use external/round.nu *
-use external/banner.nu *
-use external/applications.nu *
-use external/terminal.nu *
-
-use internal/utils.nu bar
-use internal/info.nu memory_str
-
+use modules/api.nu *
+use modules/applications.nu *
+use modules/banner.nu *
+use modules/cursor.nu *
+use modules/monitor.nu *
+use modules/print-utils.nu *
+use modules/round.nu *
+use modules/status.nu *
+use modules/system.nu *
 
 source bios/bfm.nu
 source bios/siofw.nu
@@ -57,6 +55,10 @@ $env.config.color_config
 $env.config.hooks.env_change = { HOMEPATH: [{|| banner}] }
 
 # ---------------------------------------------------------------------------- #
+
+def "config nu" [] {
+    code ~/Projects/nushell-scripts/config.nu
+}
 
 alias ll = ls -l
 alias r = nu ./run.nu
