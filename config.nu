@@ -44,6 +44,9 @@ alias scripts = cd ~/Projects/nushell-scripts
 alias ll = ls -l
 alias r = nu ./run.nu
 alias c = clear
+alias memory = status memory
+alias ram = status memory
+alias disks = status disks
 
 # if $nu.is-interactive {
 #     banner
