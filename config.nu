@@ -9,6 +9,7 @@
 use modules/applications.nu *
 use modules/banner.nu *
 use modules/color.nu *
+use modules/container.nu *
 use modules/cursor.nu *
 use modules/git.nu *
 use modules/monitor.nu *
@@ -35,7 +36,7 @@ $env.config.buffer_editor = 'code'
 $env.config.history.isolation = true
 $env.config.show_banner = false
 $env.config.float_precision = 3
-$env.config.hooks.env_change = { HOMEPATH: [{|| print (banner)}] }
+$env.config.hooks.env_change = { HOMEPATH: [{|| print (banner | print container)}] }
 
 # ---------------------------------------------------------------------------- #
 
