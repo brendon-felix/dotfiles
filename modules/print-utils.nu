@@ -4,6 +4,7 @@
 
 use cursor.nu ['erase right' 'cursor off']
 use round.nu 'round duration'
+use std repeat
 
 
 export def bar [value: number] {
@@ -34,24 +35,61 @@ export def debug [x] {
     print $"($x_name)($x_type) = ($x)"
 }
 
-# export def "fill line" [char?] {
-#     let input = $in
-#     match $char {
-#         null => ($input | fill -w (term size).columns)
-#         _ => ($input | fill -c $char -w (term size).columns)
-#     }
-# }
+export def "fill line" [char?] {
+    let input = $in
+    match $char {
+        null => ($input | fill -w (term size).columns)
+        _ => ($input | fill -c $char -w (term size).columns)
+    }
+}
 
-export def box [--alignment(-a): string = 'l'] {
+export def pad [width: int] {
     let input = [$in] | each {|e| $e | into string | lines} | flatten
+    let max_length = $input | ansi strip | str length -g | math max
+}
+
+export def align [alignment: string] {
+    mut input = [$in] | each {|e| $e | into string | lines} | flatten
+    let max_length = $input | ansi strip | str length -g | math max
+    $input | each { |line| 
+        let line = $"($line)" | fill -a $alignment -w $max_length
+    }
+}
+
+export def box [
+    --pad-x(-x): int = 1,
+    --pad-left(-l): int = 1,
+    --pad-right(-r): int = 1,
+    --pad-y(-y): int = 0,
+    --pad-top(-t): int = 0,
+    --pad-bottom(-m): int = 0,
+    --alignment(-a): string = 'l',
+    --no-border(-b)
+] {
+    mut input = [$in] | each {|e| $e | into string | lines} | flatten
+    let pad_top = ([$pad_y $pad_top] | math max)
+    let pad_bottom = ([$pad_y $pad_bottom] | math max)
+    $input = $input | prepend ("" | repeat $pad_top) | append ("" | repeat $pad_bottom)
     # debug $input
     let max_length = $input | ansi strip | str length -g | math max
-    let top_bottom = ("" | fill -c '─' -w ($max_length + 2) | str join)
-    let middle = $input | each { |line| 
-        let padded_line = $"($line)" | fill -a $alignment -w $max_length
-        $"│ ($padded_line) │"
+    let pad_left = match $pad_x { 0 => 0, _ => ([$pad_x $pad_left] | math max) }
+    let pad_right = match $pad_x { 0 => 0, _ => ([$pad_x $pad_right] | math max) }
+    let box_width = $max_length + $pad_left + $pad_right
+    mut middle = $input | each { |line| 
+        let filled = $line | fill -a $alignment -w $max_length
+        let padded_line = (' ' | repeat $pad_left | str join) + $filled + (' ' | repeat $pad_right | str join)
+        if $no_border {
+            $"($padded_line)"
+        } else {
+            $"│($padded_line)│"
+        }
     }
-    $"╭($top_bottom)╮" | append $middle | append $"╰($top_bottom)╯"
+    if $no_border {
+        $middle
+    } else {
+        let horizontal_border = ("" | fill -c '─' -w $box_width | str join)
+        $middle | prepend $"╭($horizontal_border)╮" | append $"╰($horizontal_border)╯"
+    }
 }
 
 export def "print box" [--alignment(-a): string = 'l', ...input] {
@@ -61,8 +99,7 @@ export def "print box" [--alignment(-a): string = 'l', ...input] {
     }
 }
 
-
-export def countdown [duration: duration, --bar(-b)] {
+export def countdown [duration: duration, --no-bar(-b)] {
     if $duration < 1sec {
         error make {
             msg: "invalid duration",
@@ -79,11 +116,11 @@ export def countdown [duration: duration, --bar(-b)] {
     while $remaining > 0sec {
         let proportion = $remaining / $duration
         mut status = $"($remaining | round duration sec)"
-        if $bar {
+        if not $no_bar {
             let bar = bar ($remaining / $duration)
             $status = $"($bar) ($status)"
         }
-        print -n $"($status)(ansi erase_line_from_cursor_to_end)\r"
+        print -n $"($status)(erase right)\r"
         $remaining = $end_time - (date now)
     }
     print $"(ansi green)("Done")(erase right)(ansi reset)"

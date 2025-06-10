@@ -2,10 +2,10 @@
 #                                   banner.nu                                  #
 # ---------------------------------------------------------------------------- #
 
-# requires asciibar: `cargo install asciibar`
-
+# use version.nu 'version check'
 use round.nu 'round duration'
 use status.nu 'status memory'
+use print-utils.nu box
 
 def startup_str [] {
     let startup_time = ($nu.startup-time | round duration ms)
@@ -36,14 +36,16 @@ def header_str [] {
     let length = ($installed_version_str | str length) + ($header_start | str length)
     let separator = ("" | fill -c '─' -w $length | str join)
 
-    let header_start = $"(ansi green)($header_start)(ansi reset)"
-    let installed_version_str = match (version check).current {
-        true => $"(ansi green)($installed_version_str)(ansi reset)"
-        false => $"(ansi yellow)($installed_version_str)(ansi reset)" # yellow when outdated
-    }
+    # let header_start = $"(ansi green)($header_start)(ansi reset)"
+    # let installed_version_str = match (version check).current {
+    #     true => $"(ansi green)($installed_version_str)(ansi reset)"
+    #     false => $"(ansi yellow)($installed_version_str)(ansi reset)" # yellow when outdated
+    # }
+    # let header = $"($header_start)($installed_version_str)"
+    let header = $"(ansi green)($header_start)($installed_version_str)(ansi reset)"
 
     {
-        header: $"($header_start)($installed_version_str)",
+        header: $header,
         separator: $separator,
     }
 }
@@ -61,7 +63,7 @@ def user_str [] {
     }
 }
 
-def print_banner_header [] {
+def banner_header [] {
     let ellie = [
         "     __  ,"
         " .--()°'.'"
@@ -81,24 +83,32 @@ def print_banner_header [] {
         "",
     ]
 
-    for line in ($ellie | zip $header_lines) {
-        print $" ($line.0)  ($line.1)"
+    ($ellie | zip $header_lines) | each {|line|
+        $"($line.0)  ($line.1)"
     }
 }
 
-def print_banner_info [] {
+def banner_info [] {
     let startup = startup_str
     let uptime = uptime_str
     let memory = status memory -b
+    
+    mut info = [
+        $"This system has been up for ($uptime)."
+        $"($memory.RAM) of memory is in use."
+    ]
     if $startup != null {
-        print $" It took ($startup) to start this shell."
+        $info | prepend $"It took ($startup) to start this shell."
     }
-    print $" This system has been up for ($uptime)."
-    print $" ($memory.RAM) of memory is in use."
-    print ""
+    # print ""
 }
 
 export def main [] {
-    print_banner_header
-    print_banner_info
+    # let start = date now
+    let header_box = (banner_header | box --pad-right 2)
+    let info_box = (banner_info| box)
+    ($header_box | zip ($info_box | append "" | append "")) | each {|line|
+        $"($line.0) ($line.1)"
+    } | str join "\n"
+    # print ((date now) - $start)
 }

@@ -8,6 +8,7 @@
 
 use modules/applications.nu *
 use modules/banner.nu *
+use modules/color.nu *
 use modules/cursor.nu *
 use modules/git.nu *
 use modules/monitor.nu *
@@ -16,9 +17,12 @@ use modules/round.nu *
 use modules/status.nu *
 use modules/system.nu *
 use modules/tools.nu *
+use modules/version.nu *
 
 source bios/bfm.nu
 source bios/siofw.nu
+
+source completions/cargo.nu
 source completions/winget.nu
 
 # ---------------------------- environment config ---------------------------- #
@@ -31,7 +35,7 @@ $env.config.buffer_editor = 'code'
 $env.config.history.isolation = true
 $env.config.show_banner = false
 $env.config.float_precision = 3
-$env.config.hooks.env_change = { HOMEPATH: [{|| banner}] }
+$env.config.hooks.env_change = { HOMEPATH: [{|| print (banner)}] }
 
 # ---------------------------------------------------------------------------- #
 
