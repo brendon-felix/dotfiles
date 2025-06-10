@@ -39,8 +39,7 @@ def header_text [] {
 }
 
 def header [] {
-    let ellie = ellie | ansi strip | lines | each { |it| $"(ansi green)($it)(ansi reset)" } | contain -x 0 --pad-bottom 1
-    $ellie | row -s 2 -a c (header_text) | contain -x 0
+    my-ellie | row -s 2 -a c (header_text) | contain -x 0
 }
 
 def info [] {
@@ -55,6 +54,10 @@ def info [] {
     if $startup != null {
         $info | prepend $"It took ($startup) to start this shell."
     }
+}
+
+export def my-ellie [] {
+    ellie | ansi strip | lines | each { |it| $"(ansi green)($it)(ansi reset)" } | contain -x 0 --pad-bottom 1
 }
 
 export def main [] {
