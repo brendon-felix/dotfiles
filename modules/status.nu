@@ -3,13 +3,14 @@
 # ---------------------------------------------------------------------------- #
 
 use print-utils.nu bar
+use ansi.nu color
 
 def severity [severity] {
     let input = $in
     match $severity {
-        _ if $severity < 0.6 => $"(ansi green)($input)(ansi reset)"
-        _ if $severity < 0.8 => $"(ansi yellow)($input)(ansi reset)"
-        _ => $"(ansi red)($input)(ansi reset)"
+        _ if $severity < 0.6 => ($input | color green)
+        _ if $severity < 0.8 => ($input | color yellow)
+        _ => ($input | color red)
     }
 }
 

@@ -2,6 +2,8 @@
 #                                   bfm.nu                                   #
 # -------------------------------------------------------------------------- #
 
+use ../modules/splash.nu *
+
 let dev_loc = 'C:\Users\felixb\BIOS'
 let net_loc = '\\wks-file.ftc.rd.hpicorp.net\MAIN_LAB\SHARES\LAB\Brendon Felix\Bootlegs'
 
@@ -11,8 +13,14 @@ def get_repo_loc [tree, default] {
         if ($loc | path exists) {
             $loc
         } else {
-            print $"(ansi red_bold)Specified tree not found!(ansi reset)"
-            exit 1
+            print $"(ansi red_bold)!(ansi reset)"
+            error make {
+                msg: "Specified tree not found"
+                label: {
+                    text: "Tree not found"
+                    span: (metadata $tree).span
+                }
+            }
         }
     } else {
         [$dev_loc, $default] | path join
@@ -38,7 +46,15 @@ def get_config [platform, tree] {
         'U61' => { create_config 'Winters' $tree 'HpWintersWks' }
         'U65' => { create_config 'Avalanche' $tree 'HpAvalancheWks' }
         'X60' | null => { create_config 'Springs' $tree 'HpSpringsWks' } # Use Springs config by default
-        _ => { exit 1 }
+        _ => {
+            error make {
+                msg: "Unknown platform"
+                label: {
+                    text: "Platform not recognized"
+                    span: (metadata $platform).span
+                }
+            }
+        }
     }
 }
 
@@ -60,10 +76,10 @@ def build [config, release] {
             run-external $command
         }
     } catch {
-        print print $"\n\n(ansi red)Build failed(ansi reset)"
-        exit 1
+        # print $"\n\n(ansi red)Build failed(ansi reset)"
+        "Build failed" | splash failure
+        error make -u {msg: "Build failed"}
     }
-
     cd -
 }
 
@@ -130,10 +146,11 @@ def flash [binary] {
     print $"(ansi purple)Flashing binary...(ansi reset)"
     try {
         do {dpcmd --batch $binary.name --verify}
-        print $"\n(ansi green_bold)Flash successful(ansi reset)"
+        # print $"\n(ansi green_bold)Flash successful(ansi reset)"
+        "Flash successful" | splash success
     } catch {
-        print $"(ansi red)Flash failed(ansi reset)"
-        exit 1
+        # error make -u { msg: "Flash failed" }
+        "Flash failed" | splash failure
     }
 }
 
@@ -159,12 +176,12 @@ def bfm [
     } else if $path != null {
         find_path $path
     } else {
-        print $"(ansi yellow)No binary provided(ansi reset)"
+        print $"(ansi yellow)Warning:(ansi reset) No binary provided → Checking build folder...(ansi reset)"
         find_build $config.bld_path
     }
     if $binary == null {
-        print -e $"(ansi red_bold)No binary found(ansi reset)"
-        exit 1
+        # print -e $"(ansi red_bold)No binary found(ansi reset)"
+        error make -u { msg: "No binary found" }
     }
     if $save {
         save_bootleg $config.bootleg_loc $binary.name $append

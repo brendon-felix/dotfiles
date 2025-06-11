@@ -5,44 +5,46 @@
 # use version.nu 'version check'
 use std ellie
 use round.nu 'round duration'
-use status.nu 'status memory'
-use color.nu *
-use container.nu [contain box row 'print container']
+use status.nu *
+use ansi.nu *
+use container.nu *
 
-def startup [] {
+def startup []: nothing -> string {
     let startup_time = ($nu.startup-time | round duration ms)
     match $startup_time {
-        _ if $startup_time == 0sec => null
-        _ if $startup_time < 100ms => $"(ansi green)($startup_time)(ansi reset)"
-        _ if $startup_time < 500ms => $"(ansi yellow)($startup_time)(ansi reset)"
-        _ => $"(ansi red)($startup_time)(ansi reset)"
+        $t if $t == 0sec => null
+        $t if $t < 100ms => ($t | color green)
+        $t if $t < 500ms => ($t | color red)
+        $t => ($t | color red)
     }
 }
 
-def uptime [] {
+def uptime []: nothing -> string {
     match (sys host).uptime {
-        $t if $t < 1day => $"(ansi green)($t | round duration min)(ansi reset)"
-        $t if $t < 1wk => $"(ansi yellow)($t | round duration hr)(ansi reset)"
-        $t => $"(ansi red)($t | round duration day)(ansi reset)"
+        $t if $t < 1day => ($t | round duration min | color green)
+        $t if $t < 1wk => ($t | round duration hr | color yellow)
+        $t => ($t | round duration day | color red)
     }
 }
 
-def header_text [] {
+def header_text []: nothing -> list<string> {
     let curr_version = $"v(version | get version)"
-    let shell = $"(ansi green)Nushell ($curr_version)(ansi reset)"
-    let username = ($env.USERNAME | str trim) | color purple
-    let hostname = (sys host | get hostname) | color purple
+    let shell = $"Nushell ($curr_version)" | color green
+
+    let username = $env.USERNAME | color light_purple
+    let hostname = sys host | get hostname | color light_purple
     let user = $"($username)@($hostname)"
-    let length = [($shell | color length), ($user | color length)] | math max
-    let separator = ("" | fill -c '─' -w $length | str join)
-    [$shell $separator $user] | contain -x 0
+
+    let width = [($shell | strip length), ($user | strip length)] | math max
+    let separator = "" | fill -c '─' -w $width
+    [$shell $separator $user] | contain -p tight
 }
 
-def header [] {
-    my-ellie | row -s 2 -a c (header_text) | contain -x 0
+def header []: nothing -> list<string> {
+    my-ellie | row -s 2 -a c (header_text) | contain -p tight
 }
 
-def info [] {
+def info []: nothing -> list<string> {
     let startup = startup
     let uptime = uptime
     let memory = status memory -b
@@ -56,11 +58,33 @@ def info [] {
     }
 }
 
-export def my-ellie [] {
-    ellie | ansi strip | lines | each { |it| $"(ansi green)($it)(ansi reset)" } | contain -x 0 --pad-bottom 1
+# container-based ellie
+export def my-ellie []: nothing -> list<string> {
+    ellie | ansi strip | lines | color green | contain -p tight --pad-bottom 1
 }
 
-export def main [] {
-    # header | append (info | contain) | contain -x 0 | box
-    header | contain -x 2 | box | append (info | contain | box)
+# creates a container-based banner for printing
+export def main [
+    type? = basic # the type of banner to create: ellie, header, info, row, stack
+]: nothing -> list<string> {
+    match $type {
+        ellie => (my-ellie | box)
+        header => (header | contain | box)
+        info => (info | contain -p "comfy" | box)
+        row => (header | contain -x 2 | box | row (info | contain -p "comfy" | box))
+        stack => (header | contain -x 2 | box | append (info | contain | box) | contain -a c -p tight)
+        # _ => (header | contain --pad-left 3 | append (info | contain -x 2 --pad-bottom 1) | contain -a l -p tight | box)
+        basic => (header | append $"RAM: (status memory | get RAM)"| contain -a c | box)
+        _ => {
+            error make {
+                msg: "invalid banner type"
+                label: {
+                    text: "type not recognized"
+                    span: (metadata $type).span
+                }
+                help: "Use `banner --help` to see available types."
+            }
+        }
+    }
+    # header | append $"("RAM" | color blue): (status memory | get RAM)" | append (status disks | items {|mount status| $"($mount | color blue): ($status)"}) | contain -a c | box
 }

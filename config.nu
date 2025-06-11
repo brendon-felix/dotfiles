@@ -6,11 +6,11 @@
 
 # ---------------------------------- modules --------------------------------- #
 
+use modules/ansi.nu *
 use modules/applications.nu *
 use modules/banner.nu *
-use modules/color.nu *
 use modules/container.nu *
-use modules/cursor.nu *
+use modules/debug.nu *
 use modules/git.nu *
 use modules/monitor.nu *
 use modules/print-utils.nu *
@@ -18,13 +18,18 @@ use modules/round.nu *
 use modules/status.nu *
 use modules/system.nu *
 use modules/tools.nu *
+use modules/splash.nu *
 use modules/version.nu *
 
 source bios/bfm.nu
 source bios/siofw.nu
 
-source completions/cargo.nu
-source completions/winget.nu
+source completions/cargo-completions.nu
+source completions/git-completions.nu
+source completions/rg-completions.nu
+source completions/rustup-completions.nu
+source completions/vscode-completions.nu
+source completions/winget-completions.nu
 
 # ---------------------------- environment config ---------------------------- #
 
@@ -36,7 +41,7 @@ $env.config.buffer_editor = 'code'
 $env.config.history.isolation = true
 $env.config.show_banner = false
 $env.config.float_precision = 3
-$env.config.hooks.env_change = { HOMEPATH: [{|| print (banner | print container)}] }
+$env.config.hooks.env_change = { HOMEPATH: [{|| print (banner | container print)}] }
 
 # ---------------------------------------------------------------------------- #
 

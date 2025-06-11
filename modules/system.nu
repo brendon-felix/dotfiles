@@ -9,3 +9,5 @@ export def shutdown [] {
 export def reboot [] {
     run-external 'shutdown' '/r' '/t' '0'
 }
+
+export alias restart = reboot

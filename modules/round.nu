@@ -2,7 +2,7 @@
 #                                   round.nu                                   #
 # ---------------------------------------------------------------------------- #
 
-export def "round duration" [unit?] {
+export def "round duration" [unit?]: duration -> duration {
     each { |e|
         let unit_time = match $unit {
             ns => 1ns,

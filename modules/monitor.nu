@@ -3,13 +3,13 @@
 # ---------------------------------------------------------------------------- #
 
 use status.nu *
-use cursor.nu 'cursor off'
+use ansi.nu [color 'cursor off']
 
 const UPDATE_INTERVAL = 200ms
 
 export def "monitor disks" [--no-bar(-b)] {
     let disk_choice = (sys disks | select device mount | input list).mount
-    let loading = ["⠋", "⠙", "⠸", "⠴", "⠦", "⠇"] | each { |it| $"(ansi cyan)($it)(ansi reset)" }
+    let loading = ["⠋", "⠙", "⠸", "⠴", "⠦", "⠇"] | color cyan
     cursor off
     loop {
         let disk_status = (status disks --no-bar=($no_bar)) | get $disk_choice
@@ -21,7 +21,7 @@ export def "monitor disks" [--no-bar(-b)] {
 }
 
 export def "monitor memory" [--no-bar(-b)] {
-    let loading = ["⠋", "⠙", "⠸", "⠴", "⠦", "⠇"] | each { |it| $"(ansi cyan)($it)(ansi reset)" }
+    let loading = ["⠋", "⠙", "⠸", "⠴", "⠦", "⠇"] | color cyan
     cursor off
     loop {
         let memory = (status memory --no-bar=($no_bar))
