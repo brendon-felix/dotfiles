@@ -13,3 +13,6 @@ try {
 } catch {|err|
     print -e $"(ansi yellow)Warning:(ansi reset) Could not update Nushell scripts"
 }
+
+
+cargo install ripgrep asciibar du-dust nu_plugin_highlight nu_plugin_semver

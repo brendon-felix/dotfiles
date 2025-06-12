@@ -18,7 +18,13 @@ export alias vim = nvim
 
 export alias spewcap = ~/Projects/spewcap2/target/release/spewcap2.exe
 export alias size = ~/Projects/size-converter/target/release/size-converter.exe
+
 export alias chat = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/api_key.txt -p ~/system_prompt.txt
+export alias gpt = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/api_key.txt -p ~/system_prompt.txt
+export alias teach = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/api_key.txt -p ~/teach_prompt.txt
+export alias "teach me" = teach
+export alias chef = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/api_key.txt -p ~/chef_prompt.txt
+export alias askvim = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/api_key.txt -p ~/askvim_prompt.txt
 
 # alias calc = ~/Projects/qalculate/qalc.exe -c
 alias qalc = ~/Projects/qalculate/qalc.exe -c

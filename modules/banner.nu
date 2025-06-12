@@ -44,15 +44,49 @@ def header []: nothing -> list<string> {
     my-ellie | row -s 2 -a c (header_text) | contain -p tight
 }
 
-def info []: nothing -> list<string> {
+def info [
+    type?: string = "keyval" # the type of info to display: keyval, english, record
+]: nothing -> list<string> {
     let startup = startup
     let uptime = uptime
     let memory = status memory -b
     
-    mut info = [
-        $"This system has been up for ($uptime)."
-        $"($memory.RAM) of memory is in use."
-    ]
+    # mut info = match [
+    #     $"This system has been up for ($uptime)."
+    #     $"($memory.RAM) of memory is in use."
+    # ]
+
+    let info = match $type {
+        keyval => {
+            let startup = if $startup != null { $"Startup: ($startup)" } else { null }
+            [
+                $startup
+                $"uptime: ($uptime)"
+                $"uptime: ($memory.RAM)"
+            ] | compact
+        }
+        english => {
+            let startup = if $startup != null { $"It took ($startup) to start this shell." } else { null }
+            [
+                $"This system has been up for ($uptime)."
+                $"($memory.RAM) of memory is in use."
+            ]
+        }
+        record => {
+            let startup = if $startup != null { $"Startup: ($startup)" } else { null }
+            {startup: $startup, uptime: $uptime, memory: $memory.RAM} | transpose key value | where value != null
+        }
+        _ => {
+            error make {
+                msg: "invalid info type"
+                label: {
+                    text: "type not recognized"
+                    span: (metadata $type).span
+                }
+                help: "Use `banner --help` to see available types."
+            }
+        }
+    }
     if $startup != null {
         $info | prepend $"It took ($startup) to start this shell."
     }

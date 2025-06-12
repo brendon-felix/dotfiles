@@ -41,7 +41,7 @@ $env.config.buffer_editor = 'code'
 $env.config.history.isolation = true
 $env.config.show_banner = false
 $env.config.float_precision = 3
-$env.config.hooks.env_change = { HOMEPATH: [{|| print (banner | container print)}] }
+$env.config.hooks.env_change = { HOMEPATH: [{|| print (banner stack | container print)}] }
 
 # ---------------------------------------------------------------------------- #
 
@@ -51,7 +51,10 @@ def "config nu" [] {
 
 alias scripts = cd ~/Projects/nushell-scripts
 
-alias ll = ls -l
+# def ls [] {
+#     (ls) | grid
+# }
+# alias ll = ls -l
 alias r = nu ./run.nu
 alias c = clear
 alias memory = status memory
@@ -61,3 +64,27 @@ alias disks = status disks
 # if $nu.is-interactive {
 #     banner
 # }
+
+# ---------------------------------------------------------------------------- #
+
+alias ls-builtin = ls
+
+# List the filenames, sizes, and modification times of items in a directory.
+def ls [
+    --builtin(-b),      # Use the built-in ls command instead of the external one
+    --all (-a),         # Show hidden files
+    --full-paths (-f),  # display paths as absolute paths
+    ...pattern: glob,   # The glob pattern to use.
+] {
+    let pattern = if ($pattern | is-empty) { [ '.' ] } else { $pattern }
+    let table = (ls-builtin
+        --all=$all
+        --short-names=(not $full_paths)
+        --full-paths=$full_paths
+        ...$pattern
+    )
+    match $builtin {
+        true => $table
+        false => ($table | sort-by type name -i | grid -c)
+    }
+}
