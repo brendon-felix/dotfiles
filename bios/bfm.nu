@@ -4,8 +4,8 @@
 
 use ../modules/splash.nu *
 
-let dev_loc = 'C:\Users\felixb\BIOS'
-let net_loc = '\\wks-file.ftc.rd.hpicorp.net\MAIN_LAB\SHARES\LAB\Brendon Felix\Bootlegs'
+const dev_loc = 'C:\Users\felixb\BIOS'
+const net_loc = '\\wks-file.ftc.rd.hpicorp.net\MAIN_LAB\SHARES\LAB\Brendon Felix\Bootlegs'
 
 def get_repo_loc [tree, default] {
     if $tree != null {
@@ -154,7 +154,10 @@ def flash [binary] {
     }
 }
 
-def bfm [
+# Build, save, and flash a bootleg binary
+#
+# Example: Test
+export def main [
     platform?: string
     --build(-b)             # Build the binary
     --release(-r)           # Build a release binary

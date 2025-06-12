@@ -9,6 +9,8 @@ use status.nu *
 use ansi.nu *
 use container.nu *
 
+use debug.nu *
+
 def startup []: nothing -> string {
     let startup_time = ($nu.startup-time | round duration ms)
     match $startup_time {
@@ -46,10 +48,11 @@ def header []: nothing -> list<string> {
 
 def info [
     type?: string = "keyval" # the type of info to display: keyval, english, record
+    --bar(-b)
 ]: nothing -> list<string> {
     let startup = startup
     let uptime = uptime
-    let memory = status memory -b
+    let memory = status memory --no-bar=(not $bar)
     
     # mut info = match [
     #     $"This system has been up for ($uptime)."
@@ -58,23 +61,25 @@ def info [
 
     let info = match $type {
         keyval => {
-            let startup = if $startup != null { $"Startup: ($startup)" } else { null }
             [
-                $startup
-                $"uptime: ($uptime)"
-                $"uptime: ($memory.RAM)"
-            ] | compact
+                $"(ansi light_blue)startup:(ansi reset) ($startup)"
+                $"(ansi light_blue)uptime:(ansi reset)  ($uptime)"
+                $"(ansi light_blue)memory:(ansi reset)  ($memory.RAM)"
+            ]
         }
         english => {
-            let startup = if $startup != null { $"It took ($startup) to start this shell." } else { null }
             [
+                $"It took ($startup) to start this shell."
                 $"This system has been up for ($uptime)."
                 $"($memory.RAM) of memory is in use."
             ]
         }
         record => {
-            let startup = if $startup != null { $"Startup: ($startup)" } else { null }
-            {startup: $startup, uptime: $uptime, memory: $memory.RAM} | transpose key value | where value != null
+            {
+                startup: $startup
+                uptime: $uptime
+                memory: $memory.RAM
+            }
         }
         _ => {
             error make {
@@ -87,14 +92,25 @@ def info [
             }
         }
     }
-    if $startup != null {
-        $info | prepend $"It took ($startup) to start this shell."
-    }
+    $info
 }
 
 # container-based ellie
 export def my-ellie []: nothing -> list<string> {
     ellie | ansi strip | lines | color green | contain -p tight --pad-bottom 1
+}
+
+export def `print info` [
+    type?: string = "keyval" # the type of info to print: keyval, english, record`
+    --bar(-b)
+] {
+    info $type --bar=$bar | contain -p t | container print
+}
+
+export def `print banner` [
+    type? = basic # the type of banner to print: ellie, header, info, row, stack
+] {
+    main $type | contain -p t | container print
 }
 
 # creates a container-based banner for printing
@@ -103,12 +119,13 @@ export def main [
 ]: nothing -> list<string> {
     match $type {
         ellie => (my-ellie | box)
-        header => (header | contain | box)
+        header => (header | contain -x 2 | box)
         info => (info | contain -p "comfy" | box)
         row => (header | contain -x 2 | box | row (info | contain -p "comfy" | box))
-        stack => (header | contain -x 2 | box | append (info | contain | box) | contain -a c -p tight)
+        stack => (header | contain -x 2 | box | append (info | contain | box) | contain -a l -p tight)
         # _ => (header | contain --pad-left 3 | append (info | contain -x 2 --pad-bottom 1) | contain -a l -p tight | box)
         basic => (header | append $"RAM: (status memory | get RAM)"| contain -a c | box)
+
         _ => {
             error make {
                 msg: "invalid banner type"

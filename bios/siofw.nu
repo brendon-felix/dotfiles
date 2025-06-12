@@ -2,9 +2,8 @@
 #                                  siofw.nu                                  #
 # -------------------------------------------------------------------------- #
 
-let repo_path = 'C:\Users\felixb\BIOS\HpSpringsWks\'
+const repo_path = 'C:\Users\felixb\BIOS\HpSpringsWks\'
 
-# Get the current SIO FW version from the specified .equ file and convert to XX.XX.XX string
 def get_ver [file] {
     let val = $file | parse -r '(?P<version>[a-fA-F0-9]{7})h' | first | get version
     $val | parse -r '0(?P<maj>[a-fA-F0-9]{2})(?P<min>[a-fA-F0-9]{2})(?P<feat>[a-fA-F0-9]{2})'
@@ -12,14 +11,12 @@ def get_ver [file] {
     # $val | parse -r '0(?P<maj>[a-fA-F0-9]{2}){3}'
 }
 
-# Given a string XX.XX.XX, convert into the format used for .equ files (0XXXXXX)
 def make_equ_str [version] {
     let v = $version | split row '.'
         | each { |it| $it | fill -a r -c '0' -w 2 } | str join
     ['0', $v] | str join
 }
 
-# Update the SIO FW version in a .equ file given a string XX.XX.XX
 def update_equ [filepath, version] {
     mut equ_file = open $filepath
     let equ_str = make_equ_str $version
@@ -29,7 +26,8 @@ def update_equ [filepath, version] {
     print $"(ansi green)Successfully updated(ansi reset) ($filepath | path basename)"
 }
 
-def siofw [
+# Update the SIO FW version
+export def main [
     version,
     --all(-a) # Update all binary and .equ files in the repo
     --sig(-s) # Update the signature files

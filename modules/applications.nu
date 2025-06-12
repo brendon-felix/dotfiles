@@ -2,7 +2,7 @@
 #                                applications.nu                               #
 # ---------------------------------------------------------------------------- #
 
-export def start_app [app_name] {
+export def `start app` [app_name] {
     let shortcut_filename = $"($app_name).lnk"
     let possible_paths = [
         ([$env.APPDATA, `Microsoft\Windows\Start Menu\Programs`, $shortcut_filename] | path join),
@@ -41,3 +41,6 @@ export def start_app [app_name] {
 # export alias chrome = start_app "Google Chrome"
 # export alias onedrive = start_app "OneDrive"
 # export alias word = start_app "Word"
+
+export alias obsidian = start obsidian://open?vault=ArrowHead
+export alias notes = start obsidian://open?vault=ArrowHead

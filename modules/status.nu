@@ -39,11 +39,15 @@ def memory_str [--no-bar(-b)] {
     $memory_status | severity $proportion_used
 }
 
-export def "status disks" [--no-bar(-b)] {
+export def `status disks` [--no-bar(-b)] {
     let disks = (sys disks)
     $disks | each { |disk| {$disk.mount: (disk_str --no-bar=($no_bar) $disk)} } | into record
 }
 
-export def "status memory" [--no-bar(-b)] {
+export def `status memory` [--no-bar(-b)] {
     {RAM: (memory_str --no-bar=($no_bar))}
 }
+
+export alias memory = status memory
+export alias ram = status memory
+export alias disks = status disks

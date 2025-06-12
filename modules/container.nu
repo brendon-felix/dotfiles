@@ -248,8 +248,3 @@ export def div [
 export def "container print" []: list<string> -> nothing {
     print ($in | str join "\n")
 }
-
-def main [] {
-
-}
-
