@@ -46,6 +46,10 @@ def header []: nothing -> list<string> {
     my-ellie | row -s 2 -a c (header_text) | contain -p tight
 }
 
+def tight_header []: nothing -> list<string> {
+    my-ellie | row -s 2 -a c (header_text) | contain -p tight
+}
+
 def info [
     type?: string = "keyval" # the type of info to display: keyval, english, record
     --bar(-b)
@@ -53,18 +57,12 @@ def info [
     let startup = startup
     let uptime = uptime
     let memory = status memory --no-bar=(not $bar)
-    
-    # mut info = match [
-    #     $"This system has been up for ($uptime)."
-    #     $"($memory.RAM) of memory is in use."
-    # ]
-
     let info = match $type {
         keyval => {
             [
                 $"(ansi light_blue)startup:(ansi reset) ($startup)"
-                $"(ansi light_blue)uptime:(ansi reset)  ($uptime)"
-                $"(ansi light_blue)memory:(ansi reset)  ($memory.RAM)"
+                $"(ansi light_blue)uptime:(ansi reset) ($uptime)"
+                $"(ansi light_blue)memory:(ansi reset) ($memory.RAM)"
             ]
         }
         english => {
@@ -95,9 +93,13 @@ def info [
     $info
 }
 
+# def tight_ellie []: nothing -> list<string> {
+#     ellie | ansi strip | lines | color green | contain -p tight
+# }
+
 # container-based ellie
 export def my-ellie []: nothing -> list<string> {
-    ellie | ansi strip | lines | color green | contain -p tight --pad-bottom 1
+    ellie | ansi strip | contain -p tight
 }
 
 export def `print info` [
@@ -115,17 +117,21 @@ export def `print banner` [
 
 # creates a container-based banner for printing
 export def main [
-    type? = basic # the type of banner to create: ellie, header, info, row, stack
+    type? = stack # the type of banner to create: ellie, header, info, row, stack
+    --info-type(-t): string = "keyval" # the type of info to display: keyval, english, record
+    --bar(-b)
 ]: nothing -> list<string> {
+    let info = info $info_type --bar=$bar
+    let header = header | contain -x 2 | box
     match $type {
         ellie => (my-ellie | box)
-        header => (header | contain -x 2 | box)
-        info => (info | contain -p "comfy" | box)
-        row => (header | contain -x 2 | box | row (info | contain -p "comfy" | box))
-        stack => (header | contain -x 2 | box | append (info | contain | box) | contain -a l -p tight)
-        # _ => (header | contain --pad-left 3 | append (info | contain -x 2 --pad-bottom 1) | contain -a l -p tight | box)
-        basic => (header | append $"RAM: (status memory | get RAM)"| contain -a c | box)
-
+        header => $header
+        info => ($info | contain -p "comfy" | box)
+        row => ($header | row ($info | contain -p "comfy" | box))
+        stack => ($header | append ($info | contain | box) | contain -a l -p tight)
+        # basic => (header | append $"RAM: (status memory | get RAM)"| contain -a c | box)
+        disks => (header | append $"("RAM" | color blue): (status memory | get RAM)" | append (status disks | items {|mount status| $"($mount | color blue): ($status)"}) | contain -a l | box)
+        test => (header | append ($info | contain -p t -a r) | contain -x 2 --pad-bottom 1 | box)
         _ => {
             error make {
                 msg: "invalid banner type"

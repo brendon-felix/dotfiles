@@ -46,6 +46,7 @@ export def `strip length` []: string -> int {
 export def color [
     color           # the color or escape to apply (see `ansi --list`)
     --escape(-e)    # use <color> as a custom escape (using `ansi --escape`)
+    --strip(-s)     # strip ANSI codes from input before applying color
 ] {
     if $escape == false {
         if not ($color in (ansi --list | get name)) {
@@ -60,8 +61,16 @@ export def color [
         }
     }
     $in | each { |e|
-        $"(ansi --escape=$escape $color)($e | into string | ansi strip)(ansi reset)"
+        let e = match $strip {
+            true => ($e | ansi strip),
+            false => $e
+        }
+        $"(ansi --escape=$escape $color)($e)(ansi reset)"
     }
+}
+
+export def `color bg` [$color] {
+    $in | color -e {bg: $color}
 }
 
 # ------------------------------ cursor commands ----------------------------- #

@@ -19,18 +19,27 @@ export alias vim = nvim
 export alias spewcap = ~/Projects/spewcap2/target/release/spewcap2.exe
 export alias size = ~/Projects/size-converter/target/release/size-converter.exe
 
-export alias chat = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/api_key.txt -p ~/system_prompt.txt
-export alias gpt = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/api_key.txt -p ~/system_prompt.txt
-export alias teach = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/api_key.txt -p ~/teach_prompt.txt
-export alias chef = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/api_key.txt -p ~/chef_prompt.txt
+# General purpose chat assistant
+export alias chat = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/api_key.txt -p ~/Projects/rusty-gpt/prompts/gpt_prompt.txt
 
-# This is a test
-export alias askvim = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/api_key.txt -p ~/askvim_prompt.txt
+# General purpose chat assistant
+export alias gpt = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/api_key.txt -p ~/Projects/rusty-gpt/prompts/gpt_prompt.txt
+
+# Chat assistant for general teaching
+export alias teach = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/api_key.txt -p ~/Projects/rusty-gpt/prompts/teach_prompt.txt
+
+# Ask for recipes by providing ingredients and preferences
+export alias chef = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/api_key.txt -p ~/Projects/rusty-gpt/prompts/chef_prompt.txt
+
+# Ask about Vim, Neovim, and vi motions.
+export alias askvim = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/api_key.txt -p ~/Projects/rusty-gpt/prompts/askvim_prompt.txt
 
 # alias calc = ~/Projects/qalculate/qalc.exe -c
 export alias qalc = ~/Projects/qalculate/qalc.exe -c
 export alias calc = ~/kalc.exe
 export alias kalc = ~/kalc.exe
+
+export alias mix = ~/Projects/mix/target/release/mix.exe
 
 export def timer [duration: duration] {
     countdown $duration
