@@ -2,33 +2,33 @@
 #                                    ansi.nu                                   #
 # ---------------------------------------------------------------------------- #
 
+export def `strip length` []: string -> int {
+    $in | ansi strip | str length -g
+}
+
+# -------------------------------- formatting -------------------------------- #
+
 export def bold [] {
     each { |e|
         $"(ansi attr_bold)($e)(ansi reset)"
     }
 }
 
-export def italicize [] {
-    each { |e|
-        $"(ansi attr_italic)($e)(ansi reset)"
-    }
-}
-
-export def strike [] {
-    each { |e|
-        $"(ansi attr_strike)($e)(ansi reset)"
-    }
-}
-
-export def dim [] {
+export def dimmed [] {
     each { |e|
         $"(ansi attr_dimmed)($e)(ansi reset)"
     }
 }
 
-export def hide [] {
+export def italic [] {
     each { |e|
-        $"(ansi attr_hidden)($e)(ansi reset)"
+        $"(ansi attr_italic)($e)(ansi reset)"
+    }
+}
+
+export def underline [] {
+    each { |e|
+        $"(ansi attr_underline)($e)(ansi reset)"
     }
 }
 
@@ -38,39 +38,16 @@ export def blink [] {
     }
 }
 
-export def `strip length` []: string -> int {
-    $in | ansi strip | str length -g
-}
-
-# apply ANSI color or attributes to a piped string
-export def color [
-    color           # the color or escape to apply (see `ansi --list`)
-    --escape(-e)    # use <color> as a custom escape (using `ansi --escape`)
-    --strip(-s)     # strip ANSI codes from input before applying color
-] {
-    if $escape == false {
-        if not ($color in (ansi --list | get name)) {
-            error make {
-                msg: "invalid color"
-                label: {
-                    text: "color not recognized"
-                    span: (metadata $color).span
-                }
-                help: "Use `ansi --list` to see available colors."
-            }
-        }
-    }
-    $in | each { |e|
-        let e = match $strip {
-            true => ($e | ansi strip),
-            false => $e
-        }
-        $"(ansi --escape=$escape $color)($e)(ansi reset)"
+export def hidden [] {
+    each { |e|
+        $"(ansi attr_hidden)($e)(ansi reset)"
     }
 }
 
-export def `color bg` [$color] {
-    $in | color -e {bg: $color}
+export def strike [] {
+    each { |e|
+        $"(ansi attr_strike)($e)(ansi reset)"
+    }
 }
 
 # ------------------------------ cursor commands ----------------------------- #

@@ -3,10 +3,11 @@
 # ---------------------------------------------------------------------------- #
 
 use core.nu ['str remove' 'each value' 'format hex']
+# use container.nu [contain 'container print']
 use debug.nu *
 
 # Convert an RGB record to a hex string
-export def rgb-to-hex []: record<r: int, g: int, b: int> -> string {
+export def `rgb get-hex` []: record<r: int, g: int, b: int> -> string {
     each {|e|
         let rgb = $e | each value {|v|
             if $v < 0 or $v > 255 {
@@ -22,26 +23,26 @@ export def rgb-to-hex []: record<r: int, g: int, b: int> -> string {
 export def `into rgb` []: string -> record<r: int, g: int, b: int> {
     each {|e|
         match $e {
-            red => { r: 255, g: 0, b: 0 }
-            green => { r: 0, g: 255, b: 0 }
-            blue => { r: 0, g: 0, b: 255 }
-            yellow => { r: 255, g: 255, b: 0 }
-            cyan => { r: 0, g: 255, b: 255 }
-            magenta => { r: 255, g: 0, b: 255 }
-            black => { r: 0, g: 0, b: 0 }
-            white => { r: 255, g: 255, b: 255 }
-            gray => { r: 128, g: 128, b: 128 }
-            light_red => { r: 255, g: 128, b: 128 } 
-            light_green => { r: 128, g: 255, b: 128 }
-            light_blue => { r: 128, g: 128, b: 255 }
-            light_yellow => { r: 255, g: 255, b: 128 }
-            light_cyan => { r: 128, g: 255, b: 255 }
-            light_magenta => { r: 255, g: 128, b: 255 }
-            _ if ($e | str starts-with '#') and ($e | str length == 7) => {
+            "red"           => (red)
+            "green"         => (green)
+            "blue"          => (blue)
+            "yellow"        => (yellow)
+            "cyan"          => (cyan)
+            "magenta"       => (magenta)
+            "black"         => (black)
+            "white"         => (white)
+            "gray"          => (gray)
+            "light_red"     => (light_red)
+            "light_green"   => (light_green)
+            "light_blue"    => (light_blue)
+            "light_yellow"  => (light_yellow)
+            "light_cyan"    => (light_cyan)
+            "light_magenta" => (light_magenta)
+            _ if ($e | str starts-with '#') and (($e | str length) == 7) => {
                 let parsed = $e | parse -r '#(?<r>[0-9a-fA-F]{2})(?<g>[0-9a-fA-F]{2})(?<b>[0-9a-fA-F]{2})' | first
                 $parsed | each value {|v| ('0x' + $v | into int)}
             }
-            _ if ($e | str starts-with '0x') and ($e | str length == 8) => {
+            _ if ($e | str starts-with '0x') and (($e | str length) == 8) => {
                 let parsed = $e | parse -r '0x(?<r>[0-9a-fA-F]{2})(?<g>[0-9a-fA-F]{2})(?<b>[0-9a-fA-F]{2})' | first
                 $parsed | each value {|v| ('0x' + $v | into int)}
             }
@@ -55,7 +56,7 @@ export def `into rgb` []: string -> record<r: int, g: int, b: int> {
 }
 
 # Convert an RGB record to HSV
-export def rgb-to-hsv []: [
+export def `rgb get-hsv` []: [
     record<r: int, g: int, b: int> -> record<h: int, s: float, v: float>
 ] {
     each {|e|
@@ -82,24 +83,7 @@ export def rgb-to-hsv []: [
     }
 }
 
-export def interpolate-hsv [
-    start: record<h: int, s: float, v: float>
-    end: record<h: int, s: float, v: float> 
-    t: float
-] {
-    match $t {
-        $t if $t <= 0 => $start
-        $t if $t >= 1 => $end
-        _ => {
-            let h = $start.h + ($end.h - $start.h) * $t | into int
-            let s = $start.s + ($end.s - $start.s) * $t
-            let v = $start.v + ($end.v - $start.v) * $t
-            { h: $h, s: $s, v: $v }
-        }
-    }
-}
-
-export def hsv-to-rgb []: [
+export def `rgb from-hsv` []: [
     record<h: int, s: float, v: float> -> record<r: int, g: int, b: int>
 ] {
     each {|e|
@@ -118,17 +102,47 @@ export def hsv-to-rgb []: [
     }
 }
 
-export def `color interpolate` [
-    start: string,
-    end: string,
-    t: float,
-] {
-    let start = $start | into rgb | rgb-to-hsv
-    let end = $end | into rgb | rgb-to-hsv
-    let color = interpolate-hsv $start $end $t | hsv-to-rgb | rgb-to-hex
-    $in | each {|e| $e | color -e {fg: $color}}
+def query_color [query] {
+    (term query $'(ansi osc)($query)?(ansi st)' --prefix $'(ansi osc)($query)' --terminator (ansi st) | decode) | parse "rgb:{r}/{g}/{b}" | first | each value {|v| ('0x' + $v | into int) / 0xFFFF * 255.0 | into int }
 }
 
-# export def main [] {
-#     $in | into rgb
-# }
+export def red [] {
+    query_color "4;9;"
+}
+
+export def green [] {
+    query_color "4;10;"
+}
+
+export def yellow [] {
+    query_color "4;11;"
+}
+
+export def blue [] {
+    query_color "4;12;"
+}
+
+export def magenta [] {
+    query_color "4;13;"
+}
+
+export def cyan [] {
+    query_color "4;14;"
+}
+
+export def white [] {
+    query_color "4;15;"
+}
+
+export def black [] {
+    query_color "4;16;"
+}
+
+export def foreground [] {
+    query_color "10;"
+}
+
+export def background [] {
+    query_color "11;"
+}
+

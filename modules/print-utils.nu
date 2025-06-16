@@ -3,7 +3,7 @@
 # ---------------------------------------------------------------------------- #
 
 use round.nu 'round duration'
-use ansi.nu *
+use ansi.nu ['cursor off' 'erase right']
 
 export def bar [value: number] {
     asciibar --empty '░' --half-filled '▓' --filled '█' --length 12 $value

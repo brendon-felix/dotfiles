@@ -3,14 +3,14 @@
 # ---------------------------------------------------------------------------- #
 
 use print-utils.nu bar
-use ansi.nu color
+use color.nu 'color apply'
 
 def severity [severity] {
     let input = $in
     match $severity {
-        _ if $severity < 0.6 => ($input | color green)
-        _ if $severity < 0.8 => ($input | color yellow)
-        _ => ($input | color red)
+        _ if $severity < 0.6 => ($input | color apply green)
+        _ if $severity < 0.8 => ($input | color apply yellow)
+        _ => ($input | color apply red)
     }
 }
 

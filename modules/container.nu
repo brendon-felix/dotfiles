@@ -1,7 +1,8 @@
 use std repeat
 use std ellie
 
-use ansi.nu *
+# use ansi.nu *
+use color.nu 'color apply'
 
 # use debug.nu *
 
@@ -129,8 +130,8 @@ export def row [
 #         }
 #     }
 #     let padding = {
-#         left: ("" | fill -c $char -w $x_padding_width.left | color $background_color)
-#         right: ("" | fill -c $char -w $x_padding_width.right | color $background_color)
+#         left: ("" | fill -c $char -w $x_padding_width.left | color apply $background_color)
+#         right: ("" | fill -c $char -w $x_padding_width.right | color apply $background_color)
 #     }
 #     $container | each { |line| 
 #         $padding.left + $line + $padding.right
@@ -165,8 +166,8 @@ export def row [
 #         }
 #     }
 #     let padding = {
-#         top: ("" | fill -c $char -w $container_width | repeat $y_padding_height.top | color $background_color)
-#         bottom: ("" | fill -c $char -w $container_width | repeat $y_padding_height.bottom | color $background_color)
+#         top: ("" | fill -c $char -w $container_width | repeat $y_padding_height.top | color apply $background_color)
+#         bottom: ("" | fill -c $char -w $container_width | repeat $y_padding_height.bottom | color apply $background_color)
 #     }
 #     $container | prepend $padding.top | append $padding.bottom
 # }
@@ -231,15 +232,15 @@ export def div [
         }
     }
     let padding = {
-        top: ("" | fill -w $term_size.columns | repeat $y_padding_height.top | color -e {bg: $background})
-        bottom: ("" | fill -w $term_size.columns | repeat $y_padding_height.bottom | color -e {bg: $background})
-        left: ("" | fill -w $x_padding_width.left | color -e {bg: $background})
-        right: ("" | fill -w $x_padding_width.right | color -e {bg: $background})
+        top: ("" | fill -w $term_size.columns | repeat $y_padding_height.top | color apply -e {bg: $background})
+        bottom: ("" | fill -w $term_size.columns | repeat $y_padding_height.bottom | color apply -e {bg: $background})
+        left: ("" | fill -w $x_padding_width.left | color apply -e {bg: $background})
+        right: ("" | fill -w $x_padding_width.right | color apply -e {bg: $background})
     }
     $container | each { |line| 
         mut line = $padding.left + $line + $padding.right
         if $fill {
-            $line = $line | color -e {bg: $background}
+            $line = $line | color apply -e {bg: $background}
         }
         $line
     } | prepend $padding.top | append $padding.bottom

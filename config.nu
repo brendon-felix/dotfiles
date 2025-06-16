@@ -9,6 +9,7 @@
 use modules/ansi.nu *
 use modules/applications.nu *
 use modules/banner.nu *
+use modules/color.nu *
 use modules/container.nu *
 use modules/core.nu *
 use modules/debug.nu *
@@ -66,3 +67,27 @@ alias c = clear
 # if $nu.is-interactive {
 #     banner
 # }
+
+# ---------------------------------------------------------------------------- #
+
+export def `color show` [] {
+    $in | each {|e|
+        let color_hex = match ($e | describe) {
+            "record<r: int, g: int, b: int>" => ($e | rgb get-hex)
+            "record<h: int, s: float, v: float>" => ($e | rgb from-hsv | rgb get-hex)
+            _ => ($e | into rgb | rgb get-hex)
+        }
+        let ansi_colors = [
+            {fg: $color_hex},
+            {bg: $color_hex},
+            {fg: $color_hex, attr: 'r'},
+            {bg: $color_hex, attr: 'r'},
+        ]
+        mut container = []
+        for ansi_color in $ansi_colors {
+            # print $"(ansi -e $ansi_color)(ansi reset)"
+            $container = $container | row (my-ellie | color apply -e $ansi_color)
+        }
+        $container | container print
+    }
+}

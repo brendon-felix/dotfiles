@@ -3,7 +3,8 @@
 # ---------------------------------------------------------------------------- #
 
 use status.nu *
-use ansi.nu [color 'cursor off' 'erase right']
+use ansi.nu ['cursor off' 'erase right']
+use color.nu 'color apply'
 
 use debug.nu *
 
@@ -11,7 +12,7 @@ const UPDATE_INTERVAL = 200ms
 
 def monitor [] {
     let command = $in
-    let loading = ["⠋", "⠙", "⠸", "⠴", "⠦", "⠇"] | color cyan
+    let loading = ["⠋", "⠙", "⠸", "⠴", "⠦", "⠇"] | color apply cyan
     cursor off
     loop {
         let status = do $command

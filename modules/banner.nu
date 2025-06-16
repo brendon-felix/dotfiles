@@ -6,7 +6,8 @@
 use std ellie
 use round.nu 'round duration'
 use status.nu *
-use ansi.nu *
+use ansi.nu 'strip length'
+use color.nu 'color apply'
 use container.nu *
 
 use debug.nu *
@@ -15,26 +16,26 @@ def startup []: nothing -> string {
     let startup_time = ($nu.startup-time | round duration ms)
     match $startup_time {
         $t if $t == 0sec => null
-        $t if $t < 100ms => ($t | color green)
-        $t if $t < 500ms => ($t | color red)
-        $t => ($t | color red)
+        $t if $t < 100ms => ($t | color apply green)
+        $t if $t < 500ms => ($t | color apply red)
+        $t => ($t | color apply red)
     }
 }
 
 def uptime []: nothing -> string {
     match (sys host).uptime {
-        $t if $t < 1day => ($t | round duration min | color green)
-        $t if $t < 1wk => ($t | round duration hr | color yellow)
-        $t => ($t | round duration day | color red)
+        $t if $t < 1day => ($t | round duration min | color apply green)
+        $t if $t < 1wk => ($t | round duration hr | color apply yellow)
+        $t => ($t | round duration day | color apply red)
     }
 }
 
 def header_text []: nothing -> list<string> {
     let curr_version = $"v(version | get version)"
-    let shell = $"Nushell ($curr_version)" | color green
+    let shell = $"Nushell ($curr_version)" | color apply green
 
-    let username = $env.USERNAME | color light_purple
-    let hostname = sys host | get hostname | color light_purple
+    let username = $env.USERNAME | color apply light_purple
+    let hostname = sys host | get hostname | color apply light_purple
     let user = $"($username)@($hostname)"
 
     let width = [($shell | strip length), ($user | strip length)] | math max
@@ -94,7 +95,7 @@ def info [
 }
 
 # def tight_ellie []: nothing -> list<string> {
-#     ellie | ansi strip | lines | color green | contain -p tight
+#     ellie | ansi strip | lines | color apply green | contain -p tight
 # }
 
 # container-based ellie
@@ -130,7 +131,7 @@ export def main [
         row => ($header | row ($info | contain -p "comfy" | box))
         stack => ($header | append ($info | contain | box) | contain -a l -p tight)
         # basic => (header | append $"RAM: (status memory | get RAM)"| contain -a c | box)
-        disks => (header | append $"("RAM" | color blue): (status memory | get RAM)" | append (status disks | items {|mount status| $"($mount | color blue): ($status)"}) | contain -a l | box)
+        disks => (header | append $"("RAM" | color apply blue): (status memory | get RAM)" | append (status disks | items {|mount status| $"($mount | color apply blue): ($status)"}) | contain -a l | box)
         test => (header | append ($info | contain -p t -a r) | contain -x 2 --pad-bottom 1 | box)
         _ => {
             error make {
@@ -143,5 +144,5 @@ export def main [
             }
         }
     }
-    # header | append $"("RAM" | color blue): (status memory | get RAM)" | append (status disks | items {|mount status| $"($mount | color blue): ($status)"}) | contain -a c | box
+    # header | append $"("RAM" | color apply blue): (status memory | get RAM)" | append (status disks | items {|mount status| $"($mount | color apply blue): ($status)"}) | contain -a c | box
 }
