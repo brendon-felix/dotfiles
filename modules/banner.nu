@@ -17,7 +17,7 @@ def startup []: nothing -> string {
     match $startup_time {
         $t if $t == 0sec => null
         $t if $t < 100ms => ($t | color apply green)
-        $t if $t < 500ms => ($t | color apply red)
+        $t if $t < 500ms => ($t | color apply yellow)
         $t => ($t | color apply red)
     }
 }
