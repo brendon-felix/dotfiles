@@ -63,6 +63,16 @@ export def box []: list<string> -> list<string> {
     $middle | prepend $top_border | append $bottom_border
 }
 
+export def double-box []: list<string> -> list<string> {
+    let container = $in
+    let max_length = $container | ansi strip | str length -g | math max
+    let horizontal_border = ("" | fill -c '═' -w $max_length | str join)
+    let top_border = $"╔($horizontal_border)╗"
+    let middle = $container | each { |line| $"║($line)║" }
+    let bottom_border = $"╚($horizontal_border)╝"
+    $middle | prepend $top_border | append $bottom_border
+}
+
 # places a container to the right of another container
 export def row [
     right: list<string>             # container to place to the right
