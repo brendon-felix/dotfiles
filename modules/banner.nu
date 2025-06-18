@@ -9,7 +9,7 @@ use status.nu *
 use ansi.nu 'strip length'
 use color.nu 'color apply'
 use container.nu *
-# use version.nu 'version check'
+use version.nu 'version check'
 
 use debug.nu *
 
@@ -32,11 +32,11 @@ def uptime []: nothing -> string {
 }
 
 def header_text []: nothing -> list<string> {
-    print "Checking version..."
     let curr_version = match (version check) {
         $c if $c.current => ($"v($env.NU_VERSION)" | color apply green)
         $c => ($"v($env.NU_VERSION)" | color apply yellow)
     }
+    # let curr_version = $env.NU_VERSION | color apply green
     let shell = ("Nushell " | color apply green) + $curr_version
     let username = $env.USERNAME | color apply light_purple
     let hostname = sys host | get hostname | color apply light_purple
@@ -108,6 +108,8 @@ def header []: nothing -> list<string> {
 def tight_header []: nothing -> list<string> {
     my-ellie | row -s 2 -a c (header_text) | contain -p tight
 }
+
+export alias `builtin banner` = banner
 
 export def `print banner` [
     type? = memory # the type of banner to print: ellie, header, info, row, stack

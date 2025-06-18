@@ -5,8 +5,9 @@
 use std null-device
 use modules/print-utils.nu bar
 use modules/color.nu 'color apply'
-use modules/core.nu 'suppress all'
+use modules/core.nu ['suppress all' 'var save' 'var load']
 use modules/ansi.nu ['cursor off' 'cursor on' 'erase right']
+use modules/version.nu 'version full-check'
 
 cursor off
 
@@ -43,12 +44,14 @@ try {
     print ("Failed" | color apply yellow)
 }
 
-try {
-    print "Installing latest Nushell version..."
-    winget install --silent Nushell.Nushell
-    print $"Installing latest cargo packages...    (ansi green)Done(ansi reset)"
-} catch {|err|
-    print $"Installing latest cargo packages...  (ansi yellow)Failed(ansi reset)"
-}
+version full-check
+
+# try {
+#     print "Installing latest Nushell version..."
+#     winget install --silent Nushell.Nushell
+#     print $"Installing latest cargo packages...    (ansi green)Done(ansi reset)"
+# } catch {|err|
+#     print $"Installing latest cargo packages...  (ansi yellow)Failed(ansi reset)"
+# }
 
 cursor on

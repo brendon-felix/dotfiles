@@ -45,6 +45,18 @@ $env.PROMPT_INDICATOR_VI_NORMAL = '> '
 $env.PROMPT_INDICATOR_VI_INSERT = '> '
 
 $env.VARS_FILE = ('~/vars.toml' | path expand)
+# $env.COLORS = {
+#     RED: (color query red)
+#     GREEN: (color query green)
+#     BLUE: (color query blue)
+#     YELLOW: (color query yellow)
+#     CYAN: (color query cyan)
+#     MAGENTA: (color query magenta)
+#     BLACK: (color query black)
+#     WHITE: (color query white)
+#     FOREGROUND: (color query foreground)
+#     BACKGROUND: (color query background)
+# }
 
 $env.config.buffer_editor = 'nvim'
 $env.config.edit_mode = 'vi'

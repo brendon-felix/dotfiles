@@ -235,15 +235,10 @@ export def `suppress stdout` []: closure -> nothing {
 
 # --------------------------------- variables -------------------------------- #
 
-export def var [] {
-    open $env.VARS_FILE
-}
-
-export def `var update` []: record<any> -> nothing {
-    let new_vars = $in
+export def `var update` [new_values: record] {
     touch $env.VARS_FILE
     let vars = open $env.VARS_FILE
-    let updated = $vars | merge $new_vars
+    let updated = $vars | merge $new_values
     $updated | to toml | save -f $env.VARS_FILE
 }
 
@@ -255,7 +250,7 @@ export def `var save` [name: string] {
     $updated | to toml | save -f $env.VARS_FILE
 }
 
-export def `var load` [name: string] {
+export def `var load` [name?: string] {
     if not ($env.VARS_FILE | path exists) {
         error make {
             msg: "vars file does not exist"
@@ -266,7 +261,11 @@ export def `var load` [name: string] {
         }
     }
     let vars = open $env.VARS_FILE
-    $vars | get $name
+    if $name != null {
+        $vars | get -i $name
+    } else {
+        $vars
+    }
 }
 
 export def `var delete` [name: string] {

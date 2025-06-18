@@ -129,51 +129,56 @@ export def `color query` [query: string] {
         'background' => "11;"
         $q => $q
     }
-    # (term query $'(ansi osc)($query)?(ansi st)' --prefix $'(ansi osc)($query)' --terminator (ansi st) | decode) | parse "rgb:{r}/{g}/{b}" | first | each value {|v| ('0x' + $v | into int) / 0xFFFF * 255.0 | into int }
-    (term query $'(ansi osc)($query)?(ansi st)' --terminator (ansi st) | decode) | parse "rgb:{r}/{g}/{b}" | first | each value {|v| ('0x' + $v | into int) / 0xFFFF * 255.0 | into int }
+    (term query $'(ansi osc)($query)?(ansi st)' --prefix $'(ansi osc)($query)' --terminator (ansi st) | decode) | parse "rgb:{r}/{g}/{b}" | first | each value {|v| ('0x' + $v | into int) / 0xFFFF * 255.0 | into int }
 }
 
 export def red [] {
+    # $env.COLORS.RED
     {r: 224, g: 108, b: 117}
 }
 
 export def green [] {
+    # $env.COLORS.GREEN
     {r: 152, g: 195, b: 121}
 }
 
 export def yellow [] {
+    # $env.COLORS.YELLOW
     {r: 229, g: 192, b: 123}
 }
 
-export def blue [] {
+export def blue [] {    
+    # $env.COLORS.BLUE
     {r: 97, g: 175, b: 239}
 }
 
 export def magenta [] {
+    # $env.COLORS.MAGENTA
     {r: 198, g: 120, b: 221}
 }
 
 export def cyan [] {
+    # $env.COLORS.CYAN
     {r: 86, g: 182, b: 194}
 }
 
 export def white [] {
-    {r: 220, g: 223, b: 228}
-}
-
-export def gray [] {
+    # $env.COLORS.WHITE
     {r: 220, g: 223, b: 228}
 }
 
 export def black [] {
+    # $env.COLORS.BLACK
     {r: 24, g: 24, b: 24}
 }
 
 export def foreground [] {
+    # $env.COLORS.FOREGROUND
     {r: 220, g: 223, b: 228}
 }
 
 export def background [] {
+    # $env.COLORS.BACKGROUND
     {r: 38, g: 38, b: 38}
 }
 
