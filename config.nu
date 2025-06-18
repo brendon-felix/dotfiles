@@ -13,6 +13,7 @@ use modules/color.nu *
 use modules/container.nu *
 use modules/core.nu *
 use modules/debug.nu *
+use modules/dictionary.nu *
 use modules/git.nu *
 use modules/list-commands.nu *
 use modules/monitor.nu *
@@ -29,7 +30,7 @@ use bios/bfm.nu *
 use bios/siofw.nu *
 
 use completions/cargo-completions.nu *
-use completions/git-completions.nu *
+# use completions/git-completions.nu *
 use completions/rg-completions.nu *
 use completions/rustup-completions.nu *
 use completions/vscode-completions.nu *
@@ -43,12 +44,14 @@ $env.PROMPT_COMMAND_RIGHT = { || date now | format date "%a-%d %r" }
 $env.PROMPT_INDICATOR_VI_NORMAL = '> '
 $env.PROMPT_INDICATOR_VI_INSERT = '> '
 
+$env.VARS_FILE = ('~/vars.toml' | path expand)
+
 $env.config.buffer_editor = 'nvim'
 $env.config.edit_mode = 'vi'
 $env.config.history.isolation = true
 $env.config.show_banner = false
 $env.config.float_precision = 3
-$env.config.hooks.env_change = { HOMEPATH: [{|| print (banner stack | container print)}] }
+$env.config.hooks.env_change = { HOMEPATH: [{|| print banner}] }
 $env.config.cursor_shape.vi_insert = "blink_line"
 $env.config.cursor_shape.vi_normal = "blink_block"
 
@@ -60,7 +63,7 @@ $env.config.cursor_shape.vi_normal = "blink_block"
 # }
 
 alias scripts = cd ~/Projects/nushell-scripts
-
+alias cat = bat
 alias r = nu ./run.nu
 alias c = clear
 
@@ -73,10 +76,10 @@ alias c = clear
 export def `color show` [] {
     $in | each {|e|
         let color_hex = match ($e | describe) {
-            "record<r: int, g: int, b: int>" => ($e | rgb get-hex)
-            "record<h: int, s: float, v: float>" => ($e | rgb from-hsv | rgb get-hex)
-            _ => ($e | into rgb | rgb get-hex)
-        }
+            "record<r: int, g: int, b: int>" => $e
+            "record<h: int, s: float, v: float>" => ($e | rgb from-hsv)
+            _ => ($e | into rgb)
+        } | rgb get-hex
         let ansi_colors = [
             {fg: $color_hex},
             {bg: $color_hex},
@@ -86,7 +89,7 @@ export def `color show` [] {
         mut container = []
         for ansi_color in $ansi_colors {
             # print $"(ansi -e $ansi_color)(ansi reset)"
-            $container = $container | row (my-ellie | color apply -e $ansi_color)
+            $container = $container | row (my-ellie | color apply $ansi_color)
         }
         $container | container print
     }

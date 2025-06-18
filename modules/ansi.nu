@@ -2,7 +2,10 @@
 #                                    ansi.nu                                   #
 # ---------------------------------------------------------------------------- #
 
-export def `strip length` []: string -> int {
+export def `strip length` []: [
+    string -> int
+    list<string> -> list<int>
+] {
     $in | ansi strip | str length -g
 }
 

@@ -5,7 +5,7 @@
 use std repeat
 use std ellie
 
-# use ansi.nu *
+use ansi.nu 'strip length'
 use color.nu 'color apply'
 
 # use debug.nu *
@@ -76,42 +76,47 @@ export def double-box []: list<string> -> list<string> {
 # places a container to the right of another container
 export def row [
     right: list<string>             # container to place to the right
-    --alignment(-a): string = t     # alignment of the right container: top (t), bottom (b), center (c)
+    --alignment(-a): string = t     # alignment of the right container: top (t), bottom (b), center (c), center_bottom (cb)
     --spacing(-s): int = 1          # number of spaces between the two containers
 ]: list<string> -> list<string> {
-    mut left = [$in] | each {|e| $e | into string | lines} | flatten
-    mut right = [$right] | each {|e| $e | into string | lines} | flatten
-    let left_height = $left | length
-    let right_height = $right | length
-    let diff = $left_height - $right_height
-    let padding = "" | repeat ($diff | math abs)
-    match $alignment {
-        t | top => {
-            if $diff > 0 {
-                $right = $right | append $padding
-            } else {
-                $left = $left | append $padding
-            }
-        }
-        b | bottom => {
-            if $diff > 0 {
-                $right = $right | prepend $padding
-            } else {
-                $left = $left | prepend $padding
-            }
-        }
+    let left = [$in] | each {|e| $e | into string | lines} | flatten
+    let right = [$right] | each {|e| $e | into string | lines} | flatten
+    if ($left | length) == 0 {
+        return $right
+    } else if ($right | length) == 0 {
+        return $left
+    }
+    let tpad = match {left: ($left | length), right: ($right | length)} {
+        $h if $h.left == $h.right => {left: 0, right: 0}
+        $h if $h.left > $h.right => {left: 0, right: ($h.left - $h.right)}
+        $h if $h.left < $h.right => {left: ($h.right - $h.left), right: 0 }
+    }
+    let padding = match $alignment {
+        t | top => { left: {top: 0, bottom: $tpad.left}, right: {top: 0, bottom: $tpad.right} }
+        b | bottom => { left: {top: $tpad.left, bottom: 0}, right: {top: $tpad.right, bottom: 0} }
         c | center => {
-            if $diff > 0 {
-                let left_padding = "" | repeat ($diff / 2 | math floor)
-                let right_padding = "" | repeat ($diff - ($diff / 2 | math floor))
-                $right = $right | prepend $left_padding | append $right_padding
-            } else {
-                let left_padding = "" | repeat ($diff / 2 | math floor)
-                let right_padding = "" | repeat ($diff - ($diff / 2 | math floor))
-                $left = $left | prepend $left_padding | append $right_padding
-            }
+            left: { top: ($tpad.left / 2 | math floor), bottom: ($tpad.left / 2 | math ceil) }
+            right: { top: ($tpad.right / 2 | math floor), bottom: ($tpad.right / 2 | math ceil) }
+        }
+        cb | center_bottom => {
+            left: { top: ($tpad.left / 2 | math ceil), bottom: ($tpad.left / 2 | math floor) }
+            right: { top: ($tpad.right / 2 | math ceil), bottom: ($tpad.right / 2 | math floor) }
         }
     }
+    let left_pad_line = "" | fill -w ($left | strip length | math max)
+    let right_pad_line = "" | fill -w ($right | strip length | math max)
+    let padding = {
+        left: {
+            top: ($left_pad_line | repeat $padding.left.top), 
+            bottom: ($left_pad_line | repeat $padding.left.bottom)
+        }
+        right: {
+            top: ($right_pad_line | repeat $padding.right.top), 
+            bottom: ($right_pad_line | repeat $padding.right.bottom)
+        }
+    }
+    let left = $left | prepend $padding.left.top | append $padding.left.bottom
+    let right = $right | prepend $padding.right.top | append $padding.right.bottom
     ($left | zip $right) | each { |pair|
         $"($pair.0)("" | fill -w $spacing)($pair.1)"
     }
@@ -246,15 +251,15 @@ export def div [
         }
     }
     let padding = {
-        top: ("" | fill -w $term_size.columns | repeat $y_padding_height.top | color apply -e {bg: $background})
-        bottom: ("" | fill -w $term_size.columns | repeat $y_padding_height.bottom | color apply -e {bg: $background})
-        left: ("" | fill -w $x_padding_width.left | color apply -e {bg: $background})
-        right: ("" | fill -w $x_padding_width.right | color apply -e {bg: $background})
+        top: ("" | fill -w $term_size.columns | repeat $y_padding_height.top | color apply {bg: $background})
+        bottom: ("" | fill -w $term_size.columns | repeat $y_padding_height.bottom | color apply {bg: $background})
+        left: ("" | fill -w $x_padding_width.left | color apply {bg: $background})
+        right: ("" | fill -w $x_padding_width.right | color apply {bg: $background})
     }
     $container | each { |line| 
         mut line = $padding.left + $line + $padding.right
         if $fill {
-            $line = $line | color apply -e {bg: $background}
+            $line = $line | color apply {bg: $background}
         }
         $line
     } | prepend $padding.top | append $padding.bottom

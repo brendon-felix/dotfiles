@@ -31,7 +31,6 @@ export def `monitor disk` [--no-bar(-b)] {
 }
 
 export def `monitor memory` [--no-bar(-b)] {
-    {$"RAM: (status memory | get RAM)"} | monitor
+    let mem_choice = ['RAM' 'Swap'] | input list
+    {$"($mem_choice): (status memory | get $mem_choice)"} | monitor
 }
-
-export alias 'monitor ram' = monitor memory

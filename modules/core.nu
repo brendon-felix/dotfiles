@@ -2,6 +2,10 @@
 #                                    core.nu                                   #
 # ---------------------------------------------------------------------------- #
 
+use debug.nu *
+
+use std null-device
+
 export alias config-nu-builtin = config nu
 
 # Edit nu configurations.
@@ -210,4 +214,71 @@ export def interpolate [
             }
         }
     }
+}
+
+
+# --------------------------------- commands --------------------------------- #
+
+export def `suppress all` []: closure -> nothing {
+    do $in o+e> (null-device)
+}
+
+export def `suppress stderr` []: closure -> nothing {
+    do $in e> (null-device)
+}
+
+export alias `suppress err` = `suppress stderr`
+
+export def `suppress stdout` []: closure -> nothing {
+    do $in o+e> (null-device)
+}
+
+# --------------------------------- variables -------------------------------- #
+
+export def var [] {
+    open $env.VARS_FILE
+}
+
+export def `var update` []: record<any> -> nothing {
+    let new_vars = $in
+    touch $env.VARS_FILE
+    let vars = open $env.VARS_FILE
+    let updated = $vars | merge $new_vars
+    $updated | to toml | save -f $env.VARS_FILE
+}
+
+export def `var save` [name: string] {
+    let value = $in
+    touch $env.VARS_FILE
+    let vars = open $env.VARS_FILE
+    let updated = $vars | upsert $name $value
+    $updated | to toml | save -f $env.VARS_FILE
+}
+
+export def `var load` [name: string] {
+    if not ($env.VARS_FILE | path exists) {
+        error make {
+            msg: "vars file does not exist"
+            label: {
+                text: "create a vars file first with `var update`"
+                span: (metadata $env.VARS_FILE).span
+            }
+        }
+    }
+    let vars = open $env.VARS_FILE
+    $vars | get $name
+}
+
+export def `var delete` [name: string] {
+    if not ($env.VARS_FILE | path exists) {
+        error make {
+            msg: "vars file does not exist"
+            label: {
+                text: "create a vars file first with `var update`"
+                span: (metadata $env.VARS_FILE).span
+            }
+        }
+    }
+    let vars = open $env.VARS_FILE
+    $vars | reject $name | to toml | save -f $env.VARS_FILE
 }

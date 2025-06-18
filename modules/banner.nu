@@ -9,6 +9,7 @@ use status.nu *
 use ansi.nu 'strip length'
 use color.nu 'color apply'
 use container.nu *
+# use version.nu 'version check'
 
 use debug.nu *
 
@@ -16,24 +17,27 @@ def startup []: nothing -> string {
     let startup_time = ($nu.startup-time | round duration ms)
     match $startup_time {
         $t if $t == 0sec => null
-        $t if $t < 100ms => ($t | color apply green)
-        $t if $t < 500ms => ($t | color apply yellow)
-        $t => ($t | color apply red)
+        $t if $t < 100ms => ($t | into string | color apply green)
+        $t if $t < 500ms => ($t | into string | color apply yellow)
+        $t => ($t | into string | color apply red)
     }
 }
 
 def uptime []: nothing -> string {
     match (sys host).uptime {
-        $t if $t < 1day => ($t | round duration min | color apply green)
-        $t if $t < 1wk => ($t | round duration hr | color apply yellow)
-        $t => ($t | round duration day | color apply red)
+        $t if $t < 1day => ($t | round duration min | into string | color apply green)
+        $t if $t < 1wk => ($t | round duration hr | into string | color apply yellow)
+        $t => ($t | round duration day | into string | color apply red)
     }
 }
 
 def header_text []: nothing -> list<string> {
-    let curr_version = $"v(version | get version)"
-    let shell = $"Nushell ($curr_version)" | color apply green
-
+    print "Checking version..."
+    let curr_version = match (version check) {
+        $c if $c.current => ($"v($env.NU_VERSION)" | color apply green)
+        $c => ($"v($env.NU_VERSION)" | color apply yellow)
+    }
+    let shell = ("Nushell " | color apply green) + $curr_version
     let username = $env.USERNAME | color apply light_purple
     let hostname = sys host | get hostname | color apply light_purple
     let user = $"($username)@($hostname)"
@@ -43,13 +47,7 @@ def header_text []: nothing -> list<string> {
     [$shell $separator $user] | contain -p tight
 }
 
-def header []: nothing -> list<string> {
-    my-ellie | row -s 2 -a c (header_text) | contain -p tight
-}
 
-def tight_header []: nothing -> list<string> {
-    my-ellie | row -s 2 -a c (header_text) | contain -p tight
-}
 
 def info [
     type?: string = "keyval" # the type of info to display: keyval, english, record
@@ -100,39 +98,41 @@ def info [
 
 # container-based ellie
 export def my-ellie []: nothing -> list<string> {
-    ellie | ansi strip | contain -p tight
+    ellie | ansi strip | contain -x 2 --pad-bottom 1
 }
 
-export def `print info` [
-    type?: string = "keyval" # the type of info to print: keyval, english, record`
-    --bar(-b)
-] {
-    info $type --bar=$bar | contain -p t | container print
+def header []: nothing -> list<string> {
+    my-ellie | color apply green | row -s 0 -a c (header_text | contain -p t --pad-top 1 --pad-right 2) | contain -p tight
+}
+
+def tight_header []: nothing -> list<string> {
+    my-ellie | row -s 2 -a c (header_text) | contain -p tight
 }
 
 export def `print banner` [
-    type? = basic # the type of banner to print: ellie, header, info, row, stack
+    type? = memory # the type of banner to print: ellie, header, info, row, stack
 ] {
     main $type | contain -p t | container print
 }
 
 # creates a container-based banner for printing
 export def main [
-    type? = stack # the type of banner to create: ellie, header, info, row, stack
-    --info-type(-t): string = "keyval" # the type of info to display: keyval, english, record
-    --bar(-b)
+    type?: string = memory # the type of banner to create: # ellie, user, header, info, info_english, info_record, row, stack, row_english, stack_english, memory, mem_disks, test
 ]: nothing -> list<string> {
-    let info = info $info_type --bar=$bar
-    let header = header | contain -x 2 | box
     match $type {
-        ellie => (my-ellie | box)
-        header => $header
-        info => ($info | contain -p "comfy" | box)
-        row => ($header | row ($info | contain -p "comfy" | box))
-        stack => ($header | append ($info | contain | box) | contain -a l -p tight)
-        # basic => (header | append $"RAM: (status memory | get RAM)"| contain -a c | box)
-        disks => (header | append $"("RAM" | color apply blue): (status memory | get RAM)" | append (status disks | items {|mount status| $"($mount | color apply blue): ($status)"}) | contain -a l | box)
-        test => (header | append ($info | contain -p t -a r) | contain -x 2 --pad-bottom 1 | box)
+        ellie => (my-ellie | color apply green | box)
+        user => (header_text | contain -p c | box)
+        header => (header | box)
+        info => (info | contain -p "comfy" | box)
+        info_english => (info english | contain -p "comfy" | box)
+        info_record => (info record)
+        row => (header | box | row -a b (info | contain | box))
+        stack => (header | box | append (info | contain | box) | contain -p tight)
+        row_english => (header | box | row -a b (info english | contain | box))
+        stack_english => (header | box | append (info english | contain | box) | contain -p tight)
+        memory => (header | append $"RAM: (status memory | get RAM)"| contain -a c | box)
+        mem_disks => (header | append $"("RAM" | color apply blue): (status memory | get RAM)" | append (status disks | items {|mount status| $"($mount | color apply blue): ($status)"}) | contain -a l | box)
+        test => (header | box | row -s 2 -a c (info english))
         _ => {
             error make {
                 msg: "invalid banner type"

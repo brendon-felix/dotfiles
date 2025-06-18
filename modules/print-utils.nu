@@ -4,9 +4,44 @@
 
 use round.nu 'round duration'
 use ansi.nu ['cursor off' 'erase right']
+use color.nu ['color apply' 'color interpolate']
+use core.nu interpolate
+use rgb.nu *
+# use debug.nu *
 
-export def bar [value: number] {
-    asciibar --empty '░' --half-filled '▓' --filled '█' --length 12 $value
+export def `char block` [
+    shade?: int = 4
+] {
+    match $shade {
+        1 => "░"
+        2 => "▒"
+        3 => "▓"
+        _ => "█"
+    }
+}
+
+export def blocks [
+    length: int
+    --shade(-s): int = 4
+] {
+    "" | fill -c (char block $shade) -w $length
+}
+
+export def bar [
+    value: float
+    --length(-l): int = 12
+    --fg-color(-f): any = 'white'
+    --bg-color(-b): any = '#141414'
+    --attr(-a): string = ''
+] {
+    # asciibar --empty '░' --half-filled '▓' --filled '█' --length 12 $value
+    let bar = ~/Projects/bar/target/release/bar.exe -l $length $value
+    let ansi_color = {
+        fg: ($fg_color | into rgb | rgb get-hex),
+        bg: ($bg_color | into rgb | rgb get-hex),
+        attr: $attr,
+    }
+    $bar | color apply $ansi_color
 }
 
 export def separator [
@@ -28,7 +63,13 @@ export def separator [
     $input | fill -a $alignment -c '─' -w $length
 }
 
-export def countdown [duration: duration, --no-bar(-b)] {
+export def countdown [
+    duration: duration
+    --no-bar(-b)
+    --bar-length(-l): int = 12
+    --start-color(-s): any = white
+    --end-color(-e): any = gray
+] {
     if $duration < 1sec {
         error make {
             msg: "invalid duration",
@@ -44,12 +85,13 @@ export def countdown [duration: duration, --no-bar(-b)] {
     cursor off
     while $remaining > 0sec {
         let proportion = $remaining / $duration
-        mut status = $"($remaining | round duration sec)"
+        let color = ($start_color | into rgb) | interpolate ($end_color | into rgb) $proportion
+        mut status = $"($remaining | round duration sec)" | color apply $color
         if not $no_bar {
-            let bar = bar ($remaining / $duration)
+            let bar = bar --length=$bar_length --fg-color $color ($remaining / $duration)
             $status = $"($bar) ($status)"
         }
-        print -n $"($status)"
+        print -n $status
         erase right
         print -n "\r"
         $remaining = $end_time - (date now)
