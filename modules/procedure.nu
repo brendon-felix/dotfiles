@@ -25,7 +25,7 @@ export def `procedure new-task` [
     }
     print $msg
     try {
-        do $task $target o+e> null-device
+        do $task $target o+e> (null-device)
         print ("  │\n  ╰─ Success" | color apply green)
     } catch {
         print ("  │\n  ╰─ Failed" | color apply red)
@@ -45,7 +45,7 @@ export def `procedure new-subtask` [
     }
     print -n ("  ├─── " + $msg + "\r")
     try {
-        do $task $target o+e> null-device
+        do $task $target o+e> (null-device)
         print (("  ├─── " | color apply green) + $msg)
     } catch {|err|
         if $continue {
