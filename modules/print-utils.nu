@@ -31,10 +31,14 @@ export def bar [
     value: float
     --length(-l): int = 12
     --fg-color(-f): any = 'white'
-    --bg-color(-b): any = '#141414'
-    --attr(-a): string = ''
+    --bg-color(-b): any = 'gray'
+    --attr(-a): string
 ] {
     # asciibar --empty '░' --half-filled '▓' --filled '█' --length 12 $value
+    let attr = match $attr {
+        null => ""
+        _ => $attr
+    }
     let bar = ~/Projects/bar/target/release/bar.exe -l $length $value
     let ansi_color = {
         fg: ($fg_color | into rgb | rgb get-hex),

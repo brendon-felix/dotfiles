@@ -47,8 +47,6 @@ def header_text []: nothing -> list<string> {
     [$shell $separator $user] | contain -p tight
 }
 
-
-
 def info [
     type?: string = "keyval" # the type of info to display: keyval, english, record
     --bar(-b)
@@ -92,10 +90,6 @@ def info [
     $info
 }
 
-# def tight_ellie []: nothing -> list<string> {
-#     ellie | ansi strip | lines | color apply green | contain -p tight
-# }
-
 # container-based ellie
 export def my-ellie []: nothing -> list<string> {
     ellie | ansi strip | contain -x 2 --pad-bottom 1
@@ -111,13 +105,14 @@ def tight_header []: nothing -> list<string> {
 
 export alias `builtin banner` = banner
 
+# Prints a custom banner
 export def `print banner` [
     type? = memory # the type of banner to print: ellie, header, info, row, stack
 ] {
     main $type | contain -p t | container print
 }
 
-# creates a container-based banner for printing
+# Creates a custom container-based banner
 export def main [
     type?: string = memory # the type of banner to create: # ellie, user, header, info, info_english, info_record, row, stack, row_english, stack_english, memory, mem_disks, test
 ]: nothing -> list<string> {

@@ -18,6 +18,7 @@ use modules/git.nu *
 use modules/list-commands.nu *
 use modules/monitor.nu *
 use modules/print-utils.nu *
+use modules/processes.nu *
 use modules/rgb.nu *
 use modules/round.nu *
 use modules/status.nu *
@@ -84,6 +85,27 @@ alias c = clear
 # }
 
 # ---------------------------------------------------------------------------- #
+
+export def run [
+    --watch(-w): string
+] {
+    let r = { nu ./run.nu }
+    match $watch {
+        null => { do $r }
+        $w => { watch -g $w ./ $r }
+    }
+}
+
+export def `watch cargo` [] {
+    if not ('Cargo.toml' | path exists) {
+        error make -u { msg: "Cargo.toml not found in current directory" }
+    }
+    if ('run.nu' | path exists) {
+        watch -g *.rs ./ { try { nu run.nu } catch { print -n ""}; print (separator) }
+    } else {
+        watch -g *.rs ./ { try { cargo build --release } catch { print -n "" }; print (separator) }
+    }
+}
 
 export def `color show` [] {
     $in | each {|e|

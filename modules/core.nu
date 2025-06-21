@@ -105,6 +105,8 @@ export def `format hex` [
     }
 }
 
+export alias hex = format hex
+
 export def `format bin` [
     --width(-w): int
     --remove-prefix(-r)

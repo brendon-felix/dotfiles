@@ -172,6 +172,11 @@ export def black [] {
     {r: 24, g: 24, b: 24}
 }
 
+export def gray [] {
+    # $env.COLORS.GRAY
+    {r: 80, g: 80, b: 80}
+}
+
 export def foreground [] {
     # $env.COLORS.FOREGROUND
     {r: 220, g: 223, b: 228}

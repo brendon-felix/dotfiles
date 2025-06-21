@@ -10,7 +10,7 @@ use color.nu 'color apply'
 
 # use debug.nu *
 
-# converts piped input into a container (list of strings)
+# Converts piped input into a container (list of strings)
 export def contain [
     --pad(-p): string = normal      # padding style: normal (n), comfy (c), tight (t)
     --pad-x(-x): int = 0,           # horizontal padding
@@ -52,7 +52,7 @@ export def contain [
     }
 }
 
-# places a box (border) around a container
+# Places a box (border) around a container
 export def box []: list<string> -> list<string> {
     let container = $in
     let max_length = $container | ansi strip | str length -g | math max
@@ -63,6 +63,7 @@ export def box []: list<string> -> list<string> {
     $middle | prepend $top_border | append $bottom_border
 }
 
+# Places a double box (border) around a container
 export def double-box []: list<string> -> list<string> {
     let container = $in
     let max_length = $container | ansi strip | str length -g | math max
@@ -122,75 +123,7 @@ export def row [
     }
 }
 
-# export def hdiv [--position(-p): any = 'center', --char(-c): string = ' ', --background-color(-b): string = 'default']: list<string> -> list<string> {
-#     let container = $in | contain -x 0 -y 0
-#     let container_width = $container | ansi strip | str length -g | math max
-#     let term_size = (term size)
-#     let total_x_padding = $term_size.columns - $container_width
-#     let x_padding_width = match $position {
-#         'l' | "left" => {left: 0, right: $total_x_padding}
-#         'c' | "center" => {
-#             left: ($total_x_padding / 2 | math floor)
-#             right: ($total_x_padding / 2 | math ceil)
-#         }
-#         'r' | "right" => {left: $total_x_padding, right: 0}
-#         $x if ($x | describe) == "int" => {
-#             left: $x
-#             right: ($total_x_padding - $x)
-#         }
-#         _ => {
-#             error make {
-#                 msg: "Invalid position",
-#                 label: {
-#                     text: $"The position '($position)' is not recognized.",
-#                     span: (metadata $position).span
-#                 }
-#             }
-#         }
-#     }
-#     let padding = {
-#         left: ("" | fill -c $char -w $x_padding_width.left | color apply $background_color)
-#         right: ("" | fill -c $char -w $x_padding_width.right | color apply $background_color)
-#     }
-#     $container | each { |line| 
-#         $padding.left + $line + $padding.right
-#     }
-# }
-
-# export def vdiv [--position(-p): any = 'center', --char(-c): string = ' ', --background-color(-b): string = 'default', --shorten-by(-s): int = 1]: list<string> -> list<string> {
-#     let container = $in | contain -x 0 -y 0
-#     let container_width = $container | ansi strip | str length -g | math max
-#     let container_height = $container | length
-#     let term_size = (term size)
-#     let total_y_padding = $term_size.rows - $container_height - $shorten_by
-#     let y_padding_height = match $position {
-#         't' | "top" => {top: 0, bottom: $total_y_padding}
-#         'c' | "center" => {
-#             top: ($total_y_padding / 2 | math floor)
-#             bottom: ($total_y_padding / 2 | math ceil)
-#         }
-#         'b' | "bottom" => {top: $total_y_padding, bottom: 0}
-#         $y if ($y | describe) == "int" => {
-#             top: $y
-#             bottom: ($total_y_padding - $y)
-#         }
-#         _ => {
-#             error make {
-#                 msg: "Invalid position",
-#                 label: {
-#                     text: $"The position '($position)' is not recognized.",
-#                     span: (metadata $position).span
-#                 }
-#             }
-#         }
-#     }
-#     let padding = {
-#         top: ("" | fill -c $char -w $container_width | repeat $y_padding_height.top | color apply $background_color)
-#         bottom: ("" | fill -c $char -w $container_width | repeat $y_padding_height.bottom | color apply $background_color)
-#     }
-#     $container | prepend $padding.top | append $padding.bottom
-# }
-
+# Places a container in a specified location in the terminal with size and color options
 export def div [
     # --type(-t): string = f          # type of the div: horizontal (h), vertical (v), fill (f)
     --position(-p): any = center    # position of the container (t, ul, l, bl, b, br, r, ur, c or record<x: int, y: int>)
