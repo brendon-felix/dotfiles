@@ -3,51 +3,122 @@
 # ---------------------------------------------------------------------------- #
 
 use std null-device
-use ansi.nu ['cursor off' 'cursor on' 'erase right' 'erase left']
+use print-utils.nu separator
+use ansi.nu *
 use color.nu 'color apply'
 use core.nu 'suppress all'
 
-export def `procedure start` [] {
-    cursor off
-}
+# export def `procedure run` [
+#     name: string
+#     closure: closure
+# ] {
+#     cursor off
+#     print ($"Running ($name)" | separator)
+#     try {
+#         do $closure
+#         print ($"($name) successful" | color apply green)
+#         print (separator)
+#     } catch {
+#         print (separator)
+#         print ($"($name) failed" | color apply red)
+#     }
+    
+#     cursor off
+# }
+
+# export def `procedure new-task` [
+#     name: string
+#     task: closure
+# ] {
+
+# }
 
 export def `procedure new-task` [
-    name
-    target?
+    name: string
+    task: closure
+    --get-result(-r)
     --width(-w): int = 20
     --continue(-c)
-]: closure -> nothing {
-    let task = $in
+] {
     print ""
-    let $msg = match $target {
-        null => ($name + "...")
-        _ => ($name + " " + ($target | into string) + "...")
-    }
+    let $msg = $name + '...'
     print $msg
     try {
-        do $task $target o+e> (null-device)
-        print ("  │\n  ╰─ Success" | color apply green)
-    } catch {
+        match $get_result {
+            false => {
+                (do $task o+e> (null-device))
+                # (do $task)
+                print ("  │\n  ╰─ Success" | color apply green)
+            }
+            true => {
+                let result = (do $task) | into string
+                print $"  │\n  ╰─ ($result)"
+            }
+        }
+    } catch {|err|
+        # print $err
         print ("  │\n  ╰─ Failed" | color apply red)
     }
 }
 
+export def `procedure print` [
+    message: string
+    --width(-w): int = 20
+] {
+    print ("  ├─── " + $message)
+}
+
+export def `procedure info` [
+    message: string
+    --width(-w): int = 20
+] {
+    print ("  ├─── " + $message | color apply blue)
+}
+
+export def `procedure success` [
+    message: string
+    --width(-w): int = 20
+] {
+    print ("  ├─── " + $message | color apply green)
+}
+
+export def `procedure warning` [
+    message: string
+    --width(-w): int = 20
+] {
+    print ("  ├─── " + $message | color apply yellow)
+}
+
+export def `procedure error` [
+    message: string
+    --width(-w): int = 20
+] {
+    print ("  ├─── " + $message | color apply red)
+}
+
 export def `procedure new-subtask` [
     name: string
-    target?
+    task: closure
+    --get-result(-r)
     --width(-w): int = 20
     --continue(-c)
-]: closure -> nothing {
-    let task = $in
-    let $msg = match $target {
-        null => ($name + "...")
-        _ => ($name + " " + ($target | into string) + "...")
-    }
+] {
+    let $msg = $name + '...'
     print -n ("  ├─── " + $msg + "\r")
     try {
-        do $task $target o+e> (null-device)
-        print (("  ├─── " | color apply green) + $msg)
+        match $get_result {
+            false => {
+                (do $task o+e> (null-device))
+                # (do $task)
+                print (("  ├─── " | color apply green) + $msg)
+            }
+            true => {
+                let result = (do $task) | into string
+                print $"  ├─── ($msg) ($result)"
+            }
+        }
     } catch {|err|
+        # print $err
         if $continue {
             print (("  ├─── " | color apply yellow) + $msg)
         } else {

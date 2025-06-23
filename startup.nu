@@ -3,85 +3,92 @@
 # ---------------------------------------------------------------------------- #
 
 use std null-device
-# use modules/print-utils.nu bar
 use modules/color.nu 'color apply'
-use modules/core.nu ['suppress all' 'suppress stderr' 'var save' 'var load']
 use modules/ansi.nu ['cursor off' 'cursor on' 'erase right']
 use modules/version.nu 'version full-check'
+use modules/procedure.nu *
 
 cursor off
 
 # ---------------------------------- nushell --------------------------------- #
 
-print -n (("Checking " | color apply blue) + ("nushell" | color apply green) + " version...  ")
-match (version full-check).current {
-    true => ("Current" | color apply green)
-    false => ("Outdated" | color apply yellow)
-} | print
-
-print -n (("Updating " | color apply blue) + ("nushell scripts" | color apply light_purple) + "...  ")
-cd ~/Projects/nushell-scripts
-try {
-    {git pull -r} | suppress all
-    print ("Done" | color apply green)
-} catch {
-    print ("Failed" | color apply yellow)
+procedure new-task -r "Checking for variables file" {
+    if ($env.VARS_FILE | path exists) {
+        ("Exists" | color apply green)
+    } else {
+        procedure new_subtask "Creating variables file" {
+            touch $env.VARS_FILE
+            "Done" | color apply green
+        }
+    }
 }
-cd -
+
+procedure new-task -r "Checking nushell version" {
+    match (version full-check).current {
+        true => ("Current" | color apply green)
+        false => ("Outdated" | color apply yellow)
+    }
+}
+
+procedure new-task "Updating nushell scripts" {
+    cd ~/Projects/nushell-scripts
+    git pull -r
+    # try { git pull -r } catch {
+    #     procedure message ("Commit or stash new changes" | color apply yellow)
+    #     error make -u { msg: "Failed to update nushell scripts" }
+    # }
+    cd -
+}
 
 # ------------------------------------ git ----------------------------------- #
 
 let cargo_repos = [
-    nushell-scripts
     bar
     rusty-gpt
     size-converter
     byte-converter
 ]
-print ("Updating project repos..." | color apply light_purple)
-$cargo_repos | enumerate | each {|e|
-    try {
-        print $"  ($e.item | color apply blue)... "
-        cd (['~' 'Projects' $e.item] | path join)
-        {git pull -r} | suppress all
-        print $"  Building ($e.item)... "
-        {cargo build --release} | suppress all
-        print ("    Done" | color apply green)
-    } catch {
-        print ("    Failed" | color apply yellow)
+for repo in $cargo_repos {
+    procedure new-task $"Updating ($repo | color apply blue)" {
+        let path = ['~' 'Projects' $repo] | path join
+        if ($path | path exists) { 
+            procedure print $"Verified project directoy exists"
+        } else {
+            procedure new-subtask $"Cloning project repository" {
+                cd (['~' 'Projects'] | path join)
+                git clone $"https://github.com/brendon-felix/($repo).git"
+            }
+        }
+        cd $path
+        procedure new-subtask $"Pulling changes from remote" {
+            git pull -r
+        }
+        procedure new-subtask $"Building project" {
+            cargo build --release
+        }
+        cd -
     }
 }
-cd -
 
 # ----------------------------------- cargo ---------------------------------- #
 
-let cargo_packages = [
-    nu_plugin_highlight
-    nu_plugin_semver
-    du-dust
-    ripgrep
-    # asciibar
-    bat
-]
-let message = "Updating cargo packages...  "
-$cargo_packages | enumerate | each {|e|
-    let new_bar = (bar (($e.index) / ($cargo_packages | length)))
-    print -n $"($message)($new_bar) \(($e.item)\)"
-    erase right
-    print -n "\r"
-    try {
-        { cargo -q install $e.item } | suppress all
-        # cargo install ripgrep asciibar du-dust nu_plugin_highlight nu_plugin_semver
-    } catch {|err|
-        print ($message + ("Failed" | fill -w 12 | color apply yellow))
+procedure new-task "Updating cargo packages" {
+    let cargo_packages = [
+        nu_plugin_highlight
+        nu_plugin_semver
+        du-dust
+        ripgrep
+        # asciibar
+        bat
+    ]
+    for package in $cargo_packages {
+        procedure new-subtask $"Updating ($package | color apply blue)" {
+            cargo install $package
+        }
     }
 }
-print ($message + ("Done" | fill -w 12 | color apply green))
 
 
-
-
-
-
+print ""
 
 cursor on

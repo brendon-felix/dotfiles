@@ -237,7 +237,7 @@ export def `suppress stdout` []: closure -> nothing {
 
 # --------------------------------- variables -------------------------------- #
 
-export def `var update` [new_values: record] {
+export def `var update` [new_values?: record = {}] {
     touch $env.VARS_FILE
     let vars = open $env.VARS_FILE
     let updated = $vars | merge $new_values
