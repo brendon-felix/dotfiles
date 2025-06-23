@@ -98,3 +98,17 @@ export def `cursor up` [] {
 export def `cursor down` [] {
     print -n $"(ansi cursor_down)"
 }
+
+export def `cursor position` [] {
+    let pos = term query (ansi cursor_position) --prefix (ansi csi) --terminator 'R' | decode | parse "{row};{col}" | first
+    {
+        row: ($pos.row | into int),
+        col: ($pos.col | into int),
+    }
+}
+
+export def `cursor move-to` [
+    pos: record<row: int, col: int>
+] {
+    print -n (ansi -e $"($pos.row);($pos.col)f")
+}

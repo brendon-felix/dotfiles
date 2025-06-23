@@ -9,15 +9,18 @@
 use modules/ansi.nu *
 use modules/applications.nu *
 use modules/banner.nu *
+use modules/color-show.nu *
 use modules/color.nu *
 use modules/container.nu *
 use modules/core.nu *
 use modules/debug.nu *
+use modules/dev.nu *
 use modules/dictionary.nu *
 use modules/git.nu *
 use modules/list-commands.nu *
 use modules/monitor.nu *
 use modules/print-utils.nu *
+# use modules/procedure.nu *
 use modules/processes.nu *
 use modules/rgb.nu *
 use modules/round.nu *
@@ -64,7 +67,7 @@ $env.config.edit_mode = 'vi'
 $env.config.history.isolation = true
 $env.config.show_banner = false
 $env.config.float_precision = 3
-$env.config.hooks.env_change = { HOMEPATH: [{|| print banner}] }
+# $env.config.hooks.env_change = { HOMEPATH: [{|| print banner}] }
 $env.config.cursor_shape.vi_insert = "blink_line"
 $env.config.cursor_shape.vi_normal = "blink_block"
 
@@ -75,56 +78,15 @@ $env.config.cursor_shape.vi_normal = "blink_block"
 #     code alacritty.toml
 # }
 
+def `print config` [] {
+    (open ~/Projects/nushell-scripts/config.nu) | nu-highlight
+}
+
 alias scripts = cd ~/Projects/nushell-scripts
 alias cat = bat
 alias r = nu ./run.nu
 alias c = clear
 
-# if $nu.is-interactive {
-#     banner
-# }
-
-# ---------------------------------------------------------------------------- #
-
-export def run [
-    --watch(-w): string
-] {
-    let r = { nu ./run.nu }
-    match $watch {
-        null => { do $r }
-        $w => { watch -g $w ./ $r }
-    }
-}
-
-export def `watch cargo` [] {
-    if not ('Cargo.toml' | path exists) {
-        error make -u { msg: "Cargo.toml not found in current directory" }
-    }
-    if ('run.nu' | path exists) {
-        watch -g *.rs ./ { try { nu run.nu } catch { print -n ""}; print (separator) }
-    } else {
-        watch -g *.rs ./ { try { cargo build --release } catch { print -n "" }; print (separator) }
-    }
-}
-
-export def `color show` [] {
-    $in | each {|e|
-        let color_hex = match ($e | describe) {
-            "record<r: int, g: int, b: int>" => $e
-            "record<h: int, s: float, v: float>" => ($e | rgb from-hsv)
-            _ => ($e | into rgb)
-        } | rgb get-hex
-        let ansi_colors = [
-            {fg: $color_hex},
-            {bg: $color_hex},
-            {fg: $color_hex, attr: 'r'},
-            {bg: $color_hex, attr: 'r'},
-        ]
-        mut container = []
-        for ansi_color in $ansi_colors {
-            # print $"(ansi -e $ansi_color)(ansi reset)"
-            $container = $container | row (my-ellie | color apply $ansi_color)
-        }
-        $container | container print
-    }
+if $nu.is-interactive {
+    print banner
 }

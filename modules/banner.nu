@@ -47,7 +47,7 @@ def header_text []: nothing -> list<string> {
     [$shell $separator $user] | contain -p tight
 }
 
-def info [
+def info_text [
     type?: string = "keyval" # the type of info to display: keyval, english, record
     --bar(-b)
 ]: nothing -> list<string> {
@@ -112,6 +112,21 @@ export def `print banner` [
     main $type | contain -p t | container print
 }
 
+export def `print info` [
+    type?: string = record # the type of info to print: keyval, english, record
+    --bar(-b)
+] {
+    if $type == "record" {
+        print (info_text --bar=$bar record)
+    } else {
+        info_text $type --bar=$bar | contain -p c | box | container print
+    }
+}
+
+export def info [--bar] {
+    info_text --bar=$bar record
+}
+
 # Creates a custom container-based banner
 export def main [
     type?: string = memory # the type of banner to create: # ellie, user, header, info, info_english, info_record, row, stack, row_english, stack_english, memory, mem_disks, test
@@ -120,16 +135,16 @@ export def main [
         ellie => (my-ellie | color apply green | box)
         user => (header_text | contain -p c | box)
         header => (header | box)
-        info => (info | contain -p "comfy" | box)
-        info_english => (info english | contain -p "comfy" | box)
-        info_record => (info record)
-        row => (header | box | row -a b (info | contain | box))
-        stack => (header | box | append (info | contain | box) | contain -p tight)
-        row_english => (header | box | row -a b (info english | contain | box))
-        stack_english => (header | box | append (info english | contain | box) | contain -p tight)
+        info => (info_text | contain -p "comfy" | box)
+        info_english => (info_text english | contain -p "comfy" | box)
+        info_record => (info_text record)
+        row => (header | box | row -a b (info_text | contain | box))
+        stack => (header | box | append (info_text | contain | box) | contain -p tight)
+        row_english => (header | box | row -a b (info_text english | contain | box))
+        stack_english => (header | box | append (info_text english | contain | box) | contain -p tight)
         memory => (header | append $"RAM: (status memory | get RAM)"| contain -a c | box)
         mem_disks => (header | append $"("RAM" | color apply blue): (status memory | get RAM)" | append (status disks | items {|mount status| $"($mount | color apply blue): ($status)"}) | contain -a l | box)
-        test => (header | box | row -s 2 -a c (info english))
+        test => (header | box | row -s 2 -a c (info_text english))
         _ => {
             error make {
                 msg: "invalid banner type"

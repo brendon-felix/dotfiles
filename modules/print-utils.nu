@@ -2,6 +2,7 @@
 #                                print-utils.nu                                #
 # ---------------------------------------------------------------------------- #
 
+use std repeat
 use round.nu 'round duration'
 use ansi.nu ['cursor off' 'erase right']
 use color.nu ['color apply' 'color interpolate']
