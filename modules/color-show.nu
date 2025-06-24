@@ -28,3 +28,14 @@ export def `color show` [] {
         $container | container print
     }
 }
+
+export def `print window` [] {
+    let container = [
+        "╭────┬────╮"
+        "│    │    │"
+        "├────┼────┤"
+        "│    │    │"
+        "╰────┴────╯"
+    ]
+    $container | container print
+}

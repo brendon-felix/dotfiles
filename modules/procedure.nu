@@ -2,159 +2,157 @@
 #                                 procedure.nu                                 #
 # ---------------------------------------------------------------------------- #
 
-use std null-device
+# ╭────┬────╮
+# │    │    │
+# ├────┼────┤
+# │    │    │
+# ╰────┴────╯
+
+use std [null-device repeat]
 use print-utils.nu separator
 use ansi.nu *
 use color.nu 'color apply'
-use core.nu 'suppress all'
+use core.nu suppress
+use debug.nu *
 
-# export def `procedure run` [
-#     name: string
-#     closure: closure
-# ] {
-#     cursor off
-#     print ($"Running ($name)" | separator)
-#     try {
-#         do $closure
-#         print ($"($name) successful" | color apply green)
-#         print (separator)
-#     } catch {
-#         print (separator)
-#         print ($"($name) failed" | color apply red)
-#     }
-    
-#     cursor off
-# }
+export def `procedure run` [
+    name: string
+    closure: closure
+    --debug(-d)
+] {
+    cursor off
+    print ($"Running ($name)" | separator)
+    $env.PROCEDURE_LEVEL = 0
+    $env.PROCEDURE_DEBUG = $debug
+    # $env.PROCEDURE_LEAF = true
+    try {
+        do $closure
+        print ($"\n($name) successful" | color apply green)
+        print (separator)
+    } catch {
+        print ($"\n($name) failed" | color apply red)
+        print (separator)
+    }
+    cursor on
+}
 
-# export def `procedure new-task` [
-#     name: string
-#     task: closure
-# ] {
+def left_margin [level] {
+    match $level {
+        0 => "",
+        # $n => ('  ' + ('│     ' | repeat ($n - 1) | str join))
+        $n => ('  ' + ('┆     ' | repeat ($n - 1) | str join))
+    }
+}
 
-# }
+def print-task [name] {
+    match ($env.PROCEDURE_LEVEL - 1) {
+        0 => {
+            print $name
+        }
+        # $n if $env.PROCEDURE_LEAF => {
+        #     let left_margin = left_margin $n
+        #     # print $"($left_margin)│"
+        #     print $"($left_margin)├─→ ($name)"
+        #     # print $"($left_margin)├─ ($name)"
+        #     # print $"($left_margin)╰─→ ($name)"
+        # }
+        $n => {
+            let left_margin = left_margin $n
+            # print $"($left_margin)│"
+            print $"($left_margin)├─→ ($name)"
+            # print $"($left_margin)├─ ($name)"
+            # print $"($left_margin)╰─→ ($name)"
+        }
+    }
+}
 
-export def `procedure new-task` [
+def print-result [result] {
+    let result = match $result {
+        # success => {text: "Success", icon: "✔", color: green}
+        # warning => {text: "Warning", icon: "", color: yellow}
+        success => {text: "Success", icon: "✓", color: green}
+        warning => {text: "Warning", icon: "!", color: yellow}
+        error => {text: "Failed", icon: "×", color: red}
+    }
+    # debug $env.PROCEDURE_LEVEL
+    match ($env.PROCEDURE_LEVEL - 1) {
+        $n if ($env.PROCEDURE_LEAF and ($n >= 1)) => {()}
+        0 => {
+            print ($"  │" | color apply $result.color)
+            print ($"  ╰─→ ($result.text)\n" | color apply $result.color)
+            # print ($"($result.text)\n" | color apply $result.color)
+        }
+        # 1 => {
+        #     let left_margin = left_margin 1
+        #     # print ($left_margin + "│" + ($"    │" | color apply $color))
+        #     # print ($left_margin + "│" + ($"←───╯ ($text)" | color apply $color))
+        #     print ($left_margin + ($"╭────╯" | color apply $color))
+        # }
+        $n => {
+            let left_margin = left_margin $n
+            # print ($left_margin + "│" + ($"     │" | color apply $color))
+            # print ($left_margin + "│" + ($"←────╯ ($text)" | color apply $color))
+            print ($left_margin + ($"╭─────╯ ($result.icon)" | color apply $result.color))
+            print ($left_margin + ($"│" | color apply $result.color))
+            
+
+            # print ($left_margin + ($"│" | color apply $color))
+            # print ($left_margin + ($"╰─ ($text)" | color apply $color))
+        }
+    }
+}
+
+export def --env `procedure new-task` [
     name: string
     task: closure
-    --get-result(-r)
-    --width(-w): int = 20
     --continue(-c)
+    --on-error(-e): string
 ] {
-    print ""
-    let $msg = $name + '...'
-    print $msg
+    let left_margin = left_margin $env.PROCEDURE_LEVEL
+    $env.PROCEDURE_LEVEL += 1
     try {
-        match $get_result {
-            false => {
-                (do $task o+e> (null-device))
-                # (do $task)
-                print ("  │\n  ╰─ Success" | color apply green)
-            }
+        print-task $name
+        $env.PROCEDURE_LEAF = true
+        $task | suppress all -e
+        print-result success
+        $env.PROCEDURE_LEVEL -= 1
+        $env.PROCEDURE_LEAF = false
+    } catch {|err|
+        if $env.PROCEDURE_DEBUG { print $err.rendered }
+        
+        if $on_error != null {
+            procedure print $on_error -c yellow
+            # if $continue {
+            #     procedure print $on_error -c yellow
+            # } else {
+            #     procedure print $on_error -c red
+            # }
+        }
+        match $continue {
             true => {
-                let result = (do $task) | into string
-                print $"  │\n  ╰─ ($result)"
+                print-result warning
+                $env.PROCEDURE_LEVEL -= 1
+                $env.PROCEDURE_LEAF = false
+            }
+            false => {
+                print-result error
+                # $env.PROCEDURE_LEVEL -= 1
+                $env.PROCEDURE_LEVEL -= 1
+                $env.PROCEDURE_LEAF = false
+                error make -u { msg: "Failed" }
             }
         }
-    } catch {|err|
-        # print $err
-        print ("  │\n  ╰─ Failed" | color apply red)
     }
+    ()
 }
 
 export def `procedure print` [
     message: string
-    --width(-w): int = 20
+    --color(-c): string
 ] {
-    print ("  ├─── " + $message)
-}
-
-export def `procedure info` [
-    message: string
-    --width(-w): int = 20
-] {
-    print ("  ├─── " + $message | color apply blue)
-}
-
-export def `procedure success` [
-    message: string
-    --width(-w): int = 20
-] {
-    print ("  ├─── " + $message | color apply green)
-}
-
-export def `procedure warning` [
-    message: string
-    --width(-w): int = 20
-] {
-    print ("  ├─── " + $message | color apply yellow)
-}
-
-export def `procedure error` [
-    message: string
-    --width(-w): int = 20
-] {
-    print ("  ├─── " + $message | color apply red)
-}
-
-export def `procedure new-subtask` [
-    name: string
-    task: closure
-    --get-result(-r)
-    --width(-w): int = 20
-    --continue(-c)
-] {
-    let $msg = $name + '...'
-    print -n ("  ├─── " + $msg + "\r")
-    try {
-        match $get_result {
-            false => {
-                (do $task o+e> (null-device))
-                # (do $task)
-                print (("  ├─── " | color apply green) + $msg)
-            }
-            true => {
-                let result = (do $task) | into string
-                print $"  ├─── ($msg) ($result)"
-            }
-        }
-    } catch {|err|
-        # print $err
-        if $continue {
-            print (("  ├─── " | color apply yellow) + $msg)
-        } else {
-            print (("  ├─── " | color apply red) + $msg)
-            error make -u { msg: $err }
-        }
+    let message = match ($env.PROCEDURE_LEVEL - 1) {
+        0 => $message,
+        $n => ($"(left_margin $n)" + ("│    ╰─ " + $message | color apply $color))
     }
+    print $message
 }
-
-# export def `procedure update-status` [task: string, update: string] {
-#     print ($task + "  " + $update)
-# }
-
-export def `procedure end` [] {
-    print ("________\nFinished" | color apply green)
-    cursor on
-}
-
-
-#    Updating first...
-#      │
-#      ╰─ Success
-
-#    Updating thing...
-#      ├── Doing another.... Success
-#      │
-#      ╰─ Success
-
-#    Updating second...
-#      ├── Doing something.. Failed
-#      ├── Doing another.... Success
-#      │
-#      ╰─ Success
-
-#    Updating second...
-#      ├── Doing something.. Success
-#      ├── Doing something.. Failed
-#      │
-#      ╰─ Success

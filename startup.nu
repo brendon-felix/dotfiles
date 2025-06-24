@@ -2,93 +2,83 @@
 #                                  startup.nu                                  #
 # ---------------------------------------------------------------------------- #
 
-use std null-device
+# use std null-device
 use modules/color.nu 'color apply'
-use modules/ansi.nu ['cursor off' 'cursor on' 'erase right']
+use modules/ansi.nu ['cursor off' 'cursor on']
 use modules/version.nu 'version full-check'
 use modules/procedure.nu *
 
 cursor off
 
-# ---------------------------------- nushell --------------------------------- #
-
-procedure new-task -r "Checking for variables file" {
-    if ($env.VARS_FILE | path exists) {
-        ("Exists" | color apply green)
-    } else {
-        procedure new_subtask "Creating variables file" {
-            touch $env.VARS_FILE
-            "Done" | color apply green
-        }
-    }
-}
-
-procedure new-task -r "Checking nushell version" {
-    match (version full-check).current {
-        true => ("Current" | color apply green)
-        false => ("Outdated" | color apply yellow)
-    }
-}
-
-procedure new-task "Updating nushell scripts" {
-    cd ~/Projects/nushell-scripts
-    git pull -r
-    # try { git pull -r } catch {
-    #     procedure message ("Commit or stash new changes" | color apply yellow)
-    #     error make -u { msg: "Failed to update nushell scripts" }
-    # }
-    cd -
-}
-
-# ------------------------------------ git ----------------------------------- #
-
-let cargo_repos = [
-    bar
-    rusty-gpt
-    size-converter
-    byte-converter
-]
-for repo in $cargo_repos {
-    procedure new-task $"Updating ($repo | color apply blue)" {
-        let path = ['~' 'Projects' $repo] | path join
-        if ($path | path exists) { 
-            procedure print $"Verified project directoy exists"
-        } else {
-            procedure new-subtask $"Cloning project repository" {
-                cd (['~' 'Projects'] | path join)
-                git clone $"https://github.com/brendon-felix/($repo).git"
+procedure run "Startup" {
+    # ---------------------------------- nushell --------------------------------- #
+    procedure new-task "Setting up Nushell" {
+        procedure new-task "Verifying variables file exists" {
+            if not ($env.VARS_FILE | path exists) {
+                procedure new_subtask "Creating variables file" {
+                    touch $env.VARS_FILE
+                }
             }
         }
-        cd $path
-        procedure new-subtask $"Pulling changes from remote" {
+        procedure new-task -c "Checking nushell version" {
+            if not (version full-check).current {
+                error make -u { msg: "Nushell out of date" }
+            }
+        }
+        procedure new-task -c "Updating nushell scripts" {
+            let path = ['~' 'Projects' nushell-scripts] | path join
+            cd $path
             git pull -r
-        }
-        procedure new-subtask $"Building project" {
-            cargo build --release
-        }
-        cd -
-    }
-}
-
-# ----------------------------------- cargo ---------------------------------- #
-
-procedure new-task "Updating cargo packages" {
-    let cargo_packages = [
-        nu_plugin_highlight
-        nu_plugin_semver
-        du-dust
-        ripgrep
-        # asciibar
-        bat
-    ]
-    for package in $cargo_packages {
-        procedure new-subtask $"Updating ($package | color apply blue)" {
-            cargo install $package
+            cd -
         }
     }
+    # ------------------------------ cargo projects ------------------------------ #
+    procedure new-task "Updating cargo projects" {
+        let cargo_repos = [
+            bar
+            rusty-gpt
+            size-converter
+            byte-converter
+        ]
+        for repo in $cargo_repos {
+            procedure new-task -c $"Updating ($repo | color apply blue)" {
+                let path = ['~' 'Projects' $repo] | path join
+                procedure new-task "Verifying project directory exists" {
+                    if not ($path | path exists) {
+                        procedure new-subtask "Cloning project repository" {
+                            let projects_dir = ['~' 'Projects'] | path join
+                            cd $projects_dir
+                            git clone $"https://github.com/brendon-felix/($repo).git"
+                        }
+                    }
+                }
+                cd $path
+                procedure new-task "Pulling changes from remote" -e "Commit or stash unstaged changes" {
+                    git pull -r
+                }
+                procedure new-task "Building project" {
+                    cargo build --release
+                }
+                cd -
+            }
+        }
+    }
+    # ------------------------------ cargo packages ------------------------------ #
+    procedure new-task "Updating cargo packages" {
+        let cargo_packages = [
+            nu_plugin_highlight
+            nu_plugin_semver
+            du-dust
+            ripgrep
+            # asciibar
+            bat
+        ]
+        for package in $cargo_packages {
+            procedure new-task -c $"Updating ($package | color apply blue)" {
+                cargo install $package
+            }
+        }
+    }
 }
-
-
-print ""
 
 cursor on
