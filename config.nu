@@ -90,3 +90,7 @@ alias c = clear
 if $nu.is-interactive {
     print banner
 }
+
+# ---------------------------------------------------------------------------- #
+
+source commands.nu

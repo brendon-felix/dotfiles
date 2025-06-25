@@ -13,6 +13,13 @@ cursor off
 procedure run "Startup" {
     # ---------------------------------- nushell --------------------------------- #
     procedure new-task "Setting up Nushell" {
+        procedure new-task "Verifying commands file exists" {
+            if not ('commands.nu' | path exists) {
+                procedure new_subtask "Creating commands file" {
+                    touch commands.nu
+                }
+            }
+        }
         procedure new-task "Verifying variables file exists" {
             if not ($env.VARS_FILE | path exists) {
                 procedure new_subtask "Creating variables file" {
