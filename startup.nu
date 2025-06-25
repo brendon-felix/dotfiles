@@ -45,7 +45,7 @@ procedure run "Startup" {
                 let path = ['~' 'Projects' $repo] | path join
                 procedure new-task "Verifying project directory exists" {
                     if not ($path | path exists) {
-                        procedure new-subtask "Cloning project repository" {
+                        procedure new-task "Cloning project repository" {
                             let projects_dir = ['~' 'Projects'] | path join
                             cd $projects_dir
                             git clone $"https://github.com/brendon-felix/($repo).git"
