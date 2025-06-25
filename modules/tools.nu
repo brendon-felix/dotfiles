@@ -28,6 +28,8 @@ export alias gpt = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/Arrowh
 # Chat assistant for general teaching
 export alias teach = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/Arrowhead/Files/api_key.txt -p ~/Arrowhead/Files/Prompts/teach_prompt.txt
 
+export alias `what is` = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/Arrowhead/Files/api_key.txt -p ~/Arrowhead/Files/Prompts/teach_prompt.txt
+
 # Ask for recipes by providing ingredients and preferences
 export alias chef = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/Arrowhead/Files/api_key.txt -p ~/Arrowhead/Files/Prompts/chef_prompt.txt
 
@@ -44,7 +46,5 @@ export alias mix = ~/Projects/mix/target/release/mix.exe
 export def timer [duration: duration] {
     countdown $duration
     "Done" | contain -p t | blink | splash green
-    
-
     # print $"(ansi green)("Done")(erase right)(ansi reset)"
 }
