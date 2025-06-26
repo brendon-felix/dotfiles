@@ -6,7 +6,7 @@ use std repeat
 use round.nu 'round duration'
 use ansi.nu ['cursor off' 'erase right']
 use color.nu ['color apply' 'color interpolate']
-use core.nu interpolate
+use interpolate.nu main
 use rgb.nu *
 # use debug.nu *
 

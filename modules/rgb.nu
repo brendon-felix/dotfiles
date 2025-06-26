@@ -2,7 +2,9 @@
 #                                    rgb.nu                                    #
 # ---------------------------------------------------------------------------- #
 
-use core.nu ['str remove' 'each value' 'format hex']
+use str.nu 'str remove'
+use records.nu 'each value'
+use format.nu 'format hex'
 # use container.nu [contain 'container print']
 use debug.nu *
 

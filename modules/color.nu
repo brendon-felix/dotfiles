@@ -5,7 +5,8 @@
 use std ellie
 use rgb.nu *
 # use container.nu [contain 'container print']
-use core.nu ['each value' interpolate]
+use records.nu 'each value'
+use interpolate.nu main
 use debug.nu *
 
 # apply ANSI color or attributes to a piped string

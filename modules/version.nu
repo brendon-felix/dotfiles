@@ -4,7 +4,7 @@
 
 # plugin use semver
 
-use core.nu ['var update' 'var load']
+use variables.nu ['var update' 'var load']
 
 export alias `builtin version-check` = version check
 
