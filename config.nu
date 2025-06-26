@@ -62,7 +62,8 @@ $env.VARS_FILE = ('~/vars.toml' | path expand)
 #     BACKGROUND: (color query background)
 # }
 
-$env.config.buffer_editor = 'nvim'
+# $env.config.buffer_editor = 'nvim'
+$env.config.buffer_editor = 'code'
 $env.config.edit_mode = 'vi'
 $env.config.history.isolation = true
 $env.config.show_banner = false
