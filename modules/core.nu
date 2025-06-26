@@ -26,3 +26,12 @@ export def --env suppress [
         }
     }
 }
+
+export def threads [
+    ...threads: closure
+] {
+    $threads | par-each {|thread|
+        do $thread
+    }
+    null # return null instead of par-each result
+}

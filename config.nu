@@ -16,6 +16,7 @@ use modules/core.nu *
 use modules/debug.nu *
 use modules/dev.nu *
 use modules/dictionary.nu *
+use modules/do.nu *
 use modules/git.nu *
 use modules/list-commands.nu *
 use modules/monitor.nu *

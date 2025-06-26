@@ -73,13 +73,13 @@ export def countdown [
     --no-bar(-b)
     --bar-length(-l): int = 12
     --start-color(-s): any = white
-    --end-color(-e): any = gray
+    --end-color(-e): any = white
 ] {
-    if $duration < 1sec {
+    if $duration < 1ms {
         error make {
             msg: "invalid duration",
             label: {
-                text: "must be greater than or equal to 1sec",
+                text: "must be greater than or equal to 1ms",
                 span: (metadata $duration).span,
             }
         }
@@ -91,9 +91,46 @@ export def countdown [
     while $remaining > 0sec {
         let proportion = $remaining / $duration
         let color = ($start_color | into rgb) | interpolate ($end_color | into rgb) $proportion
-        mut status = $"($remaining | round duration sec)" | color apply $color
+        mut status = $"($remaining | round duration)" | color apply $color
         if not $no_bar {
             let bar = bar --length=$bar_length --fg-color $color ($remaining / $duration)
+            $status = $"($bar) ($status)"
+        }
+        print -n $status
+        erase right
+        print -n "\r"
+        $remaining = $end_time - (date now)
+    }
+    # print $"(ansi green)("Done")(erase right)(ansi reset)"
+    # print -n $"(ansi reset)"
+}
+
+export def countup [
+    duration: duration
+    --no-bar(-b)
+    --bar-length(-l): int = 12
+    --start-color(-s): any = white
+    --end-color(-e): any = white
+] {
+    if $duration < 1ms {
+        error make {
+            msg: "invalid duration",
+            label: {
+                text: "must be greater than or equal to 1ms",
+                span: (metadata $duration).span,
+            }
+        }
+    }
+    let start_time = date now
+    let end_time = $start_time + $duration
+    mut $remaining = $duration
+    cursor off
+    while $remaining > 0sec {
+        let proportion = $remaining / $duration
+        let color = ($start_color | into rgb) | interpolate ($end_color | into rgb) $proportion
+        mut status = $"(($duration - $remaining) | round duration)" | color apply $color
+        if not $no_bar {
+            let bar = bar --length=$bar_length --fg-color $color (($duration - $remaining) / $duration)
             $status = $"($bar) ($status)"
         }
         print -n $status

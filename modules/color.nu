@@ -73,5 +73,19 @@ export def `color gradient` [
     } | str join
 }
 
-
+export def `color cycle` [i] {
+    let colors = [
+        "red",
+        "green",
+        "blue", 
+        "yellow",
+        "magenta",
+        "cyan",
+        "white"
+    ]
+    $in | each {|e|
+        let index = ($i | into int) mod ($colors | length)
+        $e | color apply ($colors | get $index)
+    }
+}
 
