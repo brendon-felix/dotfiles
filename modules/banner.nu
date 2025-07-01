@@ -128,7 +128,7 @@ export def info [--bar] {
 }
 
 # Creates a custom container-based banner
-export def main [
+def main [
     type?: string = memory # the type of banner to create: # ellie, user, header, info, info_english, info_record, row, stack, row_english, stack_english, memory, mem_disks, test
 ]: nothing -> list<string> {
     match $type {

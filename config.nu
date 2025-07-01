@@ -6,44 +6,22 @@
 
 # ---------------------------------- modules --------------------------------- #
 
-use modules/ansi.nu *
-use modules/applications.nu *
-use modules/banner.nu *
-use modules/color-show.nu *
-use modules/color.nu *
-use modules/container.nu *
-use modules/core.nu *
-use modules/debug.nu *
-use modules/dev.nu *
-use modules/dictionary.nu *
-use modules/do.nu *
-use modules/git.nu *
-use modules/list-commands.nu *
-use modules/monitor.nu *
-use modules/print-utils.nu *
-# use modules/procedure.nu *
-use modules/processes.nu *
-use modules/random.nu *
-use modules/records.nu *
-use modules/rgb.nu *
-use modules/round.nu *
-use modules/status.nu *
-use modules/system.nu *
-use modules/tools.nu *
-use modules/splash.nu *
-use modules/version.nu *
+const IMPORTS_FILE = '~/Projects/nushell-scripts/imports.nu' | path expand
+source $IMPORTS_FILE
 
-use bios/bfm.nu *
-use bios/siofw.nu *
+const SYS_COMMANDS_FILE = ('~/.sys-commands.nu' | path expand)
+source $SYS_COMMANDS_FILE
 
-use completions/cargo-completions.nu *
-# use completions/git-completions.nu *
-use completions/rg-completions.nu *
-use completions/rustup-completions.nu *
-use completions/vscode-completions.nu *
-use completions/winget-completions.nu *
+use everything.nu *
 
 # ---------------------------- environment config ---------------------------- #
+
+$env.IMPORTS_FILE = $IMPORTS_FILE
+$env.SYS_COMMANDS_FILE = $SYS_COMMANDS_FILE
+$env.VARS_FILE = ('~/.nu-vars.toml' | path expand)
+
+$env.PROCEDURE_LEVEL = 0
+$env.PROCEDURE_DEBUG = true
 
 $env.EDITOR = 'code'
 $env.PROMPT_COMMAND_RIGHT = { || date now | format date "%a-%d %r" }
@@ -51,25 +29,12 @@ $env.PROMPT_COMMAND_RIGHT = { || date now | format date "%a-%d %r" }
 $env.PROMPT_INDICATOR_VI_NORMAL = '> '
 $env.PROMPT_INDICATOR_VI_INSERT = '> '
 
-$env.VARS_FILE = ('~/vars.toml' | path expand)
-# $env.COLORS = {
-#     RED: (color query red)
-#     GREEN: (color query green)
-#     BLUE: (color query blue)
-#     YELLOW: (color query yellow)
-#     CYAN: (color query cyan)
-#     MAGENTA: (color query magenta)
-#     BLACK: (color query black)
-#     WHITE: (color query white)
-#     FOREGROUND: (color query foreground)
-#     BACKGROUND: (color query background)
-# }
-
 # $env.config.buffer_editor = 'nvim'
 $env.config.buffer_editor = 'code'
 $env.config.edit_mode = 'vi'
 $env.config.history.isolation = true
-$env.config.show_banner = false
+# $env.config.show_banner = false
+$env.config.show_banner = 'short'
 $env.config.float_precision = 3
 # $env.config.hooks.env_change = { HOMEPATH: [{|| print banner}] }
 $env.config.cursor_shape.vi_insert = "blink_line"
@@ -85,7 +50,7 @@ $env.config.plugins.highlight.theme = 'ansi'
 # }
 
 def `print config` [] {
-    (open ~/Projects/nushell-scripts/config.nu) | nu-highlight
+    open ~/Projects/nushell-scripts/config.nu | highlight
 }
 
 alias scripts = cd ~/Projects/nushell-scripts
@@ -99,4 +64,5 @@ if $nu.is-interactive {
 
 # ---------------------------------------------------------------------------- #
 
-source commands.nu
+
+

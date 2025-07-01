@@ -11,7 +11,7 @@ export def `start app` [app_name] {
         ([$env.ProgramData, `Microsoft\Windows\Start Menu\Programs`, $app_name, $shortcut_filename] | path join)
     ]
     mut result: any = null
-    for $path in $possible_paths {
+    for path in $possible_paths {
         if ($path | path exists) {
             $result = $path
         }

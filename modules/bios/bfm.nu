@@ -2,7 +2,7 @@
 #                                    bfm.nu                                    #
 # ---------------------------------------------------------------------------- #
 
-use ../modules/splash.nu *
+# use ../splash.nu *
 
 const dev_loc = 'C:\Users\felixb\BIOS'
 const net_loc = '\\wks-file.ftc.rd.hpicorp.net\MAIN_LAB\SHARES\LAB\Brendon Felix\Bootlegs'
@@ -146,11 +146,11 @@ def flash [binary] {
     print $"(ansi purple)Flashing binary...(ansi reset)"
     try {
         do {dpcmd --batch $binary.name --verify}
-        # print $"\n(ansi green_bold)Flash successful(ansi reset)"
-        "Flash successful" | splash success
+        print $"\n(ansi green_bold)Flash successful(ansi reset)"
+        # "Flash successful" | splash success
     } catch {
-        # error make -u { msg: "Flash failed" }
-        "Flash failed" | splash failure
+        error make -u { msg: "Flash failed" }
+        # "Flash failed" | splash failure
     }
 }
 
