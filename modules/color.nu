@@ -35,28 +35,28 @@ export def `color apply` [
     }
 }
 
-export def `color background` [$color] {
-    $in | color apply $color
-}
-
 export def `color interpolate` [
     start,
     end,
     t?: float = 0.5,
     --hsv
+    --strip(-s)     # strip ANSI codes from input before applying color
+    --no-reset(-r)  # do not reset ansi after applying
 ] {
     let start = if $hsv { $start | into rgb | rgb get-hsv } else { $start | into rgb }
     let end = if $hsv { $end | into rgb | rgb get-hsv } else { $end | into rgb }
     mut color = $start | interpolate $end $t
     if $hsv { $color = $color | rgb from-hsv }
     let hex = $color | rgb get-hex
-    $in | each {|e| $e | color apply {fg: $hex}}
+    $in | each {|e| $e | color apply {fg: $hex} --strip=$strip --no-reset=$no_reset}
 }
 
 export def `color gradient` [
-    start,
-    end,
-    --hsv
+    start,          # start color (can be RGB or HSV)
+    end,            # end color (can be RGB or HSV)
+    --hsv           # use HSV color space for interpolation
+    --strip(-s)     # strip ANSI codes from input before applying color
+    --no-reset(-r)  # do not reset ansi after applying
 ]: string -> string {
     let start = if $hsv { $start | into rgb | rgb get-hsv } else { $start | into rgb }
     let end = if $hsv { $end | into rgb | rgb get-hsv } else { $end | into rgb }
@@ -67,7 +67,7 @@ export def `color gradient` [
             mut interpolated = $start | interpolate $end $t
             if $hsv { $interpolated = $interpolated | rgb from-hsv }
             let hex = $interpolated | rgb get-hex
-            $i.item | color apply {fg: $hex}
+            $i.item | color apply {fg: $hex} --strip=$strip --no-reset=$no_reset
             # $"(ansi -e {fg: $hex})($e.item)(ansi reset)"
         }
     } | str join
@@ -89,3 +89,17 @@ export def `color cycle` [i] {
     }
 }
 
+export def `color random` [
+    --hsv
+    --strip(-s)     # strip ANSI codes from input before applying color
+    --no-reset(-r)  # do not reset ansi after applying
+] {
+    each {|e|
+        let color = if $hsv {
+            {h: (random float 0..<360), s: (random float 0..<1), v: (random float 0..<1)}
+        } else {
+            {r: (random int 0..255), g: (random int 0..255), b: (random int 0..255)}
+        }
+        $e | color apply $color --strip=$strip --no-reset=$no_reset
+    }
+}

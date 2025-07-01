@@ -23,6 +23,8 @@ use modules/monitor.nu *
 use modules/print-utils.nu *
 # use modules/procedure.nu *
 use modules/processes.nu *
+use modules/random.nu *
+use modules/records.nu *
 use modules/rgb.nu *
 use modules/round.nu *
 use modules/status.nu *
@@ -72,6 +74,8 @@ $env.config.float_precision = 3
 # $env.config.hooks.env_change = { HOMEPATH: [{|| print banner}] }
 $env.config.cursor_shape.vi_insert = "blink_line"
 $env.config.cursor_shape.vi_normal = "blink_block"
+
+$env.config.plugins.highlight.theme = 'ansi'
 
 # ---------------------------------------------------------------------------- #
 

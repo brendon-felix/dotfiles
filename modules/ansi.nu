@@ -9,6 +9,14 @@ export def `strip length` []: [
     $in | ansi strip | str length -g
 }
 
+export def `ansi alternate` [] {
+    ansi -e "?1049h"
+}
+
+export def `ansi main` [] {
+    ansi -e "?1049l"
+}
+
 # -------------------------------- formatting -------------------------------- #
 
 export def bold [] {
