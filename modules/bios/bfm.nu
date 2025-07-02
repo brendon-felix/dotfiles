@@ -100,7 +100,7 @@ def get_binary [path] {
     try {
         match ($path | path type) {
             'dir' => {
-                ls $path | where name =~ '^(?i)(?!.*pvt).*?(32|64).*\.bin$' | sort-by modified | last
+                ls-builtin $path | where name =~ '^(?i)(?!.*pvt).*?(32|64).*\.bin$' | sort-by modified | last
             }
             'file' => (ls $path | sort-by modified | last)
             _ => null
@@ -112,7 +112,7 @@ def get_binary [path] {
 
 def print_info [binary] {
     print $"(ansi blue)($binary.name | path basename)(ansi reset)"
-    print $"Size: ($binary.size)"
+    print $"Size: ($binary.size | format filesize MiB)"
 }
 
 def find_build [bld_path] {
@@ -147,10 +147,11 @@ def flash [binary] {
     try {
         do {dpcmd --batch $binary.name --verify}
         print $"\n(ansi green_bold)Flash successful(ansi reset)"
-        # "Flash successful" | splash success
-    } catch {
+        # "Flash successful"| blink | splash green -s 3
+    } catch {|err|
+        print $err.rendered
         error make -u { msg: "Flash failed" }
-        # "Flash failed" | splash failure
+        # "Flash failed" | blink | splash red -s 3
     }
 }
 

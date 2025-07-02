@@ -127,7 +127,7 @@ export def row [
 export def div [
     # --type(-t): string = f          # type of the div: horizontal (h), vertical (v), fill (f)
     --position(-p): any = center    # position of the container (t, ul, l, bl, b, br, r, ur, c or record<x: int, y: int>)
-    --background(-b): any = default # background color (ansi name or escape)
+    --color(-c): any = default      # background color (ansi name or escape)
     --shorten-by(-s): int = 1       # shorten the div by this many rows
     --fill(-f)                      # apply background color to the whole container
 ]: list<string> -> list<string> {
@@ -183,16 +183,29 @@ export def div [
             right: ($total_x_padding - $x)
         }
     }
+    let color = match $color {
+        $b if ($b | describe) == "string" => {bg: $b}
+        $e if ($e | describe | str starts-with "record") => $e
+        _ => {
+            error make {
+                msg: "Invalid background color",
+                label: {
+                    text: $"The background color '($color)' is not recognized.",
+                    span: (metadata $color).span
+                }
+            }
+        }
+    }
     let padding = {
-        top: ("" | fill -w $term_size.columns | repeat $y_padding_height.top | color apply {bg: $background})
-        bottom: ("" | fill -w $term_size.columns | repeat $y_padding_height.bottom | color apply {bg: $background})
-        left: ("" | fill -w $x_padding_width.left | color apply {bg: $background})
-        right: ("" | fill -w $x_padding_width.right | color apply {bg: $background})
+        top: ("" | fill -w $term_size.columns | repeat $y_padding_height.top | color apply $color)
+        bottom: ("" | fill -w $term_size.columns | repeat $y_padding_height.bottom | color apply $color)
+        left: ("" | fill -w $x_padding_width.left | color apply $color)
+        right: ("" | fill -w $x_padding_width.right | color apply $color)
     }
     $container | each { |line| 
         mut line = $padding.left + $line + $padding.right
         if $fill {
-            $line = $line | color apply {bg: $background}
+            $line = $line | color apply -s $color
         }
         $line
     } | prepend $padding.top | append $padding.bottom
