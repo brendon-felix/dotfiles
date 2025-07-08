@@ -64,5 +64,6 @@ if $nu.is-interactive {
 
 # ---------------------------------------------------------------------------- #
 
-
+let keys = open ~/Arrowhead/Files/keys.toml | each key {|k| $k | str upcase }
+load-env $keys
 
