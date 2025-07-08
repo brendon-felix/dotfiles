@@ -61,7 +61,7 @@ procedure run "Startup" {
 
     # ------------------------------ cargo projects ------------------------------ #
 
-    procedure new-task "Updating cargo projects" {
+    procedure new-task -c "Updating cargo projects" {
         let cargo_repos = [
             bar
             rusty-gpt
@@ -81,7 +81,7 @@ procedure run "Startup" {
                     }
                 }
                 cd $path
-                procedure new-task "Pulling changes from remote" -e "Commit or stash unstaged changes" {
+                procedure new-task "Pulling changes from remote" -e "Ensure repo exists and changes are committed" {
                     git pull -r
                 }
                 procedure new-task "Building project" {
@@ -94,7 +94,7 @@ procedure run "Startup" {
 
     # ------------------------------ nushell plugins ------------------------------ #
 
-    procedure new-task "Updating nushell plugins" {
+    procedure new-task -c "Updating nushell plugins" {
         let nushell_plugins = [
             nu_plugin_highlight
             nu_plugin_semver
@@ -112,18 +112,23 @@ procedure run "Startup" {
 
     # ------------------------------ cargo packages ------------------------------ #
 
-    procedure new-task "Updating cargo packages" {
+    procedure new-task -c "Updating cargo packages" {
         let cargo_packages = [
+            coreutils
             du-dust
             ripgrep
             # asciibar
             bat
+            # zoxide
         ]
         for package in $cargo_packages {
             procedure new-task -c $"Updating ($package | color apply blue)" {
                 cargo install $package
             }
         }
+    }
+    procedure new-task -c "Initializing zoxide script" {
+        zoxide init nushell | save ~/.zoxide.nu
     }
 }
 

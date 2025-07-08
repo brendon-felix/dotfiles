@@ -2193,3 +2193,8 @@ export def `version full-check` [] {
 }
 
 
+# ----------------------------------------------------------------
+
+export def show [file] {
+    open $file | highlight
+}
