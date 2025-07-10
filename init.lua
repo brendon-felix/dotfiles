@@ -989,7 +989,7 @@ require('lazy').setup({
     lazy = false,
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme 'jellybeans-muted'
+      vim.cmd.colorscheme 'jellybeans'
     end,
   },
 
