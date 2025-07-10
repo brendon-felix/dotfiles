@@ -803,29 +803,193 @@ require('lazy').setup({
     },
   },
 
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'olimorris/onedarkpro.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
-    config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('onedarkpro').setup {
-        colors = {
-          onedark = {
-            bg = '#262626',
-            fg = '#dcdfe4',
-            white = '#dcdfe4',
-          },
-        },
-      }
+  -- {
+  --   'olimorris/onedarkpro.nvim',
+  --   priority = 1000,
+  --   config = function()
+  --     ---@diagnostic disable-next-line: missing-fields
+  --     require('onedarkpro').setup {
+  --       colors = {
+  --         onedark = {
+  --           bg = '#191919',
+  --           fg = '#dcdfe4',
+  --           white = '#dcdfe4',
+  --         },
+  --       },
+  --     }
+  --
+  --     vim.cmd.colorscheme 'onedark'
+  --   end,
+  -- },
 
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'onedark'
+  -- {
+  --   'catppuccin/nvim',
+  --   name = 'catppuccin',
+  --   priority = 1000,
+  --   config = function()
+  --     -- You can set the flavor to latte, frappe, macchiato, or mocha
+  --     --  See `:help catppuccin-flavors` for more information
+  --     vim.g.catppuccin_flavour = 'mocha'
+  --     require('catppuccin').setup {
+  --       transparent_background = true,
+  --       term_colors = true,
+  --       styles = {
+  --         comments = { 'italic' },
+  --         functions = { 'italic' },
+  --         keywords = { 'bold' },
+  --         variables = { 'italic' },
+  --       },
+  --     }
+  --     vim.cmd.colorscheme 'catppuccin'
+  --   end,
+  -- },
+
+  -- {
+  --   'rebelot/kanagawa.nvim',
+  --   priority = 1000,
+  --   config = function()
+  --     require('kanagawa').setup {}
+  --     vim.cmd.colorscheme 'kanagawa-dragon'
+  --   end,
+  -- },
+
+  -- {
+  --   'savq/melange-nvim',
+  --   priority = 1000,
+  --   config = function()
+  --     vim.cmd.colorscheme 'melange'
+  --   end,
+  -- },
+
+  -- {
+  --   'luisiacc/gruvbox-baby',
+  --   priority = 1000,
+  --   config = function()
+  --     -- require('gruvbox-baby').setup {
+  --     --   background_color = 'medium',
+  --     -- }
+  --     vim.cmd.colorscheme 'gruvbox-baby'
+  --   end,
+  -- },
+
+  -- {
+  --   'armannikoyan/rusty',
+  --   lazy = false,
+  --   priority = 1000,
+  --   opts = {
+  --     transparent = true,
+  --     colors = {
+  --       background = '#262626',
+  --     },
+  --   },
+  --   config = function(_, opts)
+  --     require('rusty').setup(opts)
+  --     vim.cmd.colorscheme 'rusty'
+  --   end,
+  -- },
+
+  -- {
+  --   'Mofiqul/vscode.nvim',
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     require('vscode').setup {
+  --       transparent = true,
+  --     }
+  --     vim.cmd.colorscheme 'vscode'
+  --   end,
+  -- },
+
+  -- {
+  --   'bluz71/vim-moonfly-colors',
+  --   name = 'moonfly',
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     -- You can set the style to 'dark' or 'light'
+  --     --  See `:help moonfly-colors` for more information
+  --     vim.g.moonflyStyle = 'dark'
+  --     vim.cmd.colorscheme 'moonfly'
+  --   end,
+  -- },
+
+  -- {
+  --   'HoNamDuong/hybrid.nvim',
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     require('hybrid').setup {
+  --       overrides = function(hl, c)
+  --         local background = '#191919'
+  --         hl.TelescopeNormal = {
+  --           fg = c.fg,
+  --           bg = background,
+  --         }
+  --         hl.TelescopeBorder = {
+  --           fg = c.fg_hard,
+  --           bg = c.bg,
+  --         }
+  --         hl.TelescopeTitle = {
+  --           fg = c.fg_hard,
+  --           bg = c.bg,
+  --           bold = true,
+  --         }
+  --       end,
+  --     }
+  --     vim.cmd.colorscheme 'hybrid'
+  --   end,
+  -- },
+
+  -- {
+  --   'ficcdaf/ashen.nvim',
+  --   -- optional but recommended,
+  --   -- pin to the latest stable release:
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     vim.cmd.colorscheme 'ashen'
+  --   end,
+  -- },
+
+  -- {
+  --   'sainnhe/gruvbox-material',
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     vim.g.gruvbox_material_background = 'hard'
+  --     vim.cmd.colorscheme 'gruvbox-material'
+  --   end,
+  -- },
+
+  -- {
+  --   'Shatur/neovim-ayu',
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     vim.cmd.colorscheme 'ayu'
+  --   end,
+  -- },
+
+  -- {
+  --   'wtfox/jellybeans.nvim',
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     require('jellybeans').setup {
+  --       on_colors = function(c)
+  --         c.background = '#191919'
+  --       end,
+  --     }
+  --     vim.cmd.colorscheme 'jellybeans'
+  --   end,
+  -- },
+
+  {
+    'wtfox/jellybeans.nvim',
+    lazy = false,
+    priority = 1000,
+    config = function()
+      vim.cmd.colorscheme 'jellybeans-muted'
     end,
   },
 
@@ -850,13 +1014,19 @@ require('lazy').setup({
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
 
-      require('mini.comment').setup()
+      require('mini.comment').setup {
+        --mappings = {
+        --comment = '<C-/>',
+        --comment_line = '<C-/>',
+        --comment_visual = '<C-/>',
+        --},
+      }
 
       local animate = require 'mini.animate'
       local mouse_scrolled = false
-      for _, scroll in ipairs { "Up", "Down" } do
+      for _, scroll in ipairs { 'Up', 'Down' } do
         local key = '<ScrollWheel' .. scroll .. '>'
-        vim.keymap.set({ "", "i" }, key, function()
+        vim.keymap.set({ '', 'i' }, key, function()
           mouse_scrolled = true
           return key
         end, { expr = true })
