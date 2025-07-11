@@ -23,24 +23,24 @@ export def `config nu` [
     }
 }
 
-export alias ls-builtin = ls
-
-# List the filenames, sizes, and modification times of items in a directory.
-export def ls [
-    --builtin(-b),      # Use the built-in ls command instead of the external one
-    --all (-a),         # Show hidden files
-    --full-paths (-f),  # display paths as absolute paths
-    ...pattern: glob,   # The glob pattern to use.
-] {
-    let pattern = if ($pattern | is-empty) { [ '.' ] } else { $pattern }
-    let table = (ls-builtin
-        --all=$all
-        --short-names=(not $full_paths)
-        --full-paths=$full_paths
-        ...$pattern
-    )
-    match $builtin {
-        true => $table
-        false => ($table | sort-by type name -i | grid -c)
-    }
-}
+# export alias ls-builtin = ls
+#
+# # List the filenames, sizes, and modification times of items in a directory.
+# export def ls [
+#     --all (-a),         # Show hidden files
+#     --full-paths (-f),  # display paths as absolute paths
+#     ...pattern: glob,   # The glob pattern to use.
+# ] {
+#     let pattern = if ($pattern | is-empty) { [ '.' ] } else { $pattern }
+#     let table = (ls-builtin
+#         --all=$all
+#         --short-names=(not $full_paths)
+#         --full-paths=$full_paths
+#         ...$pattern
+#     )
+#     match $nu.is-interactive {
+#         true => ($table | sort-by type name -i | grid -c)
+#         false => $table
+#     }
+# }
+#

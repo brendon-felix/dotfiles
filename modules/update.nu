@@ -1,8 +1,7 @@
+
 # ---------------------------------------------------------------------------- #
 #                                   update.nu                                  #
 # ---------------------------------------------------------------------------- #
-
-use procedure.nu 'procedure new-task'
 
 export def `update imports` [] {
     procedure new-task "Updating module imports" {
@@ -21,3 +20,4 @@ export def `update imports` [] {
         }
     }
 }
+

@@ -1,17 +1,7 @@
+
 # ---------------------------------------------------------------------------- #
 #                                   banner.nu                                  #
 # ---------------------------------------------------------------------------- #
-
-# use version.nu 'version check'
-use std ellie
-use round.nu 'round duration'
-use status.nu *
-use ansi.nu 'strip length'
-use color.nu 'color apply'
-use container.nu *
-use version.nu 'version check'
-
-use debug.nu *
 
 def startup []: nothing -> string {
     let startup_time = ($nu.startup-time | round duration ms)
@@ -109,7 +99,7 @@ export alias `builtin banner` = banner
 export def `print banner` [
     type? = memory # the type of banner to print: ellie, header, info, row, stack
 ] {
-    main $type | contain -p t | container print
+    banner $type | contain -p t | container print
 }
 
 export def `print info` [
@@ -128,7 +118,7 @@ export def info [--bar] {
 }
 
 # Creates a custom container-based banner
-def main [
+def banner [
     type?: string = memory # the type of banner to create: # ellie, user, header, info, info_english, info_record, row, stack, row_english, stack_english, memory, mem_disks, test
 ]: nothing -> list<string> {
     match $type {
@@ -158,3 +148,4 @@ def main [
     }
     # header | append $"("RAM" | color apply blue): (status memory | get RAM)" | append (status disks | items {|mount status| $"($mount | color apply blue): ($status)"}) | contain -a c | box
 }
+

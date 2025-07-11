@@ -1,10 +1,7 @@
+
 # ---------------------------------------------------------------------------- #
 #                                  version.nu                                  #
 # ---------------------------------------------------------------------------- #
-
-# plugin use semver
-
-use variables.nu ['var update' 'var load']
 
 export alias `builtin version-check` = version check
 
@@ -40,3 +37,4 @@ export def `version full-check` [] {
         latest: $latest,
     }
 }
+

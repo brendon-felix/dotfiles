@@ -1,19 +1,7 @@
+
 # ---------------------------------------------------------------------------- #
 #                                 procedure.nu                                 #
 # ---------------------------------------------------------------------------- #
-
-# ╭────┬────╮
-# │    │    │
-# ├────┼────┤
-# │    │    │
-# ╰────┴────╯
-
-use std [null-device repeat]
-use print-utils.nu separator
-use ansi.nu *
-use color.nu 'color apply'
-use core.nu suppress
-use debug.nu *
 
 export def `procedure run` [
     name: string
@@ -39,7 +27,6 @@ export def `procedure run` [
 def left_margin [level] {
     match $level {
         0 => "",
-        # $n => ('  ' + ('│     ' | repeat ($n - 1) | str join))
         $n => ('  ' + ('┆     ' | repeat ($n - 1) | str join))
     }
 }
@@ -49,55 +36,29 @@ def print-task [name] {
         0 => {
             print $name
         }
-        # $n if $env.PROCEDURE_LEAF => {
-        #     let left_margin = left_margin $n
-        #     # print $"($left_margin)│"
-        #     print $"($left_margin)├─→ ($name)"
-        #     # print $"($left_margin)├─ ($name)"
-        #     # print $"($left_margin)╰─→ ($name)"
-        # }
         $n => {
             let left_margin = left_margin $n
-            # print $"($left_margin)│"
             print $"($left_margin)├─→ ($name)"
-            # print $"($left_margin)├─ ($name)"
-            # print $"($left_margin)╰─→ ($name)"
         }
     }
 }
 
 def print-result [result] {
     let result = match $result {
-        # success => {text: "Success", icon: "✔", color: green}
-        # warning => {text: "Warning", icon: "", color: yellow}
         success => {text: "Success", icon: "✓", color: green}
         warning => {text: "Warning", icon: "!", color: yellow}
         error => {text: "Failed", icon: "×", color: red}
     }
-    # debug $env.PROCEDURE_LEVEL
     match ($env.PROCEDURE_LEVEL - 1) {
         $n if ($env.PROCEDURE_LEAF and ($n >= 1)) => {()}
         0 => {
             print ($"  │" | color apply $result.color)
             print ($"  ╰─→ ($result.text)\n" | color apply $result.color)
-            # print ($"($result.text)\n" | color apply $result.color)
         }
-        # 1 => {
-        #     let left_margin = left_margin 1
-        #     # print ($left_margin + "│" + ($"    │" | color apply $color))
-        #     # print ($left_margin + "│" + ($"←───╯ ($text)" | color apply $color))
-        #     print ($left_margin + ($"╭────╯" | color apply $color))
-        # }
         $n => {
             let left_margin = left_margin $n
-            # print ($left_margin + "│" + ($"     │" | color apply $color))
-            # print ($left_margin + "│" + ($"←────╯ ($text)" | color apply $color))
             print ($left_margin + ($"╭─────╯ ($result.icon)" | color apply $result.color))
             print ($left_margin + ($"│" | color apply $result.color))
-            
-
-            # print ($left_margin + ($"│" | color apply $color))
-            # print ($left_margin + ($"╰─ ($text)" | color apply $color))
         }
     }
 }
@@ -119,7 +80,6 @@ export def --env `procedure new-task` [
         $env.PROCEDURE_LEAF = false
     } catch {|err|
         if $env.PROCEDURE_DEBUG { print $err.rendered }
-        
         if $on_error != null {
             procedure print $on_error -c yellow
             # if $continue {
@@ -156,3 +116,4 @@ export def `procedure print` [
     }
     print $message
 }
+

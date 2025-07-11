@@ -1,11 +1,7 @@
+
 # ---------------------------------------------------------------------------- #
 #                                 color-show.nu                                #
 # ---------------------------------------------------------------------------- #
-
-use banner.nu my-ellie
-use container.nu ['container print' row]
-use color.nu 'color apply'
-use rgb.nu ['rgb from-hsv' 'rgb get-hex' 'into rgb']
 
 export def `color show` [] {
     $in | each {|e|
@@ -39,3 +35,4 @@ export def `print window` [] {
     ]
     $container | container print
 }
+

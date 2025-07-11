@@ -1,3 +1,4 @@
+
 # ---------------------------------------------------------------------------- #
 #                                applications.nu                               #
 # ---------------------------------------------------------------------------- #
@@ -44,3 +45,4 @@ export def `start app` [app_name] {
 
 export alias obsidian = start obsidian://open?vault=ArrowHead
 export alias notes = start obsidian://open?vault=ArrowHead
+

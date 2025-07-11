@@ -1,0 +1,19 @@
+
+# ---------------------------------------------------------------------------- #
+#                                      rest.nu                                 #
+# ---------------------------------------------------------------------------- #
+
+export def show [file] {
+    open $file | highlight
+}
+
+export alias tree = tree.exe
+
+export def --env `update commands` [] {
+    cd ~/Projects/nushell-scripts/
+    let modules = ls modules | get name
+    open everything.nu.base | save -f everything.nu
+    for module in $modules {
+        open $module | save -a everything.nu
+    }
+}

@@ -6,8 +6,11 @@
 
 # ---------------------------------- modules --------------------------------- #
 
-const IMPORTS_FILE = '~/Projects/nushell-scripts/imports.nu' | path expand
-source $IMPORTS_FILE
+use bios *
+use completions *
+
+# const IMPORTS_FILE = '~/Projects/nushell-scripts/imports.nu' | path expand
+# source $IMPORTS_FILE
 
 const SYS_COMMANDS_FILE = ('~/.sys-commands.nu' | path expand)
 source $SYS_COMMANDS_FILE
@@ -16,7 +19,7 @@ use everything.nu *
 
 # ---------------------------- environment config ---------------------------- #
 
-$env.IMPORTS_FILE = $IMPORTS_FILE
+# $env.IMPORTS_FILE = $IMPORTS_FILE
 $env.SYS_COMMANDS_FILE = $SYS_COMMANDS_FILE
 $env.VARS_FILE = ('~/.nu-vars.toml' | path expand)
 

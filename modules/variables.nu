@@ -1,3 +1,4 @@
+
 # ---------------------------------------------------------------------------- #
 #                                 variables.nu                                 #
 # ---------------------------------------------------------------------------- #
@@ -48,3 +49,4 @@ export def `var delete` [name: string] {
     let vars = open $env.VARS_FILE
     $vars | reject $name | to toml | save -f $env.VARS_FILE
 }
+

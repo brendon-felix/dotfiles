@@ -1,3 +1,4 @@
+
 # ---------------------------------------------------------------------------- #
 #                                   debug.nu                                   #
 # ---------------------------------------------------------------------------- #
@@ -13,8 +14,7 @@ export def test [] {
     "test"
 }
 
-export def main [x] {
-    
+export def debug [x] {
     $env.config.color_config.shape_garbage = 'default'
     let span = (metadata $x).span
     let x_name = view span $span.start $span.end | nu-highlight
@@ -22,3 +22,4 @@ export def main [x] {
     print $"($x_name)($x_type) ="
     print ($x | debug-builtin)
 }
+

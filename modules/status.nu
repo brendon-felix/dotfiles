@@ -1,9 +1,7 @@
+
 # ---------------------------------------------------------------------------- #
 #                                   status.nu                                  #
 # ---------------------------------------------------------------------------- #
-
-use print-utils.nu bar
-use color.nu 'color apply'
 
 def severity-bar [proportion] {
     let input = $in
@@ -74,3 +72,4 @@ export def `status memory` [--no-bar(-b)] {
 export alias memory = status memory
 export alias ram = status memory
 export alias disks = status disks
+

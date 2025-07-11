@@ -1,10 +1,7 @@
+
 # ---------------------------------------------------------------------------- #
 #                                     do.nu                                    #
 # ---------------------------------------------------------------------------- #
-
-use print-utils.nu countup
-use ansi.nu 'erase right'
-use color.nu 'color cycle'
 
 export def `do thing` [] {
     let i = (((date now | format date "%f" | into int) mod 1000000) / 100) + 1
@@ -19,3 +16,4 @@ export def `do things` [] {
         do thing
     }
 }
+

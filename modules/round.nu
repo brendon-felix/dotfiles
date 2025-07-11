@@ -1,3 +1,4 @@
+
 # ---------------------------------------------------------------------------- #
 #                                   round.nu                                   #
 # ---------------------------------------------------------------------------- #
@@ -41,7 +42,7 @@ export def "round duration" [unit?]: duration -> duration {
     }
 }
 
-export def main [] {
+export def round [] {
     each { |e|
         if ($e | describe) == "duration" {
             $e | round duration
@@ -50,3 +51,4 @@ export def main [] {
         }
     }
 }
+

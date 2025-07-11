@@ -1,9 +1,7 @@
+
 # ---------------------------------------------------------------------------- #
 #                                   random.nu                                  #
 # ---------------------------------------------------------------------------- #
-
-use rgb.nu 'rgb from-hsv'
-use records.nu 'each value'
 
 export def `random color` [
     --hsv(-h)
@@ -64,3 +62,4 @@ export def `random color` [
         }
     }
 }
+

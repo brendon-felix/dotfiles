@@ -1,10 +1,7 @@
+
 # ---------------------------------------------------------------------------- #
 #                                   system.nu                                  #
 # ---------------------------------------------------------------------------- #
-
-# export def copy [] {
-
-# }
 
 export def shutdown [] {
     run-external 'shutdown' '/s' '/t' '0'
@@ -15,3 +12,4 @@ export def reboot [] {
 }
 
 export alias restart = reboot
+

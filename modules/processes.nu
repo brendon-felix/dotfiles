@@ -1,10 +1,7 @@
+
 # ---------------------------------------------------------------------------- #
 #                                 processes.nu                                 #
 # ---------------------------------------------------------------------------- #
-
-use debug.nu *
-use ansi.nu 'strip length'
-use color.nu 'color apply'
 
 const MAX_NAME_LENGTH = 20
 const MAX_NUM_PROCESSES = 25
@@ -118,3 +115,4 @@ export def close [
         }
     }
 }
+

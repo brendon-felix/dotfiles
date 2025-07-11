@@ -1,13 +1,7 @@
+
 # ---------------------------------------------------------------------------- #
 #                                   color.nu                                   #
 # ---------------------------------------------------------------------------- #
-
-use std ellie
-use rgb.nu *
-# use container.nu [contain 'container print']
-use records.nu 'each value'
-use interpolate.nu main
-use debug.nu *
 
 # apply ANSI color or attributes to a piped string
 export def `color apply` [
@@ -103,3 +97,4 @@ export def `color random` [
         $e | color apply $color --strip=$strip --no-reset=$no_reset
     }
 }
+

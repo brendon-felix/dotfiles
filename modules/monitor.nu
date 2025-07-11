@@ -1,22 +1,9 @@
+
 # ---------------------------------------------------------------------------- #
 #                                  monitor.nu                                  #
 # ---------------------------------------------------------------------------- #
 
-use status.nu *
-use color.nu 'color apply'
-use banner.nu 'print banner'
-use ansi.nu [
-    'cursor off'
-    'cursor on'
-    'cursor position'
-    'cursor move-to'
-    'cursor home'
-    'erase right'
-    erase
-]
-
-
-export def main [--interval(-i): duration = 1sec]: closure -> nothing {
+export def monitor [--interval(-i): duration = 1sec]: closure -> nothing {
     clear
     let task = $in
     let loading = [
@@ -74,7 +61,7 @@ export def `monitor disk` [--no-bar(-b), --all(-a)] {
             { (status disks --no-bar=($no_bar)) | select $disk_choice.mount }
         }
     }
-    $task | main
+    $task | monitor
 }
 
 export def `monitor memory` [--no-bar(-b), --all(-a)] {
@@ -85,13 +72,14 @@ export def `monitor memory` [--no-bar(-b), --all(-a)] {
             { status memory --no-bar=($no_bar) | select $mem_choice }
         }
     }
-    $task | main
+    $task | monitor
 }
 
 export def `monitor ram` [--no-bar(-b)] {
-    { status memory --no-bar=($no_bar) | select RAM } | main
+    { status memory --no-bar=($no_bar) | select RAM } | monitor
 }
 
 export def `monitor banner` [] {
-    { print banner } | main
+    { print banner } | monitor
 }
+

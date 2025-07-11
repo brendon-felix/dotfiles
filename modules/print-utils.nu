@@ -1,14 +1,7 @@
+
 # ---------------------------------------------------------------------------- #
 #                                print-utils.nu                                #
 # ---------------------------------------------------------------------------- #
-
-use std repeat
-use round.nu 'round duration'
-use ansi.nu ['cursor off' 'erase right']
-use color.nu ['color apply' 'color interpolate']
-use interpolate.nu main
-use rgb.nu *
-# use debug.nu *
 
 export def `char block` [
     shade?: int = 4
@@ -141,3 +134,4 @@ export def countup [
     # print $"(ansi green)("Done")(erase right)(ansi reset)"
     # print -n $"(ansi reset)"
 }
+

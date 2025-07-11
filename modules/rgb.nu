@@ -1,12 +1,7 @@
+
 # ---------------------------------------------------------------------------- #
 #                                    rgb.nu                                    #
 # ---------------------------------------------------------------------------- #
-
-use str.nu 'str remove'
-use records.nu 'each value'
-use format.nu 'format hex'
-# use container.nu [contain 'container print']
-use debug.nu *
 
 # Convert an RGB record to a hex string
 export def `rgb get-hex` []: record<r: int, g: int, b: int> -> string {
@@ -66,7 +61,6 @@ export def `into rgb` []: any -> record<r: int, g: int, b: int> {
                 $h | rgb from-hsv
             }
         }
-        
     }
 }
 

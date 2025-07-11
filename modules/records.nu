@@ -1,7 +1,7 @@
+
 # ---------------------------------------------------------------------------- #
 #                                  records.nu                                  #
 # ---------------------------------------------------------------------------- #
-
 
 # Given a record, produce a list of its keys.
 export def keys [] {
@@ -21,3 +21,4 @@ export def `each value` [closure: closure] {
     {$key: (do $closure $value)}
     } | into record
 }
+
