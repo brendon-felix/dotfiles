@@ -26,6 +26,8 @@ $env.VARS_FILE = ('~/.nu-vars.toml' | path expand)
 $env.PROCEDURE_LEVEL = 0
 $env.PROCEDURE_DEBUG = true
 
+$env.BIOS_PROJECTS = open ('~/Projects/nushell-scripts/bios/projects.json' | path expand)
+$env.CURR_PROJECT = $env.BIOS_PROJECTS | find -n 'Springs' | first
 # $env.LS_COLORS = 'no=0:fi=0:di=1;34:ln=36:pi=33:so=35:bd=1;33:cd=1;33:or=31:mi=05;37;41:ex=01;32:*.tar=01;31:*.tgz=01;31:*.gz=01;31:*.zip=01;31:*.rar=01;31:*.7z=01;31'
 
 # $env.LS_COLORS = 'di=1:fi=0:ln=31:pi=5:so=5:bd=5:cd=5:or=31'
