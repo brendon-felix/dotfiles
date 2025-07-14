@@ -89,6 +89,8 @@ vim.o.expandtab = true
 
 vim.opt.shortmess:append 'I'
 
+vim.o.virtualedit = 'block'
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
