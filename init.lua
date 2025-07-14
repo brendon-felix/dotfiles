@@ -41,7 +41,7 @@ vim.o.breakindent = true
 vim.o.undofile = true
 
 -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
-vim.o.ignorecase = true
+-- vim.o.ignorecase = true
 vim.o.smartcase = true
 
 -- Keep signcolumn on by default
@@ -984,12 +984,48 @@ require('lazy').setup({
   --   end,
   -- },
 
+  -- {
+  --   'wtfox/jellybeans.nvim',
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     vim.cmd.colorscheme 'jellybeans'
+  --   end,
+  -- },
+
+  -- {
+  --   'marko-cerovac/material.nvim',
+  --   lazy = false,
+  --   config = function()
+  --     vim.g.material_style = 'darker'
+  --     vim.cmd.colorscheme 'material'
+  --   end,
+  -- },
+
+  -- {
+  --   dir = '~/Projects/anysphere.nvim/',
+  --   name = 'anysphere',
+  --   lazy = false,
+  --   config = function()
+  --     vim.cmd.colorscheme 'anysphere'
+  --   end,
+  -- },
+
   {
-    'wtfox/jellybeans.nvim',
+    'brendon-felix/anysphere.nvim',
     lazy = false,
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme 'jellybeans'
+      require('anysphere').setup {
+        italic = {
+          strings = false,
+          emphasis = true,
+          comments = true,
+          operators = false,
+          folds = true,
+        },
+      }
+      vim.cmd.colorscheme 'anysphere'
     end,
   },
 
