@@ -1021,7 +1021,7 @@ require('lazy').setup({
           strings = false,
           emphasis = true,
           comments = true,
-          operators = false,
+          operators = true,
           folds = true,
         },
       }
