@@ -94,6 +94,8 @@ vim.o.expandtab = true
 
 vim.o.virtualedit = 'block'
 
+vim.o.termguicolors = true
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -337,6 +339,18 @@ require('lazy').setup({
             -- Use the `fd` command to find files, if available
             find_command = { 'fd', '--type', 'f', '--strip-cwd-prefix' },
             theme = 'dropdown',
+            initial_mode = 'normal',
+          },
+          live_grep = {
+            initial_mode = 'normal',
+          },
+          buffers = {
+            sort_lastused = true,
+            initial_mode = 'normal',
+          },
+          oldfiles = {
+            sort_lastused = true,
+            initial_mode = 'normal',
           },
         },
         extensions = {
@@ -345,6 +359,7 @@ require('lazy').setup({
           },
           file_browser = {
             hide_parent_dir = true,
+            initial_mode = 'normal',
           },
         },
       }
@@ -1310,7 +1325,6 @@ require('lazy').setup({
           bottom_search = true, -- use a classic bottom cmdline for search
           command_palette = true, -- position the cmdline and popupmenu together
           long_message_to_split = true, -- long messages will be sent to a split
-          lsp_doc_border = false, -- add a border to hover docs and signature help
         },
         views = {
           cmdline_popup = {
@@ -1351,6 +1365,17 @@ require('lazy').setup({
     dependencies = { 'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim' },
     config = function()
       require('telescope').load_extension 'file_browser'
+    end,
+  },
+
+  {
+    'rcarriga/nvim-notify',
+    event = 'VeryLazy',
+    config = function()
+      -- You can set the default level to `vim.log.levels.INFO` or `vim.log.levels.WARN`
+      --  to see more messages from plugins that use `vim.notify()`
+      require('notify').setup {}
+      vim.notify = require 'notify'
     end,
   },
 
