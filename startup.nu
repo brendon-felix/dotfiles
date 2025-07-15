@@ -117,6 +117,7 @@ procedure run "Startup" {
             coreutils
             du-dust
             ripgrep
+            fd-find
             # asciibar
             bat
             # zoxide
