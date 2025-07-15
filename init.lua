@@ -79,7 +79,7 @@ vim.o.inccommand = 'split'
 vim.o.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.o.scrolloff = 10
+vim.o.scrolloff = 25
 
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)
@@ -337,7 +337,7 @@ require('lazy').setup({
         pickers = {
           find_files = {
             -- Use the `fd` command to find files, if available
-            find_command = { 'fd', '--type', 'f', '--strip-cwd-prefix' },
+            -- find_command = { 'fd', '--type', 'f', '--strip-cwd-prefix' },
             theme = 'dropdown',
             initial_mode = 'normal',
           },
@@ -1300,11 +1300,10 @@ require('lazy').setup({
     config = function()
       require('noice').setup {
         lsp = {
-          -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
           override = {
             ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
             ['vim.lsp.util.stylize_markdown'] = true,
-            ['cmp.entry.get_documentation'] = true, -- requires hrsh7th/nvim-cmp
+            ['cmp.entry.get_documentation'] = true,
           },
         },
         routes = {
@@ -1319,13 +1318,19 @@ require('lazy').setup({
             },
             view = 'mini',
           },
+          {
+            filter = {
+              event = 'msg_show',
+              kind = 'search_count',
+            },
+            opts = { skip = true },
+          },
         },
-        -- you can enable a preset for easier configuration
-        presets = {
-          bottom_search = true, -- use a classic bottom cmdline for search
-          command_palette = true, -- position the cmdline and popupmenu together
-          long_message_to_split = true, -- long messages will be sent to a split
-        },
+        -- presets = {
+        --   bottom_search = true, -- use a classic bottom cmdline for search
+        --   command_palette = true, -- position the cmdline and popupmenu together
+        --   long_message_to_split = true, -- long messages will be sent to a split
+        -- },
         views = {
           cmdline_popup = {
             position = {
@@ -1371,10 +1376,17 @@ require('lazy').setup({
   {
     'rcarriga/nvim-notify',
     event = 'VeryLazy',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'folke/noice.nvim',
+    },
     config = function()
       -- You can set the default level to `vim.log.levels.INFO` or `vim.log.levels.WARN`
       --  to see more messages from plugins that use `vim.notify()`
-      require('notify').setup {}
+      require('notify').setup {
+        background_colour = '#191919',
+        merge_duplicates = true,
+      }
       vim.notify = require 'notify'
     end,
   },
@@ -1467,11 +1479,12 @@ require('lazy').setup({
               key = "q"
             },
           },
-          footer = function()
-            local stats = require('lazy').stats()
-            local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
-            return { '⚡ Neovim loaded ' .. stats.loaded .. '/' .. stats.count .. ' plugins in ' .. ms .. 'ms' }
-          end,
+          footer = {},
+          -- footer = function()
+          --   local stats = require('lazy').stats()
+          --   local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
+          --   return { '⚡ Neovim loaded ' .. stats.loaded .. '/' .. stats.count .. ' plugins in ' .. ms .. 'ms' }
+          -- end,
         },
       }
       for _, button in ipairs(opts.config.center) do
