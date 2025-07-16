@@ -1,4 +1,6 @@
--- init.lua:q
+-- -------------------------------------------------------------------------- --
+--                                  init.lua                                  --
+-- -------------------------------------------------------------------------- --
 
 -- Set <space> as the leader key
 -- See `:help mapleader`
@@ -1253,7 +1255,7 @@ require('lazy').setup({
     },
     lazy = false,
     keys = {
-      -- { '\\', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true },
+      { '\\', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true },
       {
         '<leader>e',
         function()
@@ -1326,11 +1328,11 @@ require('lazy').setup({
             opts = { skip = true },
           },
         },
-        -- presets = {
-        --   bottom_search = true, -- use a classic bottom cmdline for search
-        --   command_palette = true, -- position the cmdline and popupmenu together
-        --   long_message_to_split = true, -- long messages will be sent to a split
-        -- },
+        presets = {
+          -- bottom_search = true, -- use a classic bottom cmdline for search
+          command_palette = true, -- position the cmdline and popupmenu together
+          long_message_to_split = true, -- long messages will be sent to a split
+        },
         views = {
           cmdline_popup = {
             position = {
@@ -1406,8 +1408,7 @@ require('lazy').setup({
     'nvimdev/dashboard-nvim',
     opts = function()
       local logo = [[
-                                                                       
-                                                                       
+
 `7MN.   `7MF'`7MM"""YMM    .g8""8q.`7MMF'   `7MF'`7MMF'`7MMM.     ,MMF'
   MMN.    M    MM    `7  .dP'    `YM.`MA     ,V    MM    MMMb    dPMM  
   M YMb   M    MM   d    dM'      `MM VM:   ,V     MM    M YM   ,M MM  
@@ -1415,9 +1416,55 @@ require('lazy').setup({
   M   `MM.M    MM   Y  , MM.      ,MP  `MM A'      MM    M  YM.P'  MM  
   M     YMM    MM     ,M `Mb.    ,dP'   :MM;       MM    M  `YM'   MM  
 .JML.    YM  .JMMmmmmMMM   `"bmmd"'      VF      .JMML..JML. `'  .JMML.
-                                                                       
-                                                                       
+
 ]]
+
+      --       local logo = [[
+      --  ________   _______   ________  ___      ___ ___  _____ ______
+      -- |\   ___  \|\  ___ \ |\   __  \|\  \    /  /|\  \|\   _ \  _   \
+      -- \ \  \\ \  \ \   __/|\ \  \|\  \ \  \  /  / | \  \ \  \\\__\ \  \
+      --  \ \  \\ \  \ \  \_|/_\ \  \\\  \ \  \/  / / \ \  \ \  \\|__| \  \
+      --   \ \  \\ \  \ \  \_|\ \ \  \\\  \ \    / /   \ \  \ \  \    \ \  \
+      --    \ \__\\ \__\ \_______\ \_______\ \__/ /     \ \__\ \__\    \ \__\
+      --     \|__| \|__|\|_______|\|_______|\|__|/       \|__|\|__|     \|__|
+      --
+      --       ]]
+      --       local logo = [[
+      -- __/\\\\\_____/\\\__/\\\\\\\\\\\\\\\_______/\\\\\_______/\\\________/\\\__/\\\\\\\\\\\__/\\\\____________/\\\\_
+      --  _\/\\\\\\___\/\\\_\/\\\///////////______/\\\///\\\____\/\\\_______\/\\\_\/////\\\///__\/\\\\\\________/\\\\\\_
+      --   _\/\\\/\\\__\/\\\_\/\\\_______________/\\\/__\///\\\__\//\\\______/\\\______\/\\\_____\/\\\//\\\____/\\\//\\\_
+      --    _\/\\\//\\\_\/\\\_\/\\\\\\\\\\\______/\\\______\//\\\__\//\\\____/\\\_______\/\\\_____\/\\\\///\\\/\\\/_\/\\\_
+      --     _\/\\\\//\\\\/\\\_\/\\\///////______\/\\\_______\/\\\___\//\\\__/\\\________\/\\\_____\/\\\__\///\\\/___\/\\\_
+      --      _\/\\\_\//\\\/\\\_\/\\\_____________\//\\\______/\\\_____\//\\\/\\\_________\/\\\_____\/\\\____\///_____\/\\\_
+      --       _\/\\\__\//\\\\\\_\/\\\______________\///\\\__/\\\________\//\\\\\__________\/\\\_____\/\\\_____________\/\\\_
+      --        _\/\\\___\//\\\\\_\/\\\\\\\\\\\\\\\____\///\\\\\/__________\//\\\________/\\\\\\\\\\\_\/\\\_____________\/\\\_
+      --         _\///_____\/////__\///////////////_______\/////_____________\///________\///////////__\///______________\///__
+      --       ]]
+
+      --       local logo = [[
+      --                                              ___
+      --                                           ,o88888
+      --                                        ,o8888888'
+      --                  ,:o:o:oooo.        ,8O88Pd8888"
+      --              ,.::.::o:ooooOoOoO. ,oO8O8Pd888'"
+      --            ,.:.::o:ooOoOoOO8O8OOo.8OOPd8O8O"
+      --           , ..:.::o:ooOoOOOO8OOOOo.FdO8O8"
+      --          , ..:.::o:ooOoOO8O888O8O,COCOO"
+      --         , . ..:.::o:ooOoOOOO8OOOOCOCO"
+      --          . ..:.::o:ooOoOoOO8O8OCCCC"o
+      --             . ..:.::o:ooooOoCoCCC"o:o
+      --             . ..:.::o:o:,cooooCo"oo:o:
+      --          `   . . ..:.:cocoooo"'o:o:::'
+      --          .`   . ..::ccccoc"'o:o:o:::'
+      --         :.:.    ,c:cccc"':.:.:.:.:.'
+      --       ..:.:"'`::::c:"'..:.:.:.:.:.'
+      --     ...:.'.:.::::"'    . . . . .'
+      --    .. . ....:."' `   .  . . ''
+      --  . . . ...."'
+      --  .. . ."'
+      -- .
+      --
+      -- ]]
 
       logo = string.rep('\n', 8) .. logo .. '\n\n'
       local builtin = require 'telescope.builtin'
@@ -1504,6 +1551,44 @@ require('lazy').setup({
         })
       end
       return opts
+    end,
+  },
+  {
+    'brendon-felix/divide.nvim',
+    event = 'VeryLazy',
+    keys = {
+      {
+        '<leader>cx',
+        function()
+          require('divide').subheader()
+        end,
+        desc = 'Create comment divider',
+      },
+      {
+        '<leader>cz',
+        function()
+          require('divide').header()
+        end,
+        desc = 'Create comment header',
+      },
+      {
+        '<leader>cy',
+        function()
+          require('divide').divider()
+        end,
+        desc = 'Create comment divider',
+      },
+    },
+    config = function()
+      require('divide').setup {
+        language_config = {
+          nu = {
+            line_start = '#',
+            line_end = '#',
+            character = '-',
+          },
+        },
+      }
     end,
   },
   --
