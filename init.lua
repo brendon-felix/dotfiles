@@ -742,15 +742,12 @@ require('lazy').setup({
           return 'make install_jsregexp'
         end)(),
         dependencies = {
-          -- `friendly-snippets` contains a variety of premade snippets.
-          --    See the README about individual language/framework/plugin snippets:
-          --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+            end,
+          },
         },
         opts = {},
       },
@@ -782,9 +779,6 @@ require('lazy').setup({
         --
         -- See :h blink-cmp-config-keymap for defining your own keymap
         preset = 'enter',
-
-        -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
-        --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
       },
 
       appearance = {
@@ -804,19 +798,8 @@ require('lazy').setup({
           lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
         },
       },
-
       snippets = { preset = 'luasnip' },
-
-      -- Blink.cmp includes an optional, recommended rust fuzzy matcher,
-      -- which automatically downloads a prebuilt binary when enabled.
-      --
-      -- By default, we use the Lua implementation instead, but you may enable
-      -- the rust implementation via `'prefer_rust_with_warning'`
-      --
-      -- See :h blink-cmp-config-fuzzy for more information
-      fuzzy = { implementation = 'lua' },
-
-      -- Shows a signature help window while you type arguments for a function
+      fuzzy = { implementation = 'prefer_rust_with_warning' },
       signature = { enabled = true },
     },
   },
@@ -841,150 +824,11 @@ require('lazy').setup({
   -- },
 
   -- {
-  --   'catppuccin/nvim',
-  --   name = 'catppuccin',
-  --   priority = 1000,
-  --   config = function()
-  --     -- You can set the flavor to latte, frappe, macchiato, or mocha
-  --     --  See `:help catppuccin-flavors` for more information
-  --     vim.g.catppuccin_flavour = 'mocha'
-  --     require('catppuccin').setup {
-  --       transparent_background = true,
-  --       term_colors = true,
-  --       styles = {
-  --         comments = { 'italic' },
-  --         functions = { 'italic' },
-  --         keywords = { 'bold' },
-  --         variables = { 'italic' },
-  --       },
-  --     }
-  --     vim.cmd.colorscheme 'catppuccin'
-  --   end,
-  -- },
-
-  -- {
   --   'rebelot/kanagawa.nvim',
   --   priority = 1000,
   --   config = function()
   --     require('kanagawa').setup {}
   --     vim.cmd.colorscheme 'kanagawa-dragon'
-  --   end,
-  -- },
-
-  -- {
-  --   'savq/melange-nvim',
-  --   priority = 1000,
-  --   config = function()
-  --     vim.cmd.colorscheme 'melange'
-  --   end,
-  -- },
-
-  -- {
-  --   'luisiacc/gruvbox-baby',
-  --   priority = 1000,
-  --   config = function()
-  --     -- require('gruvbox-baby').setup {
-  --     --   background_color = 'medium',
-  --     -- }
-  --     vim.cmd.colorscheme 'gruvbox-baby'
-  --   end,
-  -- },
-
-  -- {
-  --   'armannikoyan/rusty',
-  --   lazy = false,
-  --   priority = 1000,
-  --   opts = {
-  --     transparent = true,
-  --     colors = {
-  --       background = '#262626',
-  --     },
-  --   },
-  --   config = function(_, opts)
-  --     require('rusty').setup(opts)
-  --     vim.cmd.colorscheme 'rusty'
-  --   end,
-  -- },
-
-  -- {
-  --   'Mofiqul/vscode.nvim',
-  --   lazy = false,
-  --   priority = 1000,
-  --   config = function()
-  --     require('vscode').setup {
-  --       transparent = true,
-  --     }
-  --     vim.cmd.colorscheme 'vscode'
-  --   end,
-  -- },
-
-  -- {
-  --   'bluz71/vim-moonfly-colors',
-  --   name = 'moonfly',
-  --   lazy = false,
-  --   priority = 1000,
-  --   config = function()
-  --     -- You can set the style to 'dark' or 'light'
-  --     --  See `:help moonfly-colors` for more information
-  --     vim.g.moonflyStyle = 'dark'
-  --     vim.cmd.colorscheme 'moonfly'
-  --   end,
-  -- },
-
-  -- {
-  --   'HoNamDuong/hybrid.nvim',
-  --   lazy = false,
-  --   priority = 1000,
-  --   config = function()
-  --     require('hybrid').setup {
-  --       overrides = function(hl, c)
-  --         local background = '#191919'
-  --         hl.TelescopeNormal = {
-  --           fg = c.fg,
-  --           bg = background,
-  --         }
-  --         hl.TelescopeBorder = {
-  --           fg = c.fg_hard,
-  --           bg = c.bg,
-  --         }
-  --         hl.TelescopeTitle = {
-  --           fg = c.fg_hard,
-  --           bg = c.bg,
-  --           bold = true,
-  --         }
-  --       end,
-  --     }
-  --     vim.cmd.colorscheme 'hybrid'
-  --   end,
-  -- },
-
-  -- {
-  --   'ficcdaf/ashen.nvim',
-  --   -- optional but recommended,
-  --   -- pin to the latest stable release:
-  --   lazy = false,
-  --   priority = 1000,
-  --   config = function()
-  --     vim.cmd.colorscheme 'ashen'
-  --   end,
-  -- },
-
-  -- {
-  --   'sainnhe/gruvbox-material',
-  --   lazy = false,
-  --   priority = 1000,
-  --   config = function()
-  --     vim.g.gruvbox_material_background = 'hard'
-  --     vim.cmd.colorscheme 'gruvbox-material'
-  --   end,
-  -- },
-
-  -- {
-  --   'Shatur/neovim-ayu',
-  --   lazy = false,
-  --   priority = 1000,
-  --   config = function()
-  --     vim.cmd.colorscheme 'ayu'
   --   end,
   -- },
 
@@ -1001,34 +845,6 @@ require('lazy').setup({
   --     vim.cmd.colorscheme 'jellybeans'
   --   end,
   -- },
-
-  -- {
-  --   'wtfox/jellybeans.nvim',
-  --   lazy = false,
-  --   priority = 1000,
-  --   config = function()
-  --     vim.cmd.colorscheme 'jellybeans'
-  --   end,
-  -- },
-
-  -- {
-  --   'marko-cerovac/material.nvim',
-  --   lazy = false,
-  --   config = function()
-  --     vim.g.material_style = 'darker'
-  --     vim.cmd.colorscheme 'material'
-  --   end,
-  -- },
-
-  -- {
-  --   dir = '~/Projects/anysphere.nvim/',
-  --   name = 'anysphere',
-  --   lazy = false,
-  --   config = function()
-  --     vim.cmd.colorscheme 'anysphere'
-  --   end,
-  -- },
-  --
 
   {
     'brendon-felix/anysphere.nvim',
@@ -1558,25 +1374,25 @@ require('lazy').setup({
     event = 'VeryLazy',
     keys = {
       {
-        '<leader>cx',
+        '<leader>ds',
         function()
           require('divide').subheader()
         end,
-        desc = 'Create comment divider',
+        desc = '[D]ivide with [S]ubheader',
       },
       {
-        '<leader>cz',
+        '<leader>dh',
         function()
           require('divide').header()
         end,
-        desc = 'Create comment header',
+        desc = '[D]ivide with [H]eader',
       },
       {
-        '<leader>cy',
+        '<leader>dd',
         function()
           require('divide').divider()
         end,
-        desc = 'Create comment divider',
+        desc = '[D]ivide with [D]ivider',
       },
     },
     config = function()
@@ -1591,16 +1407,7 @@ require('lazy').setup({
       }
     end,
   },
-  --
-  -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
-  -- init.lua. If you want these files, they are in the repository, so you can just download them and
-  -- place them in the correct locations.
 
-  -- NOTE: Next step on your Neovim journey: Add/Configure additional plugins for Kickstart
-  --
-  --  Here are some example plugins that I've included in the Kickstart repository.
-  --  Uncomment any of the lines below to enable them (you will need to restart nvim).
-  --
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
@@ -1612,7 +1419,7 @@ require('lazy').setup({
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
