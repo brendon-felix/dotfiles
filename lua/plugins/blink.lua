@@ -14,12 +14,12 @@ return {
           return 'make install_jsregexp'
         end)(),
         dependencies = {
-          {
-            'rafamadriz/friendly-snippets',
-            config = function()
-              require('luasnip.loaders.from_vscode').lazy_load()
-            end,
-          },
+          -- {
+          --   'rafamadriz/friendly-snippets',
+          --   config = function()
+          --     require('luasnip.loaders.from_vscode').lazy_load()
+          --   end,
+          -- },
         },
         opts = {},
       },
@@ -36,7 +36,10 @@ return {
       sources = {
         default = { 'lsp', 'path', 'snippets', 'lazydev' },
         providers = {
-          lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
+          lazydev = {
+            module = 'lazydev.integrations.blink',
+            score_offset = 100,
+          },
         },
       },
       snippets = { preset = 'luasnip' },

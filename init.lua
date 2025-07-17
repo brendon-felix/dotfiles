@@ -23,10 +23,10 @@ vim.o.splitbelow = true
 vim.o.list = true
 vim.o.inccommand = 'split'
 vim.o.cursorline = true
-vim.o.scrolloff = 25
+vim.o.scrolloff = 10
 vim.o.confirm = true
-vim.o.shiftwidth = 4
-vim.o.tabstop = 4
+-- vim.o.shiftwidth = 4
+-- vim.o.tabstop = 4
 vim.o.expandtab = true
 vim.o.virtualedit = 'block'
 vim.o.termguicolors = true
@@ -83,9 +83,10 @@ end
 local rtp = vim.opt.rtp
 rtp:prepend(lazypath)
 
--- -------------------------------- plugins --------------------------------- --
+-- ------------------------------- setup lazy ------------------------------- --
 
 require('lazy').setup {
+  install = { colorscheme = 'anysphere' },
   {
     'folke/lazydev.nvim',
     ft = 'lua',
