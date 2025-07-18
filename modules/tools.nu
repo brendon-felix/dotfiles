@@ -35,6 +35,8 @@ export alias chef = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/Arrow
 # Ask about Vim, Neovim, and vi motions.
 export alias askvim = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/Arrowhead/Files/api_key.txt -p ~/Arrowhead/Files/Prompts/askvim_prompt.txt
 
+export alias eg = ~/Projects/rusty-gpt/target/release/rusty-gpt.exe -a ~/Arrowhead/Files/api_key.txt -p ~/Arrowhead/Files/Prompts/eg_prompt.txt
+
 # alias calc = ~/Projects/qalculate/qalc.exe -c
 export alias qalc = ~/Projects/qalculate/qalc.exe -c
 export alias calc = ~/kalc.exe

@@ -65,7 +65,7 @@ def interpolate_list [
     }
 }
 
-export def interpolate [
+export def main [
     # start
     end
     t?: float = 0.5

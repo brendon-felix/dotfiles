@@ -3,6 +3,8 @@
 #                                   color.nu                                   #
 # ---------------------------------------------------------------------------- #
 
+use rgb.nu ['into rgb' 'rgb get-hex']
+
 # apply ANSI color or attributes to a piped string
 export def `color apply` [
     color           # the color or escape to apply (see `ansi --list`)

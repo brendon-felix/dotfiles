@@ -3,6 +3,11 @@
 #                                   banner.nu                                  #
 # ---------------------------------------------------------------------------- #
 
+use std ellie
+use container.nu ['contain' 'container print' 'row' 'box']
+use color.nu 'color apply'
+use status.nu ['status memory' 'status disks']
+
 def startup []: nothing -> string {
     let startup_time = ($nu.startup-time | round duration ms)
     match $startup_time {

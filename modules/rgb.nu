@@ -3,6 +3,9 @@
 #                                    rgb.nu                                    #
 # ---------------------------------------------------------------------------- #
 
+use records.nu 'each value'
+use format.nu 'format hex'
+
 # Convert an RGB record to a hex string
 export def `rgb get-hex` []: record<r: int, g: int, b: int> -> string {
     each {|e|

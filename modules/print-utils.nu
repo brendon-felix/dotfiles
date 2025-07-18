@@ -3,6 +3,8 @@
 #                                print-utils.nu                                #
 # ---------------------------------------------------------------------------- #
 
+use rgb.nu ['into rgb' 'rgb get-hex']
+
 export def `char block` [
     shade?: int = 4
 ] {

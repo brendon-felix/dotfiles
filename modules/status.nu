@@ -3,6 +3,8 @@
 #                                   status.nu                                  #
 # ---------------------------------------------------------------------------- #
 
+use print-utils.nu bar
+
 def severity-bar [proportion] {
     let input = $in
     match $proportion {

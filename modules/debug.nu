@@ -14,7 +14,7 @@ export def test [] {
     "test"
 }
 
-export def debug [x] {
+export def main [x] {
     $env.config.color_config.shape_garbage = 'default'
     let span = (metadata $x).span
     let x_name = view span $span.start $span.end | nu-highlight

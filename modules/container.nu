@@ -3,6 +3,8 @@
 #                                 container.nu                                 #
 # ---------------------------------------------------------------------------- #
 
+use std repeat
+
 # Converts piped input into a container (list of strings)
 export def contain [
     --pad(-p): string = normal      # padding style: normal (n), comfy (c), tight (t)

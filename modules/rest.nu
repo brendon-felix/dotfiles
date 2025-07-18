@@ -4,7 +4,7 @@
 # ---------------------------------------------------------------------------- #
 
 export def show [file] {
-    open $file | highlight
+    open -r $file | highlight
 }
 
 export alias tree = tree.exe

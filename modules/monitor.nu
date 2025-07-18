@@ -3,7 +3,7 @@
 #                                  monitor.nu                                  #
 # ---------------------------------------------------------------------------- #
 
-export def monitor [--interval(-i): duration = 1sec]: closure -> nothing {
+def monitor [--interval(-i): duration = 1sec]: closure -> nothing {
     clear
     let task = $in
     let loading = [

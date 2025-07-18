@@ -3,6 +3,8 @@
 #                                   format.nu                                  #
 # ---------------------------------------------------------------------------- #
 
+use str.nu 'str remove'
+
 export def `format hex` [
     # --upper(-u)
     --width(-w): int

@@ -2,7 +2,7 @@
 #                                bios-utils.nu                                 #
 # ---------------------------------------------------------------------------- #
 
-use ../everything.nu ['path stem-append']
+use ../modules/rest.nu ['path stem-append']
 
 const NETWORK_BOOTLEGS_PATH = '\\wks-file.ftc.rd.hpicorp.net\MAIN_LAB\SHARES\LAB\Brendon Felix\Bootlegs'
 

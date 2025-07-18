@@ -3,6 +3,9 @@
 #                                 color-show.nu                                #
 # ---------------------------------------------------------------------------- #
 
+use rgb.nu ['rgb get-hex' 'into rgb' 'rgb from-hsv']
+use color.nu 'color apply'
+
 export def `color show` [] {
     $in | each {|e|
         let color_hex = match ($e | describe) {
