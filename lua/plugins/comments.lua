@@ -22,7 +22,8 @@ return {
   },
 
   {
-    'brendon-felix/divide.nvim',
+    dir = '~/Projects/divide.nvim',
+    -- 'brendon-felix/divide.nvim',
     event = 'VeryLazy',
     keys = {
       {
