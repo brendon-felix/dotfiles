@@ -16,11 +16,6 @@ if not (which git | is-empty) {
     }
 }
 
-if not ([$env.LOCALAPPDATA 'nvim'] | path join | path exists) {
-    cd $env.LOCALAPPDATA
-    git clone https://github.com/brendon-felix/nvim-config.git nvim
-}
-
 if not (which z | is-empty) {
     print "zoxide is already installed."
 } else {
@@ -30,30 +25,6 @@ if not (which z | is-empty) {
         print "zoxide installed successfully."
     } catch {
         error make -u { msg: "Could not install zoxide" }
-    }
-}
-
-if not (which starship | is-empty) {
-    print "starship is already installed."
-} else {
-    print "Installing starship..."
-    try {
-        winget install --id starship.starship -e
-        print "starship installed successfully."
-    } catch {
-        error make -u { msg: "Could not install starship" }
-    }
-}
-
-if not (which nu | is-empty) {
-    print "nushell is already installed."
-} else {
-    print "Installing nushell..."
-    try {
-        winget install --id=Nushell.Nushell -e
-        print "nushell installed successfully."
-    } catch {
-        error make -u { msg: "Could not install nushell" }
     }
 }
 
@@ -69,9 +40,14 @@ if not (which nvim | is-empty) {
         error make -u { msg: "Could not install neovim" }
     }
 }
+if not ([$env.LOCALAPPDATA 'nvim'] | path join | path exists) {
+    cd $env.LOCALAPPDATA
+    git clone https://github.com/brendon-felix/nvim-config.git nvim
+}
+
 
 if not (which fd | is-empty) {
-    print "fd is already installed."
+    print "`fd` is already installed."
 } else {
     print "Installing fd..."
     try {
@@ -83,7 +59,7 @@ if not (which fd | is-empty) {
 }
 
 if not (which fzf | is-empty) {
-    print "fzf is already installed."
+    print "`fzf` is already installed."
 } else {
     print "Installing fzf..."
     try {
