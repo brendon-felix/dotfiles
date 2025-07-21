@@ -16,12 +16,12 @@ return {
       -- require('mini.comment').setup {
       -- }
 
-      require('mini.pairs').setup {
-        skip_next = [=[[%w%%%'%[%"%.%`%$]]=],
-        skip_ts = { 'string' },
-        skip_unbalanced = true,
-        markdown = true,
-      }
+      -- require('mini.pairs').setup {
+      --   skip_next = [=[[%w%%%'%[%"%.%`%$]]=],
+      --   skip_ts = { 'string' },
+      --   skip_unbalanced = true,
+      --   markdown = true,
+      -- }
 
       local animate = require 'mini.animate'
       local mouse_scrolled = false
