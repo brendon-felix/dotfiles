@@ -62,6 +62,9 @@ alias cd = z
 # ---------------------------------- banner ---------------------------------- #
 
 if $nu.is-interactive {
-    print banner
+    match (sys host | get hostname) {
+        'kepler' => (print banner header)
+        _ => (print banner memory)
+    }
 }
 

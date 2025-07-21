@@ -19,7 +19,7 @@ export def `config nu` [
         config-nu-builtin
     } else {
         cd ~/Projects/nushell-scripts
-        code config.nu
+        ^$env.EDITOR config.nu
     }
 }
 
