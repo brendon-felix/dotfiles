@@ -35,14 +35,14 @@ return {
               action = browser.file_browser,
               desc = ' Browse files',
               icon = '󰈙 ',
-              key = 'b',
+              key = 'e',
             },
-            {
-              action = 'ene | startinsert',
-              desc = ' New file',
-              icon = ' ',
-              key = 'n',
-            },
+            -- {
+            --   action = 'ene | startinsert',
+            --   desc = ' New file',
+            --   icon = ' ',
+            --   key = 'n',
+            -- },
             {
               action = builtin.oldfiles,
               desc = ' Recent files',
@@ -53,7 +53,13 @@ return {
               action = live_grep.live_grep_args,
               desc = ' Find text',
               icon = ' ',
-              key = 'g',
+              key = 'f',
+            },
+            {
+              action = 'Neogit',
+              desc = ' Git status',
+              icon = '󰊢 ',
+              key = 'd',
             },
             {
               action = 'Lazy',

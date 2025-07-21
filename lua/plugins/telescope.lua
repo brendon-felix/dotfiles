@@ -21,10 +21,10 @@ return {
         pickers = {
           find_files = {
             theme = 'dropdown',
-            initial_mode = 'normal',
+            initial_mode = 'insert',
           },
           live_grep = {
-            initial_mode = 'normal',
+            initial_mode = 'insert',
           },
           buffers = {
             sort_lastused = true,
@@ -73,6 +73,12 @@ return {
         { desc = '[S]earch [F]iles' }
       )
       vim.keymap.set(
+        { 'n', 'i', 'v' },
+        '<C-q>',
+        builtin.find_files,
+        { desc = 'Search Files' }
+      )
+      vim.keymap.set(
         'n',
         '<leader>ss',
         builtin.builtin,
@@ -90,6 +96,12 @@ return {
         extensions.live_grep_args.live_grep_args,
         { desc = '[S]earch by [G]rep' }
       )
+      -- vim.keymap.set(
+      --   { 'n', 'i', 'v' },
+      --   '<C-S-f>',
+      --   extensions.live_grep_args.live_grep_args,
+      --   { desc = 'Search by grep' }
+      -- )
       vim.keymap.set(
         'n',
         '<leader>sd',
