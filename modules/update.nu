@@ -3,19 +3,23 @@
 #                                   update.nu                                  #
 # ---------------------------------------------------------------------------- #
 
+use debug.nu *
+use color.nu 'color apply'
+use procedure.nu 'procedure new-task'
+
 export def `update imports` [] {
-    procedure new-task "Updating module imports" {
-        procedure new-task "Creating new mod file" {
-            if ($env.IMPORTS_FILE | path exists) {
-                rm $env.IMPORTS_FILE
-            } else {
-                touch $env.IMPORTS_FILE
+    let path = '~' | path join Projects nushell-scripts modules | path expand
+    let modules = ls $path | where name =~ '\.nu$' | get name | path basename | where $it != mod.nu
+    match ($modules | is-empty) {
+        true => {
+            error make -u {
+                msg: $"no modules found in ($path | path expand)",
             }
         }
-        procedure new-task "Writing module imports to mod file" {
-            let modules = (ls-builtin ~/Projects/nushell-scripts/modules/ | sort-by type | get name | path basename)
-            for m in $modules {
-                $"use modules/($m) *\n" | save -a $env.IMPORTS_FILE
+        false => {
+            let imports = $modules | each {|e| $"export use ($e) *" }
+            procedure new-task $"Saving ($modules | length | into string | color apply blue) imports to ('modules/mod.nu' | color apply blue)" {
+                $imports | save -f ($path | path join mod.nu)
             }
         }
     }
