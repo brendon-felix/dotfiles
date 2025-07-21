@@ -23,56 +23,57 @@ return {
         theme = 'doom',
         config = {
           header = vim.split(logo, '\n'),
-          -- stylua: ignore
           center = {
             {
               action = builtin.find_files,
-              desc = " Search files",
-              icon = " ",
-              key = "s"
+              desc = ' Search files',
+              icon = ' ',
+              key = 's',
             },
             {
               action = browser.file_browser,
-              desc = " Browse files",
-              icon = "󰈙 ",
-              key = "b"
+              desc = ' Browse files',
+              icon = '󰈙 ',
+              key = 'b',
             },
             {
-              action = "ene | startinsert",
-              desc = " New file",
-              icon = " ",
-              key = "n"
+              action = 'ene | startinsert',
+              desc = ' New file',
+              icon = ' ',
+              key = 'n',
             },
             {
               action = builtin.oldfiles,
-              desc = " Recent files",
-              icon = " ",
-              key = "r"
+              desc = ' Recent files',
+              icon = ' ',
+              key = 'r',
             },
             {
               action = builtin.live_grep,
-              desc = " Find text",
-              icon = " ",
-              key = "g"
+              desc = ' Find text',
+              icon = ' ',
+              key = 'g',
             },
             {
-              action = "Lazy",
-              desc = " Lazy",
-              icon = "󰒲 ",
-              key = "l"
+              action = 'Lazy',
+              desc = ' Lazy',
+              icon = '󰒲 ',
+              key = 'l',
             },
             {
-              action = function() vim.api.nvim_input("<cmd>qa<cr>") end,
-              desc = " Quit",
-              icon = " ",
-              key = "q"
+              action = function()
+                vim.api.nvim_input '<cmd>qa<cr>'
+              end,
+              desc = ' Quit',
+              icon = ' ',
+              key = 'q',
             },
           },
           footer = {},
         },
       }
       for _, button in ipairs(opts.config.center) do
-        button.desc = button.desc .. string.rep(' ', 43 - #button.desc)
+        button.desc = button.desc .. string.rep(' ', 21 - #button.desc)
         button.key_format = '  %s'
       end
       if vim.o.filetype == 'lazy' then
