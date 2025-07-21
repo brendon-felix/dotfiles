@@ -13,6 +13,8 @@ return {
       },
       { 'nvim-telescope/telescope-ui-select.nvim' },
       { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+      { 'nvim-telescope/telescope-file-browser.nvim' },
+      { 'nvim-telescope/telescope-live-grep-args.nvim' },
     },
     config = function()
       require('telescope').setup {
@@ -48,7 +50,10 @@ return {
       }
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
+      pcall(require('telescope').load_extension, 'file_browser')
+      pcall(require('telescope').load_extension, 'live_grep_args')
       local builtin = require 'telescope.builtin'
+      local extensions = require('telescope').extensions
       vim.keymap.set(
         'n',
         '<leader>sh',
@@ -82,7 +87,7 @@ return {
       vim.keymap.set(
         'n',
         '<leader>sg',
-        builtin.live_grep,
+        extensions.live_grep_args.live_grep_args,
         { desc = '[S]earch by [G]rep' }
       )
       vim.keymap.set(
@@ -113,7 +118,7 @@ return {
         builtin.current_buffer_fuzzy_find(
           require('telescope.themes').get_dropdown {
             winblend = 10,
-            previewer = true,
+            previewer = false,
           }
         )
       end, { desc = '[/] Fuzzily search in current buffer' })
@@ -126,14 +131,6 @@ return {
       vim.keymap.set('n', '<leader>sn', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
       end, { desc = '[S]earch [N]eovim files' })
-    end,
-  },
-
-  {
-    'nvim-telescope/telescope-file-browser.nvim',
-    dependencies = { 'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim' },
-    config = function()
-      require('telescope').load_extension 'file_browser'
     end,
   },
 }

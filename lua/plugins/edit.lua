@@ -1,6 +1,29 @@
 return {
   {
+    'booperlv/nvim-gomove',
+    event = 'VeryLazy',
+    config = function()
+      require('gomove').setup {}
+    end,
+  },
+
+  {
+    'kylechui/nvim-surround',
+    event = 'VeryLazy',
+    config = function()
+      require('nvim-surround').setup {}
+    end,
+  },
+
+  {
+    'windwp/nvim-autopairs',
+    event = 'InsertEnter',
+    opts = {},
+  },
+
+  {
     'folke/ts-comments.nvim',
+    event = 'VeryLazy',
     config = function()
       require('ts-comments').setup {
         lang = {

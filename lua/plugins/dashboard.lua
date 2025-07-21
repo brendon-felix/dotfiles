@@ -19,6 +19,7 @@ return {
       logo = string.rep('\n', 8) .. logo .. '\n\n'
       local builtin = require 'telescope.builtin'
       local browser = require('telescope').extensions.file_browser
+      local live_grep = require('telescope').extensions.live_grep_args
       local opts = {
         theme = 'doom',
         config = {
@@ -49,7 +50,7 @@ return {
               key = 'r',
             },
             {
-              action = builtin.live_grep,
+              action = live_grep.live_grep_args,
               desc = ' Find text',
               icon = ' ',
               key = 'g',
