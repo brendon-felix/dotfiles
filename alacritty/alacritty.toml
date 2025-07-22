@@ -1,0 +1,6 @@
+# [general]
+# working_directory = '%USERPROFILE%'
+
+[terminal]
+shell = { program = 'nu', args = [] }
+
