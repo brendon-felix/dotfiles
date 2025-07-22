@@ -4,6 +4,10 @@
 # ---------------------------------------------------------------------------- #
 
 use rgb.nu ['into rgb' 'rgb get-hex']
+use ansi.nu ['cursor off' 'cursor on' 'erase right']
+use interpolate.nu main
+use round.nu 'round duration'
+use color.nu 'color apply'
 
 export def `char block` [
     shade?: int = 4

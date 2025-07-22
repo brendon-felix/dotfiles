@@ -1,11 +1,13 @@
 
 # Windows
 if not (which git | is-empty) {
-    cd  ~/Projects
-    git clone https://github.com/brendon-felix/nushell-scripts.git
+    git clone https://github.com/brendon-felix/dotfiles.git ~/Projects/dotfiles
     touch ~/.nu-vars.toml
     touch ~/.sys-commands.nu
-    "source ~/Projects/nushell-scripts/config.nu\n" | save -f $nu.config-path
+    mklink $nu.config-path ('~/Projects/dotfiles/nushell/config.nu' | path expand)
+    mklink /D ($nu.config-path | path join '..' 'modules' | path expand) ('~/Projects/dotfiles/nushell/modules' | path expand)
+    mklink /D ($nu.config-path | path join '..' 'bios' | path expand) ('~/Projects/dotfiles/nushell/bios' | path expand)
+    mklink /D ($nu.config-path | path join '..' 'completions' | path expand) ('~/Projects/dotfiles/nushell/completions' | path expand)
 } else {
     print "Installing git..."
     try {
@@ -27,24 +29,6 @@ if not (which z | is-empty) {
         error make -u { msg: "Could not install zoxide" }
     }
 }
-
-if not (which nvim | is-empty) {
-    print "neovim is already installed."
-} else {
-    print "Installing neovim..."
-    try {
-        winget install neovim
-        print "neovim installed successfully."
- 
-    } catch {
-        error make -u { msg: "Could not install neovim" }
-    }
-}
-if not ([$env.LOCALAPPDATA 'nvim'] | path join | path exists) {
-    cd $env.LOCALAPPDATA
-    git clone https://github.com/brendon-felix/nvim-config.git nvim
-}
-
 
 if not (which fd | is-empty) {
     print "`fd` is already installed."
@@ -81,3 +65,22 @@ if not (which gitui | is-empty) {
         error make -u { msg: "Could not install gitui" }
     }
 }
+
+if not (which nvim | is-empty) {
+    print "neovim is already installed."
+} else {
+    print "Installing neovim..."
+    try {
+        winget install neovim
+        mklink /D ($env.LOCALAPPDATA | path join 'nvim') ('~/Projects/dotfiles/nvim' | path expand)
+        print "neovim installed successfully."
+ 
+    } catch {
+        error make -u { msg: "Could not install neovim" }
+    }
+}
+if not ([$env.LOCALAPPDATA 'nvim'] | path join | path exists) {
+    cd $env.LOCALAPPDATA
+    git clone https://github.com/brendon-felix/nvim-config.git nvim
+}
+

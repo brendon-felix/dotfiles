@@ -6,15 +6,16 @@
 
 # ---------------------------------- modules --------------------------------- #
 
-use modules *
-use completions *
-use bios *
+# use modules *
+# use modules ['each key']
+# use completions *
+# use bios *
 
-source ('~/.sys-commands.nu' | path expand)
+# source ('~/.sys-commands.nu' | path expand)
 
 # ------------------------------ env variables ------------------------------- #
 
-$env.VARS_FILE = ('~/.nu-vars.toml' | path expand)
+# $env.VARS_FILE = ('~/.nu-vars.toml' | path expand)
 
 $env.PROCEDURE_LEVEL = 0
 $env.PROCEDURE_DEBUG = true
@@ -29,9 +30,9 @@ $env.PROMPT_INDICATOR_VI_NORMAL = '> '
 $env.PROMPT_INDICATOR_VI_INSERT = '> '
 
 # load API key environment variables
-if ('~/Arrowhead/Files/keys.toml' | path exists) {
-    load-env (open ~/Arrowhead/Files/keys.toml | each key {|k| $k | str upcase })
-}
+# if ('~/Arrowhead/Files/keys.toml' | path exists) {
+#     load-env (open ~/Arrowhead/Files/keys.toml | each key {|k| $k | str upcase })
+# }
 
 # -------------------------------- env config -------------------------------- #
 
@@ -40,12 +41,13 @@ $env.config.edit_mode = 'vi'
 
 $env.config.history.isolation = true
 
-$env.config.show_banner = false
-# $env.config.show_banner = 'short'
+# $env.config.show_banner = false
+$env.config.show_banner = 'short'
 
 $env.config.float_precision = 3
 
 # $env.config.hooks.env_change = { HOMEPATH: [{|| print banner}] }
+$env.config.hooks.env_change = { HOMEPATH: [{|| use ~/Projects/dotfiles/nushell/modules *}] }
 
 $env.config.cursor_shape.vi_insert = "blink_line"
 $env.config.cursor_shape.vi_normal = "blink_block"
@@ -61,10 +63,10 @@ alias cd = z
 
 # ---------------------------------- banner ---------------------------------- #
 
-if $nu.is-interactive {
-    match (sys host | get hostname) {
-        'kepler' => (print banner header)
-        _ => (print banner memory)
-    }
-}
+# if $nu.is-interactive {
+#     match (sys host | get hostname) {
+#         # 'kepler' => (print banner header)
+#         # _ => (print banner memory)
+#     }
+# }
 
