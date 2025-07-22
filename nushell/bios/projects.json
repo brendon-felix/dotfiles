@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Glacier",
+    "des": "U60",
+    "top_level": "~\\BIOS\\HpWintersWks",
+    "build_script": "HpBldGlacier.bat"
+  },
+  {
+    "name": "Winters",
+    "des": "U61",
+    "top_level": "~\\BIOS\\HpWintersWks",
+    "build_script": "HpBldBlizzard.bat"
+  },
+  {
+    "name": "Avalanche",
+    "des": "U65",
+    "top_level": "~\\BIOS\\HpAvalancheWks",
+    "build_script": "HpBiosBuild.bat"
+  },
+  {
+    "name": "Springs",
+    "des": "X60",
+    "top_level": "~\\BIOS\\HpSpringsWks",
+    "build_script": "HpBldSprings.bat"
+  }
+]
