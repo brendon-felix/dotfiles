@@ -5,7 +5,7 @@
 use ../modules/format.nu 'format hex'
 use ../modules/print-utils.nu countdown
 use ../modules/debug.nu *
-use ../modules/color.nu 'color apply' 
+use ../modules/color.nu 'ansi apply' 
 
 
 const dev_loc = 'C:\Users\felixb\BIOS'
@@ -74,7 +74,7 @@ def set_version [file version?] {
         null => (($curr_version - 1) mod 100)
         $v => ($v mod 100)
     }
-    print $"(ansi yellow)Setting feature version ($curr_version | into string | color apply {fg: "#808080"}) → ($new_version | into string | color apply blue)(ansi reset)"
+    print $"(ansi yellow)Setting feature version ($curr_version | into string | ansi apply {fg: "#808080"}) → ($new_version | into string | ansi apply blue)(ansi reset)"
     let new_contents = open $file | lines | each {|e|
         if ($e | str contains VERSION_FEATURE) {
             $e | str replace $curr_version_str ($new_version | format hex -r)

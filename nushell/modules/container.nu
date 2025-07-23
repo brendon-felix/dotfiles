@@ -4,6 +4,7 @@
 # ---------------------------------------------------------------------------- #
 
 use std repeat
+use color.nu 'ansi apply'
 
 # Converts piped input into a container (list of strings)
 export def contain [
@@ -179,15 +180,15 @@ export def div [
         }
     }
     let padding = {
-        top: ("" | fill -w $term_size.columns | repeat $y_padding_height.top | color apply {bg: $background})
-        bottom: ("" | fill -w $term_size.columns | repeat $y_padding_height.bottom | color apply {bg: $background})
-        left: ("" | fill -w $x_padding_width.left | color apply {bg: $background})
-        right: ("" | fill -w $x_padding_width.right | color apply {bg: $background})
+        top: ("" | fill -w $term_size.columns | repeat $y_padding_height.top | ansi apply {bg: $background})
+        bottom: ("" | fill -w $term_size.columns | repeat $y_padding_height.bottom | ansi apply {bg: $background})
+        left: ("" | fill -w $x_padding_width.left | ansi apply {bg: $background})
+        right: ("" | fill -w $x_padding_width.right | ansi apply {bg: $background})
     }
     $container | each { |line| 
         mut line = $padding.left + $line + $padding.right
         if $fill {
-            $line = $line | color apply {bg: $background}
+            $line = $line | ansi apply {bg: $background}
         }
         $line
     } | prepend $padding.top | append $padding.bottom

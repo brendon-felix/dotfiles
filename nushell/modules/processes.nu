@@ -19,10 +19,10 @@ def choose_process [choices] {
             $l => (($e.name | str substring 0..($MAX_NAME_LENGTH - 3)) + "...")
         }
         match $e.mem {
-            $m if $m > 1GB => ($name | color apply red),
-            $m if $m > 100MB => ($name | color apply yellow),
-            $m if $m > 10MB => ($name | color apply green),
-            $m if $m > 1MB => ($name | color apply blue),
+            $m if $m > 1GB => ($name | ansi apply red),
+            $m if $m > 100MB => ($name | ansi apply yellow),
+            $m if $m > 10MB => ($name | ansi apply green),
+            $m if $m > 1MB => ($name | ansi apply blue),
         }
     }
     let w = $choices | get dis_name | strip length | math max

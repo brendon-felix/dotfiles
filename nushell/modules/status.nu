@@ -17,9 +17,9 @@ def severity-bar [proportion] {
 def severity [severity] {
     let input = $in
     match $severity {
-        _ if $severity < 0.6 => ($input | color apply green)
-        _ if $severity < 0.8 => ($input | color apply yellow)
-        _ => ($input | color apply red)
+        _ if $severity < 0.6 => ($input | ansi apply green)
+        _ if $severity < 0.8 => ($input | ansi apply yellow)
+        _ => ($input | ansi apply red)
     }
 }
 

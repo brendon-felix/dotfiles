@@ -15,10 +15,10 @@ export def `procedure run` [
     # $env.PROCEDURE_LEAF = true
     try {
         do $closure
-        print ($"\n($name) successful" | color apply green)
+        print ($"\n($name) successful" | ansi apply green)
         print (separator)
     } catch {
-        print ($"\n($name) failed" | color apply red)
+        print ($"\n($name) failed" | ansi apply red)
         print (separator)
     }
     cursor on
@@ -52,13 +52,13 @@ def print-result [result] {
     match ($env.PROCEDURE_LEVEL - 1) {
         $n if ($env.PROCEDURE_LEAF and ($n >= 1)) => {()}
         0 => {
-            print ($"  │" | color apply $result.color)
-            print ($"  ╰─→ ($result.text)\n" | color apply $result.color)
+            print ($"  │" | ansi apply $result.color)
+            print ($"  ╰─→ ($result.text)\n" | ansi apply $result.color)
         }
         $n => {
             let left_margin = left_margin $n
-            print ($left_margin + ($"╭─────╯ ($result.icon)" | color apply $result.color))
-            print ($left_margin + ($"│" | color apply $result.color))
+            print ($left_margin + ($"╭─────╯ ($result.icon)" | ansi apply $result.color))
+            print ($left_margin + ($"│" | ansi apply $result.color))
         }
     }
 }
@@ -112,7 +112,7 @@ export def `procedure print` [
 ] {
     let message = match ($env.PROCEDURE_LEVEL - 1) {
         0 => $message,
-        $n => ($"(left_margin $n)" + ("│    ╰─ " + $message | color apply $color))
+        $n => ($"(left_margin $n)" + ("│    ╰─ " + $message | ansi apply $color))
     }
     print $message
 }

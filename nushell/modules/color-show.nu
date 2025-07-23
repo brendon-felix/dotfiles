@@ -4,7 +4,7 @@
 # ---------------------------------------------------------------------------- #
 
 use rgb.nu ['rgb get-hex' 'into rgb' 'rgb from-hsv']
-use color.nu 'color apply'
+use color.nu 'ansi apply'
 
 export def `color show` [] {
     $in | each {|e|
@@ -22,7 +22,7 @@ export def `color show` [] {
         mut container = []
         for ansi_color in $ansi_colors {
             # print $"(ansi -e $ansi_color)(ansi reset)"
-            $container = $container | row (my-ellie | color apply $ansi_color)
+            $container = $container | row (my-ellie | ansi apply $ansi_color)
         }
         $container | container print
     }

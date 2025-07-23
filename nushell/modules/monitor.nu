@@ -17,7 +17,7 @@ def monitor [--interval(-i): duration = 1sec]: closure -> nothing {
         "  ⣀ ",
         " ⣀  ",
         "⠦   ",
-    ] | color apply cyan
+    ] | ansi apply cyan
     let loading_len = $loading | length
     # mut cursor_start = cursor position
     mut term_size = term size

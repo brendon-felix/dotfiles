@@ -7,7 +7,7 @@ use rgb.nu ['into rgb' 'rgb get-hex']
 use ansi.nu ['cursor off' 'cursor on' 'erase right']
 use interpolate.nu main
 use round.nu 'round duration'
-use color.nu 'color apply'
+use color.nu 'ansi apply'
 
 export def `char block` [
     shade?: int = 4
@@ -45,7 +45,7 @@ export def bar [
         bg: ($bg_color | into rgb | rgb get-hex),
         attr: $attr,
     }
-    $bar | color apply $ansi_color
+    $bar | ansi apply $ansi_color
 }
 
 export def separator [
@@ -90,7 +90,7 @@ export def countdown [
     while $remaining > 0sec {
         let proportion = $remaining / $duration
         let color = ($start_color | into rgb) | interpolate ($end_color | into rgb) $proportion
-        mut status = $"($remaining | round duration)" | color apply $color
+        mut status = $"($remaining | round duration)" | ansi apply $color
         if not $no_bar {
             let bar = bar --length=$bar_length --fg-color $color ($remaining / $duration)
             $status = $"($bar) ($status)"
@@ -127,7 +127,7 @@ export def countup [
     while $remaining > 0sec {
         let proportion = $remaining / $duration
         let color = ($start_color | into rgb) | interpolate ($end_color | into rgb) $proportion
-        mut status = $"(($duration - $remaining) | round duration)" | color apply $color
+        mut status = $"(($duration - $remaining) | round duration)" | ansi apply $color
         if not $no_bar {
             let bar = bar --length=$bar_length --fg-color $color (($duration - $remaining) / $duration)
             $status = $"($bar) ($status)"
