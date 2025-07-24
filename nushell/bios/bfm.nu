@@ -123,13 +123,7 @@ def save_bootleg [bootleg_loc, binary_path, append?: string] {
 
 def get_binary [path] {
     try {
-        match ($path | path type) {
-            'dir' => {
-                ls $path | where name =~ '^(?i)(?!.*pvt).*?(32|64).*\.bin$' | sort-by modified | last
-            }
-            'file' => (ls $path | sort-by modified | last)
-            _ => null
-        }
+        ls ($path | path expand) | where name =~ '^(?i)(?!.*pvt).*?(32|64).*\.bin$' | sort-by modified | last
     } catch {
         null
     }
