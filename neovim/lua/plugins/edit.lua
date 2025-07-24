@@ -72,7 +72,7 @@ return {
     },
     config = function()
       require('divide').setup {
-        language_config = {
+        languages = {
           nu = {
             line_start = '#',
             line_end = '#',
