@@ -8,7 +8,7 @@ use color.nu 'ansi apply'
 use procedure.nu 'procedure new-task'
 
 export def `update imports` [] {
-    let path = '~' | path join Projects nushell-scripts modules | path expand
+    let path = '~/Projects/dotfiles/nushell/modules' | path expand
     let modules = ls $path | where name =~ '\.nu$' | get name | path basename | where $it != mod.nu
     match ($modules | is-empty) {
         true => {

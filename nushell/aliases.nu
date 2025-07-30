@@ -13,7 +13,7 @@ alias kalc = ~/kalc.exe
 
 alias mix = ~/Projects/mix/target/release/mix.exe
 
-alias m = nu --config ~/Projects/dotfiles/nushell/ext-config.nu -e 'clear; print banner'
+alias m = nu --config ~/Projects/dotfiles/nushell/ext-config.nu -e 'print banner'
 
 alias spewcap = ~/Projects/spewcap2/target/release/spewcap2.exe
 alias size = ~/Projects/size-converter/target/release/size-converter.exe
