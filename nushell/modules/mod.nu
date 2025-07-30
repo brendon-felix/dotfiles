@@ -14,6 +14,7 @@ export use format.nu *
 export use git.nu *
 export use interpolate.nu *
 export use monitor.nu *
+export use path.nu *
 export use print-utils.nu *
 export use procedure.nu *
 export use processes.nu *

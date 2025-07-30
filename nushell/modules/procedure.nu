@@ -3,6 +3,8 @@
 #                                 procedure.nu                                 #
 # ---------------------------------------------------------------------------- #
 
+use std repeat
+
 export def `procedure run` [
     name: string
     closure: closure
@@ -80,13 +82,10 @@ export def --env `procedure new-task` [
         $env.PROCEDURE_LEAF = false
     } catch {|err|
         if $env.PROCEDURE_DEBUG { print $err.rendered }
-        if $on_error != null {
-            procedure print $on_error -c yellow
-            # if $continue {
-            #     procedure print $on_error -c yellow
-            # } else {
-            #     procedure print $on_error -c red
-            # }
+        let color = if $continue { 'yellow' } else { 'red' }
+        match $on_error {
+            null => (procedure print $err.msg -c $color)
+            $msg => (procedure print $msg -c $color)
         }
         match $continue {
             true => {
@@ -99,7 +98,7 @@ export def --env `procedure new-task` [
                 # $env.PROCEDURE_LEVEL -= 1
                 $env.PROCEDURE_LEVEL -= 1
                 $env.PROCEDURE_LEAF = false
-                error make -u { msg: "Failed" }
+                error make -u { msg: "task failed" }
             }
         }
     }
@@ -108,10 +107,10 @@ export def --env `procedure new-task` [
 
 export def `procedure print` [
     message: string
-    --color(-c): string
+    --color(-c): any = 'default'
 ] {
     let message = match ($env.PROCEDURE_LEVEL - 1) {
-        0 => $message,
+        $n if $n < 1 => (error make -u { msg: "invalid procedure level" }),
         $n => ($"(left_margin $n)" + ("│    ╰─ " + $message | ansi apply $color))
     }
     print $message

@@ -102,7 +102,7 @@ def build [config, release] {
         }
     } catch {
         # print $"\n\n(ansi red)Build failed(ansi reset)"
-        "Build failed" | splash failure
+        "Build failed" | splash red -s 3
         error make -u {msg: "Build failed"}
     }
     cd -
@@ -165,12 +165,12 @@ def flash [binary] {
     print $"(ansi purple)Flashing binary...(ansi reset)"
     try {
         do {dpcmd --batch $binary.name --verify}
-        print $"\n(ansi green_bold)Flash successful(ansi reset)"
-        # "Flash successful"| blink | splash green -s 3
+        # print $"\n(ansi green_bold)Flash successful(ansi reset)"
+        "Flash successful" | splash green -s 3
     } catch {|err|
         print $err.rendered
-        error make -u { msg: "Flash failed" }
-        # "Flash failed" | blink | splash red -s 3
+        # error make -u { msg: "Flash failed" }
+        "Flash failed" | splash red -s 3
     }
 }
 
