@@ -2,9 +2,12 @@
 #                                 symlinks.nu                                  #
 # ---------------------------------------------------------------------------- #
 
-# Create a symboic link to a file or directory
+use procedure.nu *
+use path.nu *
+
+# Create a symbolic link to a file or directory
 export def link [
-    path: string        # Path to the target file or directory
+    path: string        # Path to use for the symlink
     --dir(-d)           # Create a directory symlink
 ]: string -> nothing {
     let target = $in | path expand
@@ -16,30 +19,34 @@ export def link [
 }
 
 export def `link dotfiles` [] {
-    [
+    let links = [
         {
             link: '~/Projects/dotfiles/neovim'
             target: '~/AppData/Local/nvim'
-            type: 'dir'
+            dir: true
         }
         {
             link: '~/Projects/dotfiles/nushell/config.nu'
             target: '~/AppData/Roaming/nushell/config.nu'
-            type: 'file'
+            dir: false
         }
         {
             link: '~/Projects/dotfiles/nushell/aliases.nu'
             target: '~/AppData/Roaming/nushell/aliases.nu'
-            type: 'file'
+            dir: false
         }
         {
             link: '~/Projects/dotfiles/nushell/zoxide.nu'
             target: '~/AppData/Roaming/nushell/zoxide.nu'
-            type: 'file'
+            dir: false
         }
-    ] | each {|e|
-        print $e
+    ]
+    procedure run "Creating symlinks for dotfiles" {
+        for link in $links {
+            procedure new-task -c $"Linking ($link.link | path slice (-2)..(-1)) to ($link.target | path slice (-2)..(-1))" {
+                $link.target | link $link.link --dir=$link.dir
+            }
+        }
     }
-
 }
 

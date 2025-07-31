@@ -110,7 +110,8 @@ export def `procedure print` [
     --color(-c): any = 'default'
 ] {
     let message = match ($env.PROCEDURE_LEVEL - 1) {
-        $n if $n < 1 => (error make -u { msg: "invalid procedure level" }),
+        $n if $n < 0 => (error make -u { msg: "invalid procedure level" }),
+        $n if $n == 0 => ("  │    ╰─ " + $message | ansi apply $color),
         $n => ($"(left_margin $n)" + ("│    ╰─ " + $message | ansi apply $color))
     }
     print $message
