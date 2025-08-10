@@ -37,3 +37,10 @@ def show [file] {
     open -r $file | highlight
 }
 
+# load API key environment variables
+if ('~/Arrowhead/Files/keys.toml' | path exists) {
+    load-env (open ~/Arrowhead/Files/keys.toml | items {|k, v|
+        {($k | str upcase): $v}
+    } | into record)
+}
+

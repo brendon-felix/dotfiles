@@ -5,7 +5,8 @@
 use procedure.nu *
 use path.nu *
 
-# Create a symbolic link to a file or directory
+# This is an update
+
 export def link [
     path: string        # Path to use for the symlink
     --dir(-d)           # Create a directory symlink
