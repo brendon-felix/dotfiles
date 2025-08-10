@@ -117,3 +117,17 @@ export def `procedure print` [
     print $message
 }
 
+export def `procedure get-input` [
+    prompt: string
+    --color(-c): any = 'default'
+    --numchar(-n): int,
+    --default(-d): string,
+] {
+    let prompt = match ($env.PROCEDURE_LEVEL - 1) {
+        $n if $n < 0 => (error make -u { msg: "invalid procedure level" }),
+        $n if $n == 0 => ("  │    ╰─ " + $prompt | ansi apply $color),
+        $n => ($"(left_margin $n)" + ("│    ╰─ " + $prompt | ansi apply $color))
+    }
+    input $prompt --numchar=$numchar --default=$default
+}
+
