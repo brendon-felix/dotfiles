@@ -49,7 +49,7 @@ export def `link dotfiles` [] {
         for link in $links {
             procedure new-task -c $"Linking ($link.link | path slice (-2)..(-1) | ansi apply blue) to ($link.target | path slice (-2)..(-1) | ansi apply cyan)" {
                 if ($link.link | path exists) {
-                    procedure print $"(ansi yellow)Input path already exists:(ansi reset) ($link.link | path slice (-2)..(-1) | ansi apply blue)"
+                    procedure print $"(ansi yellow)Input path already exists:(ansi reset) ($link.link | path slice (-2)..(-1))"
                     let input = procedure get-input -n 1 -d 'n' $"Do you want to overwrite it? \(y/n\): "
                     match ($input | str trim | str downcase) {
                         'y' | 'yes' => {
