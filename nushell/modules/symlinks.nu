@@ -25,6 +25,11 @@ export def `link dotfiles` [] {
             dir: true
         }
         {
+            link: '~/Appdata/Roaming/alacritty'
+            target: '~/Projects/dotfiles/alacritty'
+            dir: true
+        }
+        {
             link: '~/AppData/Roaming/nushell/config.nu'
             target: '~/Projects/dotfiles/nushell/config.nu'
             dir: false
@@ -48,10 +53,6 @@ export def `link dotfiles` [] {
             link: (glob '~/AppData/Local/Packages/Microsoft.WindowsTerminal_*/LocalState/settings.json' | first)
             target: '~/Projects/dotfiles/windows-terminal/settings.json'
             dir: false
-        }
-{
-            link: '~/Appdata/Roaming/alacritty/alacritty.toml'
-            target: '~/Projects/dotfiles/alacritty/alacritty.toml'
         }
     ]
     procedure run "Creating symlinks for dotfiles" {
