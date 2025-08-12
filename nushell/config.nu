@@ -9,19 +9,12 @@ use banner.nu info
 
 # ------------------------------ env variables ------------------------------- #
 
-# $env.VARS_FILE = ('~/.nu-vars.toml' | path expand)
-$env.PROCEDURE_LEVEL = 0
-$env.PROCEDURE_DEBUG = false
-# $env.BIOS_PROJECTS = open ('~/Projects/nushell-scripts/bios/projects.json' | path expand)
-# $env.CURR_PROJECT = $env.BIOS_PROJECTS | find -n 'Springs' | first
 $env.EDITOR = 'nvim'
-# $env.PROMPT_COMMAND_RIGHT = { || date now | format date "%a-%d %r" }
-# $env.PROMPT_COMMAND_RIGHT = { || (info icons -c default | prepend $"(ansi light_purple)(date now | format date "%r")(ansi reset)" | grid | lines | first) }
+
+$env.PROMPT_COMMAND
 $env.PROMPT_COMMAND_RIGHT = { || (info icons -c default | grid | lines | first) }
 # $env.PROMPT_COMMAND_RIGHT = { || }
-
-$env.MODULES_LOADED = false
-
+# $env.PROMPT_COMMAND_RIGHT = { || date now | format date "%a-%d %r" }
 $env.PROMPT_INDICATOR_VI_NORMAL = { ||
     let color = if $env.MODULES_LOADED { 'light_purple' } else { 'cyan' }
     $"(ansi $color)>(ansi reset) "
@@ -32,16 +25,26 @@ $env.PROMPT_INDICATOR_VI_INSERT = { ||
 }
 $env.PROMPT_MULTILINE_INDICATOR = ''
 
-$env.Path = $env.Path | append [
+let paths = [
     ('~/Projects/bar/target/release/' | path expand)
     ('~/Projects/rusty-gpt/target/release/' | path expand)
     ('~/Projects/spewcap2/target/release/' | path expand)
     ('~/Projects/size-converter/target/release/' | path expand)
     ('~/Projects/mix/target/release/' | path expand)
     ('~/Projects/qalculate/' | path expand)
-]
+] | where { |path| $path | path exists }
+$env.Path = $env.Path | append $paths
 
-# -------------------------------- env config -------------------------------- #
+# ----------------------------- custom variables ----------------------------- #
+
+$env.MODULES_LOADED = false
+# $env.VARS_FILE = ('~/.nu-vars.toml' | path expand)
+$env.PROCEDURE_LEVEL = 0
+$env.PROCEDURE_DEBUG = false
+# $env.BIOS_PROJECTS = open ('~/Projects/nushell-scripts/bios/projects.json' | path expand)
+# $env.CURR_PROJECT = $env.BIOS_PROJECTS | find -n 'Springs' | first
+
+# ---------------------------------- config ---------------------------------- #
 
 $env.config.buffer_editor = $env.EDITOR
 $env.config.edit_mode = 'vi'
@@ -55,6 +58,7 @@ $env.config.cursor_shape.vi_insert = "blink_line"
 $env.config.cursor_shape.vi_normal = "blink_block"
 $env.config.plugins.highlight.theme = 'ansi'
 
+# ----------------------------- custom commands ------------------------------ #
 
 def show [file] {
     open -r $file | highlight

@@ -14,8 +14,6 @@ source ('~/.sys-commands.nu' | path expand)
 
 $env.MODULES_LOADED = true
 
-# $env.PROMPT_COMMAND_RIGHT = { || date now | format date "%a-%d %r" }
-
 # ---------------------------------- banner ---------------------------------- #
 
 # if $nu.is-interactive {
