@@ -1,6 +1,60 @@
-# [general]
-# working_directory = '%USERPROFILE%'
+[general]
+# working_directory = 'C:\Users\felixb\'
+
+[env]
+
+[window]
+dimensions = { columns = 120, lines = 30 }
+padding = { x = 8, y = 8 }
+decorations = 'None'
+# opacity = 0.9
+
+[scrolling]
+
+[font]
+normal = { family = 'FiraCode Nerd Font', style = 'Regular' }
+size = 10.0
+
+[colors]
+# primary = { background = '#262626', foreground = '#DCDFE4' }
+# primary = { background = '#191919', foreground = '#DCDFE4' }
+
+# transparent_background_colors = true
+
+# [colors.normal]
+# black = '#141414'
+# red = '#E06C75'
+# green = '#98C379'
+# yellow = '#E5C07B'
+# blue = '#61AFEF'
+# magenta = '#C678DD'
+# cyan = '#56B6C2'
+# white = '#DCDFE4'
+
+[bell]
+
+[selection]
+
+[cursor]
 
 [terminal]
-shell = { program = 'nu', args = [] }
+# shell = { program = 'nu', args = ['-e', 'm'] }
+shell = { program = 'nu', args = ['-e', 'cd'] }
+
+[mouse]
+
+[hints]
+
+[keyboard]
+bindings = [
+    { key = 'V', mods = 'Control', action = 'Paste' },
+    { key = 'C', mods = 'Control', action = 'Copy' },
+    # { key = 'F', mods = 'Control', action = 'Search' },
+    # { key = 'Q', mods = 'Control', action = 'Quit' },
+    { key = 'N', mods = 'Control', action = 'SpawnNewInstance' },
+    { key = 'T', mods = 'Control', action = 'CreateNewWindow' },
+    { key = 'W', mods = 'Control', action = 'Quit' },
+]
+
+[debug]
 
