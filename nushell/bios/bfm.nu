@@ -49,7 +49,7 @@ def get_config [platform, tree] {
     match $platform {
         'U60' => { create_config 'Glacier' $tree 'HpWintersWks' 'MultiProject/U60Glacier/BLD/BiosId.env' }
         'U61' => { create_config 'Winters' $tree 'HpWintersWks' 'MultiProject/U61Blizzard/BLD/BiosId.env' }
-        'U65' => { create_config 'Avalanche' $tree 'HpAvalancheWks' 'BLD/RSPS/BiosId.env' }
+        'U65' => { create_config 'Avalanche' $tree 'HpAvalancheWks' 'BLD/RSPS/Avalanche/BiosId.env' }
         'X60' | null => { create_config 'Springs' $tree 'HpSpringsWks' 'MultiProject/X60Steamboat/BLD/BiosId.env' } # Use Springs config by default
         _ => {
             error make {
