@@ -49,6 +49,10 @@ export def `link dotfiles` [] {
             target: '~/Projects/dotfiles/windows-terminal/settings.json'
             dir: false
         }
+{
+            link: '~/Appdata/Roaming/alacritty/alacritty.toml'
+            target: '~/Projects/dotfiles/alacritty/alacritty.toml'
+        }
     ]
     procedure run "Creating symlinks for dotfiles" {
         for link in $links {
