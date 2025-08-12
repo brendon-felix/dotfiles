@@ -7,6 +7,7 @@ use std ellie
 use container.nu ['contain' 'container print' 'row' 'box']
 use color.nu 'ansi apply'
 use status.nu ['status memory' 'status disks']
+use round.nu 'round duration'
 
 def startup []: nothing -> string {
     let startup_time = ($nu.startup-time | round duration ms)

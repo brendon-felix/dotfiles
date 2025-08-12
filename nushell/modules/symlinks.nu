@@ -40,6 +40,11 @@ export def `link dotfiles` [] {
             dir: false
         }
         {
+            link: '~/AppData/Roaming/nushell/banner.nu'
+            target: '~/Projects/dotfiles/nushell/banner.nu'
+            dir: false
+        }
+        {
             link: (glob '~/AppData/Local/Packages/Microsoft.WindowsTerminal_*/LocalState/settings.json' | first)
             target: '~/Projects/dotfiles/windows-terminal/settings.json'
             dir: false
