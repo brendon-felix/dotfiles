@@ -18,10 +18,38 @@ return {
     },
     config = function()
       require('telescope').setup {
+        defaults = {
+          layout_config = {
+            vertical = {
+              width = 0.9,
+              height = 0.9,
+              preview_height = 0.6,
+            },
+            horizontal = {
+              width = 0.9,
+              height = 0.9,
+              preview_width = 0.6,
+            },
+            center = {
+              width = 0.9,
+              height = 0.9,
+            },
+            bottom_pane = {
+              width = 0.9,
+              height = 0.9,
+            },
+          },
+        },
         pickers = {
           find_files = {
             theme = 'dropdown',
             initial_mode = 'insert',
+            path_display = { 'smart' },
+            layout_config = {
+              width = 0.9,
+              height = 0.9,
+              preview_width = 0.8,
+            },
           },
           live_grep = {
             initial_mode = 'insert',
