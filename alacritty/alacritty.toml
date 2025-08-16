@@ -5,15 +5,15 @@
 
 [window]
 dimensions = { columns = 120, lines = 30 }
-padding = { x = 8, y = 8 }
-decorations = 'None'
+padding = { x = 12, y = 12 }
+decorations = 'Buttonless'
 # opacity = 0.9
 
 [scrolling]
 
 [font]
 normal = { family = 'FiraCode Nerd Font', style = 'Regular' }
-size = 10.0
+size = 14.0
 
 [colors]
 # primary = { background = '#262626', foreground = '#DCDFE4' }
@@ -39,7 +39,8 @@ size = 10.0
 
 [terminal]
 # shell = { program = 'nu', args = ['-e', 'm'] }
-shell = { program = 'nu', args = ['-e', 'cd'] }
+# shell = { program = 'nu', args = ['-e', 'cd'] }
+shell = { program = '/opt/homebrew/bin/nu', args = ['-e', 'cd'] }
 
 [mouse]
 

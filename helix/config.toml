@@ -2,6 +2,7 @@ theme = "fleet_dark"
 
 [editor]
 mouse = true
+scroll-lines = 5
 
 [editor.cursor-shape]
 insert = 'bar'
