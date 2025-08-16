@@ -4,6 +4,7 @@
 # ---------------------------------------------------------------------------- #
 
 use std repeat
+use print-utils.nu separator
 
 export def `procedure run` [
     name: string

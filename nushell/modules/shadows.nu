@@ -32,7 +32,7 @@ export def `config nu` [
 #     ...pattern: glob,   # The glob pattern to use.
 # ] {
 #     let pattern = if ($pattern | is-empty) { [ '.' ] } else { $pattern }
-#     let table = (ls-builtin
+#     let table = (ls
 #         --all=$all
 #         --short-names=(not $full_paths)
 #         --full-paths=$full_paths

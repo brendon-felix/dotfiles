@@ -30,7 +30,7 @@ export def `var load` [name?: string] {
     }
     let vars = open $env.VARS_FILE
     if $name != null {
-        $vars | get -i $name
+        $vars | get -o $name
     } else {
         $vars
     }

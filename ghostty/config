@@ -1,0 +1,11 @@
+background = #191919
+command = /opt/homebrew/bin/nu
+theme = OneHalfDark
+font-size = 14
+window-padding-x = 12
+window-padding-y = 12
+macos-titlebar-style = hidden
+window-height = 30
+window-width = 120
+window-position-x = 300
+window-position-y = 0

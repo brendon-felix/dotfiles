@@ -25,14 +25,22 @@ $env.PROMPT_INDICATOR_VI_INSERT = { ||
 }
 $env.PROMPT_MULTILINE_INDICATOR = ''
 
-let paths = [
+mut paths = [
     ('~/Projects/bar/target/release/' | path expand)
     ('~/Projects/rusty-gpt/target/release/' | path expand)
     ('~/Projects/spewcap2/target/release/' | path expand)
     ('~/Projects/size-converter/target/release/' | path expand)
-    ('~/Projects/mix/target/release/' | path expand)
-    ('~/Projects/qalculate/' | path expand)
-] | where { |path| $path | path exists }
+    # ('~/Projects/mix/target/release/' | path expand)
+    # ('~/Projects/qalculate/' | path expand)
+]
+if $nu.os-info.name == 'macos' {
+    $paths = $paths | append [
+        ('/usr/local/bin' | path expand)
+        ('~/.cargo/bin/' | path expand)
+        ('/opt/homebrew/bin/' | path expand)
+    ]
+}
+let paths = $paths | where { |path| $path | path exists }
 $env.Path = $env.Path | append $paths
 
 # ----------------------------- custom variables ----------------------------- #
@@ -44,11 +52,13 @@ $env.PROCEDURE_DEBUG = false
 # $env.BIOS_PROJECTS = open ('~/Projects/nushell-scripts/bios/projects.json' | path expand)
 # $env.CURR_PROJECT = $env.BIOS_PROJECTS | find -n 'Springs' | first
 
+$env.USERNAME = ($nu.home-path | path basename)
+
 # ---------------------------------- config ---------------------------------- #
 
 $env.config.buffer_editor = $env.EDITOR
 $env.config.edit_mode = 'vi'
-$env.config.history.isolation = true
+# $env.config.history.isolation = true
 $env.config.show_banner = false
 # $env.config.show_banner = 'short'
 $env.config.float_precision = 3
@@ -72,27 +82,27 @@ if ('~/Arrowhead/Files/keys.toml' | path exists) {
 }
 
 
-alias ls-builtin = ls
-
-# List the filenames, sizes, and modification times of items in a directory.
-export def ls [
-    --all (-a),         # Show hidden files
-    --full-paths (-f),  # display paths as absolute paths
-    ...pattern: glob,   # The glob pattern to use.
-] {
-    let pattern = if ($pattern | is-empty) { [ '.' ] } else { $pattern }
-    (ls-builtin
-        --all=$all
-        --short-names=(not $full_paths)
-        --full-paths=$full_paths
-        ...$pattern
-    ) | grid -c
-}
-
-# List the contents of a directory in a tree-like format.
-def lst [--level(-L): int = 2] {
-    tree.exe -C -L $level --dirsfirst --noreport -H
-}
+# alias ls-builtin = ls
+#
+# # List the filenames, sizes, and modification times of items in a directory.
+# export def ls [
+#     --all (-a),         # Show hidden files
+#     --full-paths (-f),  # display paths as absolute paths
+#     ...pattern: glob,   # The glob pattern to use.
+# ] {
+#     let pattern = if ($pattern | is-empty) { [ '.' ] } else { $pattern }
+#     (ls
+#         --all=$all
+#         --short-names=(not $full_paths)
+#         --full-paths=$full_paths
+#         ...$pattern
+#     ) | grid -c
+# }
+#
+# # List the contents of a directory in a tree-like format.
+# def lst [--level(-L): int = 2] {
+#     tree.exe -C -L $level --dirsfirst --noreport -H
+# }
 
 # if $nu.is-interactive {
 #     alias ls-builtin = ls

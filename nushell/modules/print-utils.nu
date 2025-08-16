@@ -39,7 +39,11 @@ export def bar [
         null => ""
         _ => $attr
     }
-    let bar = ~/Projects/bar/target/release/bar.exe -l $length $value
+    let bar_exe = match $nu.os-info.name {
+        "windows" => 'bar.exe'
+        "macos" | "linux" => 'bar'
+    }
+    let bar = ^$bar_exe -l $length $value
     let ansi_color = {
         fg: ($fg_color | into rgb | rgb get-hex),
         bg: ($bg_color | into rgb | rgb get-hex),

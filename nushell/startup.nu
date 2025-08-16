@@ -7,7 +7,7 @@ use modules/ansi.nu ['cursor off' 'cursor on']
 use modules/version.nu 'version full-check'
 use modules/procedure.nu ['procedure run' 'procedure new-task']
 use modules/print-utils.nu 'countdown'
-use modules/shadows.nu ls-builtin
+# use modules/shadows.nu ls-builtin
 
 cursor off
 

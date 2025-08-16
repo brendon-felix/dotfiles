@@ -67,7 +67,7 @@ export def `status memory` [--no-bar(-b)] {
     let memory = (sys mem)
     {
         RAM: (memory_str $memory --no-bar=($no_bar))
-        Swap: (mem_swap_str $memory --no-bar=($no_bar))
+        # Swap: (mem_swap_str $memory --no-bar=($no_bar))
     }
 }
 
