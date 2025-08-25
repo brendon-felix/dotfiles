@@ -5,12 +5,12 @@
 # ---------------------------------- modules --------------------------------- #
 
 source config.nu
+source sys-commands.nu
 
 use modules *
 use completions *
 use bios *
 
-source ('~/.sys-commands.nu' | path expand)
 
 $env.MODULES_LOADED = true
 

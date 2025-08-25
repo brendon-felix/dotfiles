@@ -1,6 +1,6 @@
 test*
 .DS_Store
 *.log
-nushell/history*
+nushell/history.txt
 nushell/plugin.msgpackz
 zed/prompts/*

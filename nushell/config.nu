@@ -2,6 +2,8 @@
 #                                   config.nu                                  #
 # ---------------------------------------------------------------------------- #
 
+use std null-device
+
 source aliases.nu
 source zoxide.nu
 
@@ -11,7 +13,33 @@ use banner.nu info
 
 $env.EDITOR = 'nvim'
 
-$env.PROMPT_COMMAND
+# $env.PROMPT_COMMAND = {||
+#     let is_git_repo = match (^git rev-parse --is-inside-work-tree | complete | get stdout | str trim) {
+#         'true' => true
+#         _ => false
+#     }
+#     if $is_git_repo {
+#         let branch = (git symbolic-ref --short HEAD | str trim)
+#         let status = (git status --porcelain | length)
+#         let branch_color = if $status > 0 { 'red_bold' } else { 'green_bold' }
+#         let status_symbol = if $status > 0 { '*' } else { '' }
+#         let git_segment = $"(ansi $branch_color) ($branch)($status_symbol)(ansi reset) "
+#         $git_segment
+#     } else {
+#         ''
+#     }
+#     # let dir = match (do -i { $env.PWD | path relative-to $nu.home-path }) {
+#     #     null => $env.PWD
+#     #     '' => '~'
+#     #     $relative_pwd => ([~ $relative_pwd] | path join)
+#     # }
+#     #
+#     # let path_color = (if (is-admin) { ansi red_bold } else { ansi green_bold })
+#     # let separator_color = (if (is-admin) { ansi light_red_bold } else { ansi light_green_bold })
+#     # let path_segment = $"($path_color)($dir)(ansi reset)"
+#     #
+#     # $path_segment | str replace --all (char path_sep) $"($separator_color)(char path_sep)($path_color)"
+# }
 $env.PROMPT_COMMAND_RIGHT = { || (info icons -c default | grid | lines | first) }
 # $env.PROMPT_COMMAND_RIGHT = { || }
 # $env.PROMPT_COMMAND_RIGHT = { || date now | format date "%a-%d %r" }
@@ -35,9 +63,10 @@ mut paths = [
 ]
 if $nu.os-info.name == 'macos' {
     $paths = $paths | append [
-        ('/usr/local/bin' | path expand)
+        ('/usr/local/bin')
+        ('/opt/homebrew/bin/')
+        ('~/Library/Python/3.9/bin/' | path expand)
         ('~/.cargo/bin/' | path expand)
-        ('/opt/homebrew/bin/' | path expand)
     ]
 }
 let paths = $paths | where { |path| $path | path exists }

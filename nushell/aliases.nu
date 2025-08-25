@@ -6,7 +6,9 @@ if not ((which ln) | is-empty) {
     alias ln = coreutils ln
 }
 
-alias m = nu --config ~/Projects/dotfiles/nushell/ext-config.nu -e 'print banner'
+# alias m = nu --config ~/Projects/dotfiles/nushell/ext-config.nu -e 'print banner'
+alias m = overlay use ~/Projects/dotfiles/nushell/modules
+alias b = overlay use ~/Projects/dotfiles/nushell/bios
 
 let exes = match $nu.os-info.name {
     "windows" => {
@@ -22,7 +24,7 @@ let exes = match $nu.os-info.name {
 }
 
 
-alias hey = ^$exes.rusty-gpt -p ~/Arrowhead/Files/Prompts/chat_prompt.txt
+alias hey = ^$exes.rusty-gpt -p ~/Arrowhead/Files/Prompts/gpt_prompt.txt
 alias askvim = ^$exes.rusty-gpt -p ~/Arrowhead/Files/Prompts/askvim_prompt.txt
 alias eg = ^$exes.rusty-gpt -p ~/Arrowhead/Files/Prompts/eg_prompt.txt
 # alias chat = ^$exes.rusty-gpt -p ~/Arrowhead/Files/Prompts/chat_prompt.txt
@@ -90,6 +92,8 @@ def `config winterm` [] {
 def `config vscode` [] {
     error make -u { msg: "todo" }
 }
+
+alias jupyter = /opt/homebrew/opt/jupyterlab/bin/jupyter-lab
 
 # alias b2sum = coreutils b2sum
 # alias b3sum = coreutils b3sum

@@ -5,7 +5,7 @@
 
 use rgb.nu ['rgb get-hex' 'into rgb' 'rgb from-hsv']
 use color.nu 'ansi apply'
-use container.nu ['container print' 'row']
+use container.nu ['row' 'container print']
 
 export def `color show` [] {
     $in | each {|e|

@@ -5,6 +5,7 @@
 
 use std repeat
 use print-utils.nu separator
+use color.nu 'ansi apply'
 
 export def `procedure run` [
     name: string

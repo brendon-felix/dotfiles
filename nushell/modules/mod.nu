@@ -33,3 +33,7 @@ export use tools.nu *
 export use update.nu *
 export use variables.nu *
 export use version.nu *
+
+export-env {
+    load-env { MODULES_LOADED: true }
+}
