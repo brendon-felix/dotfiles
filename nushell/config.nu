@@ -110,22 +110,14 @@ if ('~/Arrowhead/Files/keys.toml' | path exists) {
     } | into record)
 }
 
-# alias ls-builtin = ls
-#
-# # List the filenames, sizes, and modification times of items in a directory.
-# export def ls [
-#     --all (-a),         # Show hidden files
-#     --full-paths (-f),  # display paths as absolute paths
-#     ...pattern: glob,   # The glob pattern to use.
-# ] {
-#     let pattern = if ($pattern | is-empty) { [ '.' ] } else { $pattern }
-#     (ls-builtin
-#         --all=$all
-#         --short-names=(not $full_paths)
-#         --full-paths=$full_paths
-#         ...$pattern
-#     ) | grid -c
-# }
+export def lg [
+    --all (-a),         # Show hidden files
+    # --full-paths (-f),  # display paths as absolute paths
+    ...pattern: glob,   # The glob pattern to use.
+] {
+    let pattern = if ($pattern | is-empty) { [ '.' ] } else { $pattern }
+    ls -s --all=$all ...$pattern | grid -c
+}
 
 # if $nu.is-interactive {
 #     alias ls-builtin = ls

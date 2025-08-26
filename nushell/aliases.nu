@@ -8,7 +8,9 @@ if not ((which ln) | is-empty) {
 
 # alias m = nu --config ~/Projects/dotfiles/nushell/ext-config.nu -e 'print banner'
 alias m = overlay use ~/Projects/dotfiles/nushell/modules
+alias mm = overlay hide modules
 alias b = overlay use ~/Projects/dotfiles/nushell/bios
+alias bb = overlay hide bios
 
 let exes = match $nu.os-info.name {
     "windows" => {
