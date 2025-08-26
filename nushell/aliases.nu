@@ -15,11 +15,13 @@ let exes = match $nu.os-info.name {
         rusty-gpt: 'rusty-gpt.exe'
         spewcap2: 'spewcap2.exe'
         bar: 'bar.exe'
+        tree: 'tree.exe'
     }
     "macos" | "linux" => {
         rusty-gpt: 'rusty-gpt'
         spewcap2: 'spewcap2'
         bar: 'bar'
+        tree: 'tree'
     }
 }
 
@@ -51,6 +53,10 @@ def gpsh [] {
     git add .
     git commit -m "quick update"
     git push
+}
+
+def lst [--level(-L): int = 2] {
+    ^$exes.tree -C -L $level --dirsfirst --noreport -H
 }
 
 def `config nushell` [] {

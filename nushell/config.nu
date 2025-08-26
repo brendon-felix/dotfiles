@@ -120,18 +120,19 @@ if ('~/Arrowhead/Files/keys.toml' | path exists) {
 #     ...pattern: glob,   # The glob pattern to use.
 # ] {
 #     let pattern = if ($pattern | is-empty) { [ '.' ] } else { $pattern }
-#     (ls
+#     (ls-builtin
 #         --all=$all
 #         --short-names=(not $full_paths)
 #         --full-paths=$full_paths
 #         ...$pattern
 #     ) | grid -c
 # }
-#
-# # List the contents of a directory in a tree-like format.
-# def lst [--level(-L): int = 2] {
-#     tree.exe -C -L $level --dirsfirst --noreport -H
-# }
+
+
+# List the contents of a directory in a tree-like format.
+def lst [--level(-L): int = 2] {
+    tree.exe -C -L $level --dirsfirst --noreport -H
+}
 
 # if $nu.is-interactive {
 #     alias ls-builtin = ls
