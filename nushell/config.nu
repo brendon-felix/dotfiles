@@ -110,7 +110,6 @@ if ('~/Arrowhead/Files/keys.toml' | path exists) {
     } | into record)
 }
 
-
 # alias ls-builtin = ls
 #
 # # List the filenames, sizes, and modification times of items in a directory.
@@ -127,12 +126,6 @@ if ('~/Arrowhead/Files/keys.toml' | path exists) {
 #         ...$pattern
 #     ) | grid -c
 # }
-
-
-# List the contents of a directory in a tree-like format.
-def lst [--level(-L): int = 2] {
-    tree.exe -C -L $level --dirsfirst --noreport -H
-}
 
 # if $nu.is-interactive {
 #     alias ls-builtin = ls
