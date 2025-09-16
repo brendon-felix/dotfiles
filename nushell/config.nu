@@ -56,8 +56,9 @@ $env.PROMPT_MULTILINE_INDICATOR = ''
 mut paths = [
     ('~/Projects/bar/target/release/' | path expand)
     ('~/Projects/rusty-gpt/target/release/' | path expand)
-    ('~/Projects/spewcap2/target/release/' | path expand)
+    ('~/Projects/spewcap/target/release/' | path expand)
     ('~/Projects/size-converter/target/release/' | path expand)
+    ('~/Projects/zed/target/release/' | path expand)
     # ('~/Projects/mix/target/release/' | path expand)
     # ('~/Projects/qalculate/' | path expand)
 ]
@@ -99,8 +100,30 @@ $env.config.plugins.highlight.theme = 'ansi'
 
 # ----------------------------- custom commands ------------------------------ #
 
-def show [file] {
+def show [file: path] {
     open -r $file | highlight
+}
+
+def --env `vault store` [path?: glob] {
+    # let vault_path = try {
+    #     (sys disks | where device == Vault | first | get mount)   
+    # } catch {
+    #     error make -u { msg: "Vault not available" }
+    # }
+    # let path = if $relpath != null {
+    #     [$vault_path $relpath] | path join
+    # } else {
+    #     $vault_path
+    # }
+    # cd $path
+}
+
+def `vault load` [] {
+    # let vault_path = try {
+    #     (sys disks | where device == Vault | first | get mount)   
+    # } catch {
+    #     error make -u { msg: "Vault not available" }
+    # }
 }
 
 # load API key environment variables

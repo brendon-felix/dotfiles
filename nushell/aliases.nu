@@ -46,6 +46,8 @@ alias gsw = git switch
 alias gbr = git branch
 alias gcl = git clean -fd
 
+alias bisync = rclone bisync --conflict-resolve newer --create-empty-src-dirs
+
 def grst [] {
     git reset --hard
     git clean -fd

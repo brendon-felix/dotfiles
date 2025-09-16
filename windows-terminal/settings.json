@@ -186,13 +186,25 @@
                 "hidden": false,
                 "name": "Git Bash",
                 "source": "Git"
+            },
+            {
+                "guid": "{d8e96812-b789-5068-a5ae-10b2fb53e95f}",
+                "hidden": false,
+                "name": "Ubuntu 24.04.1 LTS",
+                "source": "CanonicalGroupLimited.Ubuntu24.04LTS_79rhkp1fndgsc"
+            },
+            {
+                "guid": "{963ff2f7-6aed-5ce3-9d91-90d99571f53a}",
+                "hidden": true,
+                "name": "Ubuntu-24.04",
+                "source": "Windows.Terminal.Wsl"
             }
         ]
     },
     "schemes": 
     [
         {
-            "background": "#262626",
+            "background": "#191919",
             "black": "#141414",
             "blue": "#61AFEF",
             "brightBlack": "#5A6374",
@@ -216,5 +228,6 @@
         }
     ],
     "tabSwitcherMode": "mru",
-    "themes": []
+    "themes": [],
+    "useAcrylicInTabRow": true
 }

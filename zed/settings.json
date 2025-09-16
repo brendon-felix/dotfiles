@@ -8,9 +8,10 @@
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
   "agent": {
+    "always_allow_tool_actions": true,
     "default_model": {
-      "provider": "copilot_chat",
-      "model": "gpt-4.1"
+      "provider": "zed.dev",
+      "model": "claude-sonnet-4"
     }
   },
   "features": {
@@ -23,7 +24,7 @@
   "theme": {
     "mode": "system",
     "light": "Fleet Light",
-    "dark": "Fleet Dark"
+    "dark": "Anysphere Dark"
   },
   "title_bar": {
     "show_branch_icon": true
@@ -51,7 +52,7 @@
   "terminal": {
     "dock": "right",
     "shell": {
-      "program": "/opt/homebrew/bin/nu"
+      "program": "nu"
     },
     "toolbar": {
       "breadcrumbs": false
@@ -59,39 +60,5 @@
     "font_family": "FiraCode Nerd Font"
   },
   "soft_wrap": "editor_width",
-  "use_smartcase_search": true,
-  "experimental.theme_overrides": {
-    "border": "#2C2C2C",
-    "syntax": {
-      "function": {
-        "color": "#EFB080"
-      },
-      "type": {
-        "color": "#EFB080"
-        // "color": "#E06C75"
-      },
-      "constant": {
-        "color": "#F8C762"
-      },
-      "function.definition": {
-        "color": "#EFB080",
-        "font_weight": 400
-      },
-      "comment": {
-        "font_style": "italic"
-      }
-      // "enum": {
-      //   "color": "#E06C75"
-      // },
-      // "text.literal": {
-      //   "color": "#FF00FF"
-      // }
-      // "keyword": {
-      //   "color": "#E06C75"
-      // }
-      // "variant": {
-      //   "color": "#E06C75"
-      // }
-    }
-  }
+  "use_smartcase_search": true
 }

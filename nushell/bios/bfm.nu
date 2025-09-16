@@ -6,6 +6,7 @@ use ../modules/format.nu 'format hex'
 use ../modules/print-utils.nu countdown
 use ../modules/debug.nu *
 use ../modules/color.nu 'ansi apply' 
+use ../modules/splash.nu *
 
 
 const dev_loc = 'C:\Users\felixb\BIOS'

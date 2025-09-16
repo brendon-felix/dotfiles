@@ -6,6 +6,8 @@
 use std repeat
 use print-utils.nu separator
 use color.nu 'ansi apply'
+use ansi.nu ['cursor off' 'cursor on']
+use core.nu suppress
 
 export def `procedure run` [
     name: string
@@ -132,4 +134,3 @@ export def `procedure get-input` [
     }
     input $prompt --numchar=$numchar --default=$default
 }
-

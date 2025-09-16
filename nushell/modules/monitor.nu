@@ -3,7 +3,9 @@
 #                                  monitor.nu                                  #
 # ---------------------------------------------------------------------------- #
 
-def monitor [--interval(-i): duration = 1sec]: closure -> nothing {
+use ../modules/color.nu 'ansi apply'
+
+export def main [--interval(-i): duration = 1sec]: closure -> nothing {
     clear
     let task = $in
     let loading = [
@@ -61,7 +63,7 @@ export def `monitor disk` [--no-bar(-b), --all(-a)] {
             { (status disks --no-bar=($no_bar)) | select $disk_choice.mount }
         }
     }
-    $task | monitor
+    $task | main
 }
 
 export def `monitor memory` [--no-bar(-b), --all(-a)] {
@@ -72,14 +74,13 @@ export def `monitor memory` [--no-bar(-b), --all(-a)] {
             { status memory --no-bar=($no_bar) | select $mem_choice }
         }
     }
-    $task | monitor
+    $task | main
 }
 
 export def `monitor ram` [--no-bar(-b)] {
-    { status memory --no-bar=($no_bar) | select RAM } | monitor
+    { status memory --no-bar=($no_bar) | select RAM } | main
 }
 
 export def `monitor banner` [] {
-    { print banner } | monitor
+    { print banner } | main
 }
-
