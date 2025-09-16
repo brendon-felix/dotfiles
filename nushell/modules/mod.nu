@@ -28,6 +28,7 @@ export use splash.nu *
 export use status.nu *
 export use str.nu *
 export use symlinks.nu *
+export use sync.nu *
 export use system.nu *
 export use tools.nu *
 export use update.nu *

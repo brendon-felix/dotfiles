@@ -6,6 +6,17 @@ if not ((which ln) | is-empty) {
     alias ln = coreutils ln
 }
 
+alias py = python3
+
+alias reboot = sudo shutdown -r now
+alias shutdown = sudo shutdown -h now
+
+alias lstr = lstr -g
+
+alias `ssh marlin` = ssh bcfelix@marlin.cs.colostate.edu -t 'nu'
+alias `sync marlin` = rclone bisync --conflict-resolve newer ~/School marlin:/s/bach/g/under/bcfelix/School
+alias sync = rclone bisync --conflict-resolve newer
+
 # alias m = nu --config ~/Projects/dotfiles/nushell/ext-config.nu -e 'print banner'
 alias m = overlay use ~/Projects/dotfiles/nushell/modules
 alias mm = overlay hide modules
@@ -14,13 +25,14 @@ alias bb = overlay hide bios
 
 let exes = match $nu.os-info.name {
     "windows" => {
-        rusty-gpt: 'rusty-gpt.exe'
+        hey: 'hey.exe'
         spewcap2: 'spewcap2.exe'
         bar: 'bar.exe'
         tree: 'tree.exe'
     }
     "macos" | "linux" => {
-        rusty-gpt: 'rusty-gpt'
+        # rusty-gpt: 'rusty-gpt'
+        hey: 'hey'
         spewcap2: 'spewcap2'
         bar: 'bar'
         tree: 'tree'
@@ -28,9 +40,9 @@ let exes = match $nu.os-info.name {
 }
 
 
-alias hey = ^$exes.rusty-gpt -p ~/Arrowhead/Files/Prompts/gpt_prompt.txt
-alias askvim = ^$exes.rusty-gpt -p ~/Arrowhead/Files/Prompts/askvim_prompt.txt
-alias eg = ^$exes.rusty-gpt -p ~/Arrowhead/Files/Prompts/eg_prompt.txt
+alias hey = ^$exes.hey -p ~/Arrowhead/Files/Prompts/gpt_prompt.txt
+alias askvim = ^$exes.hey -p ~/Arrowhead/Files/Prompts/askvim_prompt.txt
+alias eg = ^$exes.hey -p ~/Arrowhead/Files/Prompts/eg_prompt.txt
 # alias chat = ^$exes.rusty-gpt -p ~/Arrowhead/Files/Prompts/chat_prompt.txt
 # alias gpt = ^$exes.rusty-gpt -p ~/Arrowhead/Files/Prompts/gpt_prompt.txt
 # alias teach = ^$exes.rusty-gpt -p ~/Arrowhead/Files/Prompts/teach_prompt.txt

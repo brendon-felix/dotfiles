@@ -3,7 +3,7 @@
 #                                      rest.nu                                 #
 # ---------------------------------------------------------------------------- #
 
-export def show [file] {
+export def show [file: glob] {
     open -r $file | highlight
 }
 

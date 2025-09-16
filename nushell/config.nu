@@ -55,7 +55,7 @@ $env.PROMPT_MULTILINE_INDICATOR = ''
 
 mut paths = [
     ('~/Projects/bar/target/release/' | path expand)
-    ('~/Projects/rusty-gpt/target/release/' | path expand)
+    ('~/Projects/hey/target/release/' | path expand)
     ('~/Projects/spewcap/target/release/' | path expand)
     ('~/Projects/size-converter/target/release/' | path expand)
     ('~/Projects/zed/target/release/' | path expand)
@@ -106,7 +106,7 @@ def show [file: path] {
 
 def --env `vault store` [path?: glob] {
     # let vault_path = try {
-    #     (sys disks | where device == Vault | first | get mount)   
+    #     (sys disks | where device == Vault | first | get mount)
     # } catch {
     #     error make -u { msg: "Vault not available" }
     # }
@@ -120,7 +120,7 @@ def --env `vault store` [path?: glob] {
 
 def `vault load` [] {
     # let vault_path = try {
-    #     (sys disks | where device == Vault | first | get mount)   
+    #     (sys disks | where device == Vault | first | get mount)
     # } catch {
     #     error make -u { msg: "Vault not available" }
     # }
@@ -135,15 +135,10 @@ if ('~/Arrowhead/Files/keys.toml' | path exists) {
 
 export def lg [
     --all (-a),         # Show hidden files
-    # --full-paths (-f),  # display paths as absolute paths
     ...pattern: glob,   # The glob pattern to use.
 ] {
     let pattern = if ($pattern | is-empty) { [ '.' ] } else { $pattern }
     ls -s --all=$all ...$pattern | grid -c
 }
 
-# if $nu.is-interactive {
-#     alias ls-builtin = ls
-#     alias ls = `ls | grid --color --icons`
-# }
-
+print banner

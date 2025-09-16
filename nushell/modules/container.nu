@@ -39,7 +39,11 @@ export def contain [
             right: ("" | fill -w ([$pad_x $pad_right] | math max))
         }
     }
-    let filled = $input | prepend $padding.top | append $padding.bottom | each {|line|
+    let filled = [
+        ...$padding.top
+        ...$input
+        ...$padding.bottom
+    ] | each {|line|
         $line | fill -a $alignment -w $max_length
     }
     let container_width = $max_length + $pad_left + $pad_right
@@ -56,7 +60,11 @@ export def box []: list<string> -> list<string> {
     let top_border = $"╭($horizontal_border)╮"
     let middle = $container | each { |line| $"│($line)│" }
     let bottom_border = $"╰($horizontal_border)╯"
-    $middle | prepend $top_border | append $bottom_border
+    [
+        $top_border
+        ...$middle
+        $bottom_border
+    ]
 }
 
 # Places a double box (border) around a container
@@ -112,8 +120,16 @@ export def row [
             bottom: ($right_pad_line | repeat $padding.right.bottom)
         }
     }
-    let left = $left | prepend $padding.left.top | append $padding.left.bottom
-    let right = $right | prepend $padding.right.top | append $padding.right.bottom
+    let left = [
+        ...$padding.left.top
+        ...$left
+        ...$padding.left.bottom
+    ]
+    let right = [
+        ...$padding.right.top
+        ...$right
+        ...$padding.right.bottom
+    ]
     ($left | zip $right) | each { |pair|
         $"($pair.0)("" | fill -w $spacing)($pair.1)"
     }
@@ -185,13 +201,18 @@ export def div [
         left: ("" | fill -w $x_padding_width.left | ansi apply {bg: $background})
         right: ("" | fill -w $x_padding_width.right | ansi apply {bg: $background})
     }
-    $container | each { |line| 
+    let middle = $container | each { |line| 
         mut line = $padding.left + $line + $padding.right
         if $fill {
             $line = $line | ansi apply {bg: $background}
         }
         $line
-    } | prepend $padding.top | append $padding.bottom
+    }
+    [
+        ...$padding.top
+        ...$middle
+        ...$padding.bottom
+    ]
 }
 
 export def "container print" []: list<string> -> nothing {

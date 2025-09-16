@@ -9,3 +9,4 @@ window-height = 30
 window-width = 120
 window-position-x = 300
 window-position-y = 0
+keybind = shift+enter=text:\x1b\r
