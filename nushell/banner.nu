@@ -220,7 +220,7 @@ def uptime []: nothing -> string {
     }
 }
 
-def memory [] {
+def memory [--bar(-b)] {
     let memory = sys mem
     let proportion_used = $memory.used / $memory.total
     let percent_used = ($proportion_used * 100 | math round --precision 0 )
@@ -230,8 +230,12 @@ def memory [] {
         _ => 'red'
     }
     let memory_status = $"($memory.used) \(($percent_used)%\)"
-    let memory_bar = bar $proportion_used -f $color
-    $"($memory_bar) (ansi $color)($memory_status)(ansi reset)"
+    if $bar {
+        let memory_bar = bar $proportion_used -f $color
+        $"($memory_bar) (ansi $color)($memory_status)(ansi reset)"
+    } else {
+        $"(ansi $color)($memory_status)(ansi reset)"
+    }
 }
 
 def header_text []: nothing -> list<string> {
@@ -346,7 +350,7 @@ def banner [
         # stack => (header | box | append (info_text | contain | box) | contain -p tight)
         # row_english => (header | box | row -a b (info_text english | contain | box))
         # stack_english => (header | box | append (info_text english | contain | box) | contain -p tight)
-        memory => (header | append $"RAM: (memory)"| contain -a c | box)
+        memory => (header | append $"RAM: (memory -b)"| contain -a c | box)
         # mem_disks => (header | append $"("RAM" | ansi apply blue): (status memory | get RAM)" | append (status disks | items {|mount status| $"($mount | ansi apply blue): ($status)"}) | contain -a l | box)
         # test => (header | box | row -s 2 -a c (info_text english))
         _ => {
