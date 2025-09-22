@@ -4,3 +4,4 @@ test*
 nushell/history.txt
 nushell/plugin.msgpackz
 zed/prompts/*
+zed/development_credentials

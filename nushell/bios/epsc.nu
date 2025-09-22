@@ -18,19 +18,22 @@ export def `epsc springs` [--regs(-r)] {
 
         procedure new-task 'Pulling HpEpsc source' {
             cd $springs_source_path
+            git switch main
             git pull
         }
 
         mut updates = [
             {
-                source: 'HpSioDev\HpSioFireBirdFwVersion.equ'
+                # source: 'HpSioDev\HpSioFireBirdFwVersion.equ'
+                source: 'HpSioFireBirdFwVersion.equ'
                 targets: [
                     'HpEpsc\HpNuvoton324Pkg\Include\HpSioDev\HpSioFireBirdFwVersion.equ'
                     'HpPlatformPkg\MultiProject\X60Steamboat\SIOFW\HpSioDev\HpSioFireBirdFwVersion.equ'
                 ]
             }
             {
-                source: 'HpSioDev\HpSuperIoFw.bin'
+                # source: 'HpSioDev\HpSuperIoFw.bin'
+                source: 'HpSuperIoFw.bin'
                 targets: [
                     'HpEpsc\HpNuvoton324Pkg\Include\HpSioDev\HpSuperIoFw.bin'
                     'HpPlatformPkg\MultiProject\X60Steamboat\SIOFW\HpSioDev\HpSuperIoFw.bin'

@@ -6,6 +6,7 @@ use std null-device
 
 source aliases.nu
 source zoxide.nu
+source ~/.sys-commands.nu
 
 use banner.nu [info 'print banner']
 
@@ -18,6 +19,7 @@ $env.PROMPT_COMMAND = {||
         'true' => true
         _ => false
     }
+    # let is_git_repo = false
     if $is_git_repo {
         let branch = (git symbolic-ref --short HEAD | str trim)
         let status = (git status --porcelain | lines | length)
@@ -71,6 +73,15 @@ $env.PROMPT_COMMAND_RIGHT = { ||
     }
 }
 # $env.PROMPT_COMMAND_RIGHT = { || date now | format date "%a-%d %r" }
+# $env.PROMPT_COMMAND_RIGHT = { ||
+#     let is_repo = git rev-parse --is-inside-work-tree | complete
+#     if $is_repo.exit_code == 0 and ($is_repo.stdout | str trim | into bool) {
+#         let branch_name = git branch --show-current
+#         let repo_path = git rev-parse --show-toplevel
+#     } else {
+#         (info icons -c default | grid | lines | first)
+#     }
+# }
 $env.PROMPT_INDICATOR_VI_NORMAL = { ||
     let color = if $env.MODULES_LOADED { 'light_purple' } else { 'cyan' }
     $"(ansi $color)>(ansi reset) "

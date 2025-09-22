@@ -7,8 +7,8 @@ export def main [
     rclone bisync --conflict-resolve newer --verbose=$verbose $path1 $path2
 }
 
-export def `sync marlin` [] {
-    main ~/School marlin:/s/bach/g/under/bcfelix/School
+export def `sync marlin` [--verbose(-v)] {
+    main ~/School marlin:/s/bach/g/under/bcfelix/School --verbose=$verbose
 }
 
 

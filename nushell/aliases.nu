@@ -10,14 +10,42 @@ alias untar = tar -xvf
 
 alias py = python3
 
-alias reboot = sudo shutdown -r now
-alias shutdown = sudo shutdown -h now
+let shutdown_commands = if $nu.os-info.name == "windows" {
+    {
+        reboot: ['shutdown' '/r' '/t' '0']
+        shutdown: ['shutdown' '/s' '/t' '0']
+        hibernate: ['shutdown' '/h' '/t' '0']
+        # sleep: 'rundll32.exe powrprof.dll,SetSuspendState 0,1,0'
+    }
+} else {
+    {
+        reboot: ['sudo' 'shutdown' '-r' 'now']
+        shutdown: ['sudo' 'shutdown' '-h' 'now']
+        hibernate: ['systemctl' 'hibernate']
+        # sleep: 'systemctl suspend'
+    }
+}
+alias reboot = run-external ...$shutdown_commands.reboot
+alias shutdown = run-external ...$shutdown_commands.shutdown
+alias hibernate = run-external ...$shutdown_commands.hibernate
+# alias 'system sleep' = run-external $shutdown_commands.sleep
 
 alias lstr = lstr -g
 
 alias `ssh marlin` = ssh bcfelix@marlin.cs.colostate.edu -t 'nu'
 alias `sync marlin` = rclone bisync --conflict-resolve newer ~/School marlin:/s/bach/g/under/bcfelix/School
 alias sync = rclone bisync --conflict-resolve newer
+
+if $nu.os-info.name == "windows" {
+    def zed [path: path] {
+        let path = if ($path | is-empty) {
+            $env.PWD
+        } else {
+            $path | path expand
+        }
+        job spawn { || ^zed $path }
+    }
+}
 
 # alias m = nu --config ~/Projects/dotfiles/nushell/ext-config.nu -e 'print banner'
 alias m = overlay use ~/Projects/dotfiles/nushell/modules
