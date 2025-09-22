@@ -169,4 +169,4 @@ export def lg [
     ls -s --all=$all ...$pattern | grid -c
 }
 
-print banner
+print banner header

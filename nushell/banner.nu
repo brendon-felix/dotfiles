@@ -342,7 +342,7 @@ def banner [
     match $type {
         # ellie => (my-ellie | ansi apply green | box)
         # user => (header_text | contain -p c | box)
-        # header => (header | box)
+        header => (header | box)
         # info => (info_text | contain -p "comfy" | box)
         # info_english => (info_text english | contain -p "comfy" | box)
         # info_record => (info_text record)
