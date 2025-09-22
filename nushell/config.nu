@@ -7,41 +7,69 @@ use std null-device
 source aliases.nu
 source zoxide.nu
 
-use banner.nu info
+use banner.nu [info 'print banner']
 
 # ------------------------------ env variables ------------------------------- #
 
 $env.EDITOR = 'nvim'
 
-# $env.PROMPT_COMMAND = {||
-#     let is_git_repo = match (^git rev-parse --is-inside-work-tree | complete | get stdout | str trim) {
-#         'true' => true
-#         _ => false
-#     }
-#     if $is_git_repo {
-#         let branch = (git symbolic-ref --short HEAD | str trim)
-#         let status = (git status --porcelain | length)
-#         let branch_color = if $status > 0 { 'red_bold' } else { 'green_bold' }
-#         let status_symbol = if $status > 0 { '*' } else { '' }
-#         let git_segment = $"(ansi $branch_color) ($branch)($status_symbol)(ansi reset) "
-#         $git_segment
-#     } else {
-#         ''
-#     }
-#     # let dir = match (do -i { $env.PWD | path relative-to $nu.home-path }) {
-#     #     null => $env.PWD
-#     #     '' => '~'
-#     #     $relative_pwd => ([~ $relative_pwd] | path join)
-#     # }
-#     #
-#     # let path_color = (if (is-admin) { ansi red_bold } else { ansi green_bold })
-#     # let separator_color = (if (is-admin) { ansi light_red_bold } else { ansi light_green_bold })
-#     # let path_segment = $"($path_color)($dir)(ansi reset)"
-#     #
-#     # $path_segment | str replace --all (char path_sep) $"($separator_color)(char path_sep)($path_color)"
-# }
-$env.PROMPT_COMMAND_RIGHT = { || (info icons -c default | grid | lines | first) }
-# $env.PROMPT_COMMAND_RIGHT = { || }
+$env.PROMPT_COMMAND = {||
+    let is_git_repo = match (^git rev-parse --is-inside-work-tree | complete | get stdout | str trim) {
+        'true' => true
+        _ => false
+    }
+    if $is_git_repo {
+        let branch = (git symbolic-ref --short HEAD | str trim)
+        let status = (git status --porcelain | lines | length)
+        let branch_color = if $status > 0 { 'yellow_bold' } else { 'green_bold' }
+        let status_symbol = if $status > 0 { '*' } else { '' }
+        let git_segment = $"(ansi $branch_color)(char -u f062c) ($branch)($status_symbol)(ansi reset)"
+        let path_color = (if (is-admin) { ansi red_bold } else { ansi green_bold })
+        let repo_path = git rev-parse --show-toplevel
+        let repo_name = $repo_path | path basename
+        let cwd = $env.PWD
+        let dir = match (do -i { $cwd | path relative-to $repo_path }) {
+            null => $cwd
+            '' => $repo_name
+            $relative_pwd => ([$repo_name $relative_pwd] | path join)
+        }
+        $"(ansi $branch_color)($git_segment)(ansi reset) │ ($path_color)($dir)(ansi reset)"
+    } else {
+        let dir = match (do -i { $env.PWD | path relative-to $nu.home-path }) {
+            null => $env.PWD
+            '' => '~'
+            $relative_pwd => ([~ $relative_pwd] | path join)
+        }
+        let path_color = (if (is-admin) { ansi red_bold } else { ansi green_bold })
+        $"($path_color)($dir)(ansi reset)"
+    }
+    # let dir = match (do -i { $env.PWD | path relative-to $nu.home-path }) {
+    #     null => $env.PWD
+    #     '' => '~'
+    #     $relative_pwd => ([~ $relative_pwd] | path join)
+    # }
+    # let path_color = (if (is-admin) { ansi red_bold } else { ansi green_bold })
+    # $"($dir)" | ansi gradient -a '0xFF5F6D' -b '0xFFC371'
+}
+
+# $env.PROMPT_COMMAND_RIGHT = { || (info icons -c default | grid | lines | first) }
+$env.PROMPT_COMMAND_RIGHT = { ||
+    let is_git_repo = match (^git rev-parse --is-inside-work-tree | complete | get stdout | str trim) {
+        'true' => true
+        _ => false
+    }
+    if $is_git_repo {
+        let status = do -i { git status --porcelain }
+        let status = $status | lines
+        if ($status | length) > 0 {
+            ''
+        } else {
+            ''
+        }
+    } else {
+        info icons -c default | last 2 | grid | lines | first
+    }
+}
 # $env.PROMPT_COMMAND_RIGHT = { || date now | format date "%a-%d %r" }
 $env.PROMPT_INDICATOR_VI_NORMAL = { ||
     let color = if $env.MODULES_LOADED { 'light_purple' } else { 'cyan' }

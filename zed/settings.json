@@ -7,10 +7,22 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "ssh_connections": [
+    {
+      "host": "marlin.cs.colostate.edu",
+      "projects": [
+        {
+          "paths": [
+            "/s/bach/g/under/bcfelix/School/CS475/pa2/./"
+          ]
+        }
+      ]
+    }
+  ],
   "agent": {
     "always_allow_tool_actions": true,
     "default_model": {
-      "provider": "zed.dev",
+      "provider": "copilot_chat",
       "model": "claude-sonnet-4"
     }
   },

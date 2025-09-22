@@ -6,6 +6,8 @@ if not ((which ln) | is-empty) {
     alias ln = coreutils ln
 }
 
+alias untar = tar -xvf
+
 alias py = python3
 
 alias reboot = sudo shutdown -r now
@@ -52,7 +54,7 @@ alias eg = ^$exes.hey -p ~/Arrowhead/Files/Prompts/eg_prompt.txt
 
 alias spew = ^$exes.spewcap2
 
-alias bar = ^$exes.bar
+# alias bar = ^$exes.bar
 
 alias gsw = git switch
 alias gbr = git branch
