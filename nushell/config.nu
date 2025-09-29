@@ -7,81 +7,68 @@ use std null-device
 source aliases.nu
 source zoxide.nu
 source ~/.sys-commands.nu
+use modules/jobs.nu *
 
 use banner.nu [info 'print banner']
+
+const gstat_values = [
+    {value: idx_added_staged, display: $"(ansi green)A:(ansi reset)"}
+    {value: idx_modified_staged, display: $"(ansi blue)M:(ansi reset)"}
+    {value: idx_deleted_staged, display: $"(ansi red)D:(ansi reset)"}
+    {value: idx_renamed, display: $"(ansi purple)R:(ansi reset)"}
+    {value: idx_type_changed, display: $"(ansi yellow)T:(ansi reset)"}
+    {value: wt_untracked, display: $"(ansi green)U:(ansi reset)"}
+    {value: wt_modified, display: $"(ansi blue)M:(ansi reset)"}
+    {value: wt_deleted, display: $"(ansi red)D:(ansi reset)"}
+    {value: wt_type_changed, display: $"(ansi yellow)T:(ansi reset)"}
+    {value: wt_renamed, display: $"(ansi purple)R:(ansi reset)"}
+    {value: conflicts, display: $"(ansi red_bold)C(ansi reset)"}
+    {value: stashes, display: $"(ansi magenta)S:(ansi reset)"}
+    {value: ahead, display: $"(ansi green)↑:(ansi reset)"}
+    {value: behind, display: $"(ansi red)↓:(ansi reset)"}
+]
 
 # ------------------------------ env variables ------------------------------- #
 
 $env.EDITOR = 'nvim'
 
-$env.PROMPT_COMMAND = {||
-    let is_git_repo = match (^git rev-parse --is-inside-work-tree | complete | get stdout | str trim) {
-        'true' => true
-        _ => false
-    }
-    # let is_git_repo = false
-    if $is_git_repo {
-        let branch = (git symbolic-ref --short HEAD | str trim)
-        let status = (git status --porcelain | lines | length)
-        let branch_color = if $status > 0 { 'yellow_bold' } else { 'green_bold' }
-        let status_symbol = if $status > 0 { '*' } else { '' }
-        let git_segment = $"(ansi $branch_color)(char -u f062c) ($branch)($status_symbol)(ansi reset)"
-        let path_color = (if (is-admin) { ansi red_bold } else { ansi green_bold })
-        let repo_path = git rev-parse --show-toplevel
-        let repo_name = $repo_path | path basename
-        let cwd = $env.PWD
-        let dir = match (do -i { $cwd | path relative-to $repo_path }) {
-            null => $cwd
-            '' => $repo_name
-            $relative_pwd => ([$repo_name $relative_pwd] | path join)
-        }
-        $"(ansi $branch_color)($git_segment)(ansi reset) │ ($path_color)($dir)(ansi reset)"
-    } else {
-        let dir = match (do -i { $env.PWD | path relative-to $nu.home-path }) {
-            null => $env.PWD
-            '' => '~'
-            $relative_pwd => ([~ $relative_pwd] | path join)
-        }
-        let path_color = (if (is-admin) { ansi red_bold } else { ansi green_bold })
-        $"($path_color)($dir)(ansi reset)"
-    }
-    # let dir = match (do -i { $env.PWD | path relative-to $nu.home-path }) {
-    #     null => $env.PWD
-    #     '' => '~'
-    #     $relative_pwd => ([~ $relative_pwd] | path join)
-    # }
-    # let path_color = (if (is-admin) { ansi red_bold } else { ansi green_bold })
-    # $"($dir)" | ansi gradient -a '0xFF5F6D' -b '0xFFC371'
-}
+# $env.PROMPT_COMMAND = {||
+#     let dir = match (do -i { $env.PWD | path relative-to $nu.home-path }) {
+#         null => $env.PWD
+#         '' => '~'
+#         $relative_pwd => ([~ $relative_pwd] | path join)
+#     }
+#     let path_color = (if (is-admin) { ansi red_bold } else { ansi green_bold })
+#     $"($path_color)($dir)(ansi reset)"
+#     # $"($dir)" | ansi gradient -a '0x56B6C2' -b '0x98C379'
+# }
 
 # $env.PROMPT_COMMAND_RIGHT = { || (info icons -c default | grid | lines | first) }
-$env.PROMPT_COMMAND_RIGHT = { ||
-    let is_git_repo = match (^git rev-parse --is-inside-work-tree | complete | get stdout | str trim) {
-        'true' => true
-        _ => false
-    }
-    if $is_git_repo {
-        let status = do -i { git status --porcelain }
-        let status = $status | lines
-        if ($status | length) > 0 {
-            ''
-        } else {
-            ''
-        }
-    } else {
-        info icons -c default | last 2 | grid | lines | first
-    }
-}
 # $env.PROMPT_COMMAND_RIGHT = { || date now | format date "%a-%d %r" }
-# $env.PROMPT_COMMAND_RIGHT = { ||
-#     let is_repo = git rev-parse --is-inside-work-tree | complete
-#     if $is_repo.exit_code == 0 and ($is_repo.stdout | str trim | into bool) {
-#         let branch_name = git branch --show-current
-#         let repo_path = git rev-parse --show-toplevel
-#     } else {
-#         (info icons -c default | grid | lines | first)
-#     }
-# }
+$env.PROMPT_COMMAND_RIGHT = {
+    mut info = info icons -c default
+    if $env.FIRST_PROMPT { $env.FIRST_PROMPT = false } else { $info = $info | last 1 }
+    try {
+        let git_status = job recv --all --timeout 50ms | last
+        if $git_status.repo_name != no_repository {
+            let values = $gstat_values
+            let values = $values | upsert num {|row| $git_status | get $row.value}
+            let num_changes = $values | get num | math sum
+            let branch_color = if $num_changes > 0 { 'yellow_bold' } else { 'green_bold' }
+            let values = $values
+                | where { |row| $row.num > 0}
+                | each { |row| $"($row.display) ($row.num)" }
+            let branch = $git_status.branch
+            mut git_info = [$"(ansi $branch_color)(char -u f062c) ($branch)(ansi reset)"]
+            if not ($values | is-empty) and ($values | length) < 5 {
+                $git_info = $git_info | append $values
+            }
+            $info = $info | prepend $git_info
+        }
+    }
+    $info | grid | lines | first
+}
+
 $env.PROMPT_INDICATOR_VI_NORMAL = { ||
     let color = if $env.MODULES_LOADED { 'light_purple' } else { 'cyan' }
     $"(ansi $color)>(ansi reset) "
@@ -114,13 +101,11 @@ $env.Path = $env.Path | append $paths
 
 # ----------------------------- custom variables ----------------------------- #
 
+$env.FIRST_PROMPT = true
 $env.MODULES_LOADED = false
-# $env.VARS_FILE = ('~/.nu-vars.toml' | path expand)
+$env.VARS_FILE = ('~/.nu-vars.toml' | path expand)
 $env.PROCEDURE_LEVEL = 0
 $env.PROCEDURE_DEBUG = false
-# $env.BIOS_PROJECTS = open ('~/Projects/nushell-scripts/bios/projects.json' | path expand)
-# $env.CURR_PROJECT = $env.BIOS_PROJECTS | find -n 'Springs' | first
-
 $env.USERNAME = ($nu.home-path | path basename)
 
 # ---------------------------------- config ---------------------------------- #
@@ -133,6 +118,13 @@ $env.config.show_banner = false
 $env.config.float_precision = 3
 # $env.config.hooks.env_change = { HOMEPATH: [{|| print (info | grid) }] }
 # $env.config.hooks.env_change = { HOMEPATH: [{|| use ~/Projects/dotfiles/nushell/modules *}] }
+
+$env.config.hooks.pre_prompt = [
+    { job spawn {gstat | job send 0 --tag 42 } }
+]
+$env.config.hooks.pre_execution = [
+    { if $env.FIRST_PROMPT { $env.FIRST_PROMPT = false } }
+]
 $env.config.cursor_shape.vi_insert = "blink_line"
 $env.config.cursor_shape.vi_normal = "blink_block"
 $env.config.plugins.highlight.theme = 'ansi'

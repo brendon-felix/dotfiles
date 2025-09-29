@@ -76,7 +76,7 @@ export def contain [
         $line | fill -a $alignment -w $max_length
     }
     let container_width = $max_length + $pad_left + $pad_right
-    $filled | each {|line| 
+    $filled | each {|line|
         $padding.left + $line + $padding.right
     }
 }
@@ -129,11 +129,11 @@ export def row [
     let right_pad_line = "" | fill -w ($right | ansi strip | str length -g | math max)
     let padding = {
         left: {
-            top: ($left_pad_line | repeat $padding.left.top), 
+            top: ($left_pad_line | repeat $padding.left.top),
             bottom: ($left_pad_line | repeat $padding.left.bottom)
         }
         right: {
-            top: ($right_pad_line | repeat $padding.right.top), 
+            top: ($right_pad_line | repeat $padding.right.top),
             bottom: ($right_pad_line | repeat $padding.right.bottom)
         }
     }
@@ -223,7 +223,7 @@ def uptime []: nothing -> string {
 def memory [--bar(-b)] {
     let memory = sys mem
     let proportion_used = $memory.used / $memory.total
-    let percent_used = ($proportion_used * 100 | math round --precision 0 )
+    let percent_used = ($proportion_used * 100 | math round | into int)
     let color = match $proportion_used {
         _ if $proportion_used < 0.6 => 'green'
         _ if $proportion_used < 0.8 => 'yellow'
@@ -239,11 +239,12 @@ def memory [--bar(-b)] {
 }
 
 def header_text []: nothing -> list<string> {
-    let curr_version = match (version check) {
-        $c if $c.current => $"(ansi green)v($env.NU_VERSION)(ansi reset)"
-        $c => $"(ansi yellow)v($env.NU_VERSION)(ansi reset)"
-    }
-    let shell = $"(ansi green)Nushell(ansi reset) " + $curr_version
+    # let curr_version = match (version check) {
+    #     $c if $c.current => $"(ansi green)v($env.NU_VERSION)(ansi reset)"
+    #     $c => $"(ansi yellow)v($env.NU_VERSION)(ansi reset)"
+    # }
+    # let shell = $"(ansi green)Nushell(ansi reset) " + $curr_version
+    let shell = $"(ansi green)Nushell v($env.NU_VERSION)(ansi reset)"
     let username = $"(ansi light_purple)($env.USERNAME)(ansi reset)"
     let hostname = $"(ansi light_purple)(sys host | get hostname)(ansi reset)"
     let user = $"($username)@($hostname)"
@@ -251,9 +252,7 @@ def header_text []: nothing -> list<string> {
     let width = [($shell | ansi strip | str length -g), ($user | ansi strip | str length -g)] | math max
     let separator = "" | fill -c '─' -w $width
     let max_length = [$shell $separator $user] | ansi strip | str length -g | math max
-    [$shell $separator $user] | each {|e|
-        $e | fill -w $max_length
-    }
+    [$shell $separator $user] | contain -p t -a cr
 }
 
 export def info [
@@ -366,4 +365,3 @@ def banner [
     }
     # header | append $"("RAM" | ansi apply blue): (status memory | get RAM)" | append (status disks | items {|mount status| $"($mount | ansi apply blue): ($status)"}) | contain -a c | box
 }
-

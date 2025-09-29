@@ -13,6 +13,7 @@ export use everything.nu *
 export use format.nu *
 export use git.nu *
 export use interpolate.nu *
+export use jobs.nu *
 export use monitor.nu *
 export use path.nu *
 export use print-utils.nu *
