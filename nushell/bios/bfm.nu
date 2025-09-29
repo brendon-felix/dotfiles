@@ -14,19 +14,7 @@ const net_loc = '\\wks-file.ftc.rd.hpicorp.net\MAIN_LAB\SHARES\LAB\Brendon Felix
 
 def get_repo_loc [tree, default] {
     if $tree != null {
-        let loc = [$dev_loc, $tree] | path join
-        if ($loc | path exists) {
-            $loc
-        } else {
-            print $"(ansi red_bold)!(ansi reset)"
-            error make {
-                msg: "Specified tree not found"
-                label: {
-                    text: "Tree not found"
-                    span: (metadata $tree).span
-                }
-            }
-        }
+        $tree | path expand
     } else {
         [$dev_loc, $default] | path join
     }
@@ -189,8 +177,8 @@ export def main [
     --save(-s)                # Save the build to the bootlegs folder
     --network(-n)             # Save the bootleg to the network drive
     --flash(-f)               # Flash the binary using DediProg
-    --tree(-t): string        # Specify a specific tree to use
-    --path(-p): string        # Manually specify a filepath for a binary to flash
+    --tree(-t): path        # Specify a specific tree to use
+    --path(-p): path        # Manually specify a filepath for a binary to flash
     --append(-a): string      # Append a string to the bootleg basename
     --no-decrement(-d)        # Don't decrement the feature number
     --set-version(-v): int    # Set the feature version number directly

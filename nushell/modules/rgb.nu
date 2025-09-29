@@ -51,6 +51,15 @@ export def `into rgb` []: any -> record<r: int, g: int, b: int> {
                     error make -u { msg: "Invalid color string" }
                 }
             }}
+            $s if ($s | describe) == "int" => {
+                if $s < 0 or $s > 0xFFFFFF {
+                    error make -u { msg: "Hex value out of range" }
+                }
+                let r = $s | bits shr -n 4 16 | bits and 0xFF
+                let g = $s | bits shr -n 4 8| bits and 0xFF
+                let b = $s | bits and 0xFF
+                {r: $r, g: $g, b: $b}
+            }
             $r if ($r | describe) == "record<r: int, g: int, b: int>" => {
                 if ($r.r < 0 or $r.r > 255) or ($r.g < 0 or $r.g > 255) or ($r.b < 0 or $r.b > 255) {
                     error make -u { msg: "RGB value out of range" }

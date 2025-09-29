@@ -84,9 +84,6 @@ mut paths = [
     ('~/Projects/hey/target/release/' | path expand)
     ('~/Projects/spewcap/target/release/' | path expand)
     ('~/Projects/size-converter/target/release/' | path expand)
-    ('~/Projects/zed/target/release/' | path expand)
-    # ('~/Projects/mix/target/release/' | path expand)
-    # ('~/Projects/qalculate/' | path expand)
 ]
 if $nu.os-info.name == 'macos' {
     $paths = $paths | append [

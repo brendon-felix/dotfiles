@@ -78,6 +78,11 @@ return {
             line_end = '#',
             character = '-',
           },
+          toml = {
+            line_start = '#',
+            line_end = '#',
+            character = '-',
+          },
         },
       }
     end,

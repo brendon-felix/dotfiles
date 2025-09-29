@@ -35,11 +35,11 @@ export def `siofw springs` [
     --sig(-s) # Update the signature files
     ] {
     # let equ_filename = 'C:\Users\felixb\BIOS\HpSpringsWks\HpEpsc\HpNuvoton324Pkg\Include\HpSioDev\HpSioFireBirdFwVersion.equ'
-    [
-       {
-           basename: 'HpSioFireBirdFwVersion.equ'
-       }
-    ]
+    # [
+    #    {
+    #        basename: 'HpSioFireBirdFwVersion.equ'
+    #    }
+    # ]
     let equ_filename1 = [$repo_path, 'HpEpsc\HpNuvoton324Pkg\Include\HpSioDev\HpSioFireBirdFwVersion.equ'] | path join
     let equ_filename2 = [$repo_path, 'HpEpsc\HpNuvoton324Pkg\Include\HpSioFireBirdFwVersion.equ'] | path join
     let equ_filename3 = [$repo_path, 'HpPlatformPkg\MultiProject\X60Steamboat\SIOFW\HpSioDev\HpSioFireBirdFwVersion.equ'] | path join
@@ -135,35 +135,35 @@ export def `siofw springs` [
     # cp (ls ($'~/Downloads/*($version)*.bin' | into glob) | sort-by modified | last).name HpSuperIoFw.bin
 }
 
-export def main [
-    version: string
-    platform: string = 'springs'
-    --siodev(-d)
-    --signature(-s)
-] {
-    let paths = match $platform {
-        'springs' => [
-            '~/BIOS/HpSpringsWks/HpEpsc/HpNuvoton324Pkg/Include'
-            '~/BIOS/HpSpringsWks/HpPlatformPkg/MultiProject/X60Steamboat/SIOFW'
-        ]
-        'winters' => [
-            '~/BIOS/HpWintersWks/HpEpsc/HpNuvoton321Pkg/Include'
-            '~/BIOS/HpWintersWks/HpPlatformPkg/MultiProject/U60Glacier/SIOFW'
-            '~/BIOS/HpWintersWks/HpPlatformPkg/MultiProject/U61Blizzard/SIOFW'
-            '~/BIOS/HpWintersWks/HpPlatformPkg/MultiProject/U62Ice/SIOFW'
-        ]
-    } | path expand
-    procedure run "Copying SIOFW" {
-        let new_bin = procedure new-task 'Fetching binary from Downloads' {
-            let new_bin = try {
-                (ls ($'~\Downloads\*($version)*.bin' | into glob) | sort-by modified | last)
-            } catch {
-                error make -u { msg: $"Could not find binary file matching ($version)" }
-            }
-            procedure print $"Found binary (ansi blue)($new_bin.name | path basename)(ansi reset)"
-            $new_bin
-        }
-        for path in $paths {
-        }
-    }
-}
+# export def main [
+#     version: string
+#     platform: string = 'springs'
+#     --siodev(-d)
+#     --signature(-s)
+# ] {
+#     let paths = match $platform {
+#         'springs' => [
+#             '~/BIOS/HpSpringsWks/HpEpsc/HpNuvoton324Pkg/Include'
+#             '~/BIOS/HpSpringsWks/HpPlatformPkg/MultiProject/X60Steamboat/SIOFW'
+#         ]
+#         'winters' => [
+#             '~/BIOS/HpWintersWks/HpEpsc/HpNuvoton321Pkg/Include'
+#             '~/BIOS/HpWintersWks/HpPlatformPkg/MultiProject/U60Glacier/SIOFW'
+#             '~/BIOS/HpWintersWks/HpPlatformPkg/MultiProject/U61Blizzard/SIOFW'
+#             '~/BIOS/HpWintersWks/HpPlatformPkg/MultiProject/U62Ice/SIOFW'
+#         ]
+#     } | path expand
+#     procedure run "Copying SIOFW" {
+#         let new_bin = procedure new-task 'Fetching binary from Downloads' {
+#             let new_bin = try {
+#                 (ls ($'~\Downloads\*($version)*.bin' | into glob) | sort-by modified | last)
+#             } catch {
+#                 error make -u { msg: $"Could not find binary file matching ($version)" }
+#             }
+#             procedure print $"Found binary (ansi blue)($new_bin.name | path basename)(ansi reset)"
+#             $new_bin
+#         }
+#         for path in $paths {
+#         }
+#     }
+# }
