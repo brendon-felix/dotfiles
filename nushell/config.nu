@@ -98,6 +98,7 @@ $env.Path = $env.Path | append $paths
 
 # ----------------------------- custom variables ----------------------------- #
 
+$env.BIOS_CONFIGS = try { open ~/.bios-configs.toml } catch { null }
 $env.FIRST_PROMPT = true
 $env.MODULES_LOADED = false
 $env.VARS_FILE = ('~/.nu-vars.toml' | path expand)

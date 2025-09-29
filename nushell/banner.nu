@@ -252,7 +252,7 @@ def header_text []: nothing -> list<string> {
     let width = [($shell | ansi strip | str length -g), ($user | ansi strip | str length -g)] | math max
     let separator = "" | fill -c '─' -w $width
     let max_length = [$shell $separator $user] | ansi strip | str length -g | math max
-    [$shell $separator $user] | contain -p t -a cr
+    [$shell $separator $user] | contain -p t -a l
 }
 
 export def info [
