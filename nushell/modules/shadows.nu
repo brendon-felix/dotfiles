@@ -3,25 +3,25 @@
 #                                  shadows.nu                                  #
 # ---------------------------------------------------------------------------- #
 
-export alias config-nu-builtin = config nu
+# export alias config-nu-builtin = config nu
 
 # Edit nu configurations.
-export def `config nu` [
-    --default(-d)   # Print the internal default `config.nu` file instead.
-    --doc(-s)       # Print a commented `conifg.nu` with documentation instead.
-    --builtin(-b)   # Edit the actual built-in `config.nu` file instead of the custom one.
-] {
-    if $default {
-        config-nu-builtin --default
-    } else if $doc {
-        config-nu-builtin --doc | nu-highlight | less -R
-    } else if $builtin {
-        config-nu-builtin
-    } else {
-        cd ~/Projects/nushell-scripts
-        ^$env.EDITOR config.nu
-    }
-}
+# export def `config nu` [
+#     --default(-d)   # Print the internal default `config.nu` file instead.
+#     --doc(-s)       # Print a commented `conifg.nu` with documentation instead.
+#     --builtin(-b)   # Edit the actual built-in `config.nu` file instead of the custom one.
+# ] {
+#     if $default {
+#         config-nu-builtin --default
+#     } else if $doc {
+#         config-nu-builtin --doc | nu-highlight | less -R
+#     } else if $builtin {
+#         config-nu-builtin
+#     } else {
+#         cd ~/Projects/nushell-scripts
+#         ^$env.EDITOR config.nu
+#     }
+# }
 
 # export alias ls-builtin = ls
 #

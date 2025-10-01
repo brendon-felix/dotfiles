@@ -12,11 +12,11 @@ use modules/jobs.nu *
 use banner.nu [info 'print banner']
 
 const gstat_values = [
-    {value: idx_added_staged, display: $"(ansi green)A:(ansi reset)"}
-    {value: idx_modified_staged, display: $"(ansi blue)M:(ansi reset)"}
-    {value: idx_deleted_staged, display: $"(ansi red)D:(ansi reset)"}
-    {value: idx_renamed, display: $"(ansi purple)R:(ansi reset)"}
-    {value: idx_type_changed, display: $"(ansi yellow)T:(ansi reset)"}
+    {value: idx_added_staged, display: $"(ansi green)+A:(ansi reset)"}
+    {value: idx_modified_staged, display: $"(ansi blue)+M:(ansi reset)"}
+    {value: idx_deleted_staged, display: $"(ansi red)+D:(ansi reset)"}
+    {value: idx_renamed, display: $"(ansi purple)+R:(ansi reset)"}
+    {value: idx_type_changed, display: $"(ansi yellow)+T:(ansi reset)"}
     {value: wt_untracked, display: $"(ansi green)U:(ansi reset)"}
     {value: wt_modified, display: $"(ansi blue)M:(ansi reset)"}
     {value: wt_deleted, display: $"(ansi red)D:(ansi reset)"}
@@ -60,7 +60,7 @@ $env.PROMPT_COMMAND_RIGHT = {
                 | each { |row| $"($row.display) ($row.num)" }
             let branch = $git_status.branch
             mut git_info = [$"(ansi $branch_color)(char -u f062c) ($branch)(ansi reset)"]
-            if not ($values | is-empty) and ($values | length) < 5 {
+            if not ($values | is-empty) {
                 $git_info = $git_info | append $values
             }
             $info = $info | prepend $git_info
@@ -133,28 +133,6 @@ def show [file: path] {
     open -r $file | highlight
 }
 
-def --env `vault store` [path?: glob] {
-    # let vault_path = try {
-    #     (sys disks | where device == Vault | first | get mount)
-    # } catch {
-    #     error make -u { msg: "Vault not available" }
-    # }
-    # let path = if $relpath != null {
-    #     [$vault_path $relpath] | path join
-    # } else {
-    #     $vault_path
-    # }
-    # cd $path
-}
-
-def `vault load` [] {
-    # let vault_path = try {
-    #     (sys disks | where device == Vault | first | get mount)
-    # } catch {
-    #     error make -u { msg: "Vault not available" }
-    # }
-}
-
 # load API key environment variables
 if ('~/Arrowhead/Files/keys.toml' | path exists) {
     load-env (open ~/Arrowhead/Files/keys.toml | items {|k, v|
@@ -171,3 +149,6 @@ export def lg [
 }
 
 print banner header
+if $nu.os-info == macos {
+    overlay use ~/Projects/dotfiles/nushell/modules
+}

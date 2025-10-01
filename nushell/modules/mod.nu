@@ -34,6 +34,7 @@ export use system.nu *
 export use tools.nu *
 export use update.nu *
 export use variables.nu *
+export use vault.nu *
 export use version.nu *
 
 export-env {

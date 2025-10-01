@@ -69,6 +69,15 @@ let exes = match $nu.os-info.name {
     }
 }
 
+def `eject installers` [] {
+    if $nu.os-info.name != "macos" {
+        error make -u { msg: "Eject installers only supported on macOS" }
+    }
+    let installers = sys disks | where type == hfs | get mount
+    for installer in $installers {
+        diskutil unmount $installer
+    }
+}
 
 alias hey = ^$exes.hey -p ~/Arrowhead/Files/Prompts/gpt_prompt.txt
 alias askvim = ^$exes.hey -p ~/Arrowhead/Files/Prompts/askvim_prompt.txt

@@ -163,7 +163,7 @@ const header = r#'
 │       __  ,                    │
 │   .--()°'.'  Nushell v0.105.1  │
 │  '|, . ,'    ────────────────  │
-│   !_-(_\     brend@pluto       │
+│   !_-(_\     Brendon Felix     │
 │                                │
 ╰────────────────────────────────╯
 '#
@@ -246,7 +246,8 @@ def header_text []: nothing -> list<string> {
     # let shell = $"(ansi green)Nushell(ansi reset) " + $curr_version
     let shell = $"(ansi green)Nushell v($env.NU_VERSION)(ansi reset)"
     let username = $"(ansi light_purple)($env.USERNAME)(ansi reset)"
-    let hostname = $"(ansi light_purple)(sys host | get hostname)(ansi reset)"
+    let hostname = sys host | get hostname | str replace '.local' ''
+    let hostname = $"(ansi light_purple)($hostname)(ansi reset)"
     let user = $"($username)@($hostname)"
 
     let width = [($shell | ansi strip | str length -g), ($user | ansi strip | str length -g)] | math max

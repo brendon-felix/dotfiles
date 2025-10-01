@@ -23,5 +23,29 @@
     "bindings": {
       "shift-s": ["vim::PushAddSurrounds", {}]
     }
+  },
+  {
+    "context": "Workspace",
+    "bindings": {
+      "alt-[": "workspace::ToggleLeftDock"
+    }
+  },
+  {
+    "context": "Workspace",
+    "bindings": {
+      "alt-]": "workspace::ToggleRightDock"
+    }
+  },
+  {
+    "context": "Workspace",
+    "bindings": {
+      "cmd-shift-d": "git_panel::ToggleFocus"
+    }
+  },
+  {
+    "context": "Workspace",
+    "bindings": {
+      "alt-'": "workspace::ToggleBottomDock"
+    }
   }
 ]
