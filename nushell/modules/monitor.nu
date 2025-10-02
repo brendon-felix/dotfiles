@@ -5,9 +5,11 @@
 
 use ../modules/color.nu 'ansi apply'
 
-export def main [--interval(-i): duration = 1sec]: closure -> nothing {
+export def main [
+    task: closure,
+    --interval(-i): duration = 1sec
+] {
     clear
-    let task = $in
     let loading = [
         "⠇   ",
         "⠋   ",
@@ -63,7 +65,7 @@ export def `monitor disk` [--no-bar(-b), --all(-a)] {
             { (status disks --no-bar=($no_bar)) | select $disk_choice.mount }
         }
     }
-    $task | main
+    main $task
 }
 
 export def `monitor memory` [--no-bar(-b), --all(-a)] {
@@ -74,13 +76,13 @@ export def `monitor memory` [--no-bar(-b), --all(-a)] {
             { status memory --no-bar=($no_bar) | select $mem_choice }
         }
     }
-    $task | main
+    main $task
 }
 
 export def `monitor ram` [--no-bar(-b)] {
-    { status memory --no-bar=($no_bar) | select RAM } | main
+    main { status memory --no-bar=($no_bar) | select RAM }
 }
 
 export def `monitor banner` [] {
-    { print banner } | main
+    main { print banner }
 }
