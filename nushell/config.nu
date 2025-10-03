@@ -54,7 +54,17 @@ $env.PROMPT_COMMAND_RIGHT = {
             let values = $gstat_values
             let values = $values | upsert num {|row| $git_status | get $row.value}
             let num_changes = $values | get num | math sum
-            let branch_color = if $num_changes > 0 { 'yellow_bold' } else { 'green_bold' }
+            let branch_color = if $num_changes > 0 {
+                if $git_status.conflicts > 0  or $git_status.behind > 0 {
+                    'red_bold'
+                } else if $git_status.ahead == $num_changes {
+                    'green_bold'
+                } else {
+                    'yellow_bold'
+                }
+            } else {
+                'green_bold'
+            }
             let values = $values
                 | where { |row| $row.num > 0}
                 | each { |row| $"($row.display) ($row.num)" }
@@ -130,7 +140,12 @@ $env.config.plugins.highlight.theme = 'ansi'
 # ----------------------------- custom commands ------------------------------ #
 
 def show [file: path] {
-    open -r $file | highlight
+    let content = open $file -r | highlight
+    if ($content | lines | length) > (term size | get rows) * 2 {
+        $content | less -R
+    } else {
+        $content
+    }
 }
 
 # load API key environment variables
