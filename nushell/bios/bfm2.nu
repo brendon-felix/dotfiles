@@ -92,6 +92,7 @@ export def `bios bootleg` [
     --upload(-u)
     --upload-existing(-e)
     --select(-s)
+    --tree(-t): path
 ] {
     let config = $env.BIOS_CONFIGS | get $platform
     if $upload_existing {
@@ -118,7 +119,10 @@ export def `bios bootleg` [
         print $"Uploaded existing bootleg (ansi blue)($binary.name | path basename)(ansi reset) to network bootlegs folder"
     } else {
         print $"(ansi purple)Saving binary...(ansi reset)"
-        let binary = find-binary ($BIOS_DEV_PATH | path join $config.repo 'HpPlatformPkg' 'BLD' 'FV')
+        let binary = match $tree {
+            null => (find-binary ($BIOS_DEV_PATH | path join $config.repo 'HpPlatformPkg' 'BLD' 'FV'))
+            $t => (find-binary ($t | path join 'HpPlatformPkg' 'BLD' 'FV'))
+        }
         if $binary == null {
             error make -u { msg: "No binary found in build folder" }
         }
@@ -221,7 +225,7 @@ export def `bios batch` [
     --path(-p): path
 ] {
     bios build $platform --release=$release --tree=$tree --no-decrement=$no_decrement --set-version=$set_version
-    bios bootleg $platform --append=$append --upload=$upload
+    bios bootleg $platform --append=$append --upload=$upload --tree=$tree
     if $flash {
         bios flash $platform --bootleg --path=$path --no-info
     } else {

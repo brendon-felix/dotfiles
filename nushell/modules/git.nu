@@ -14,7 +14,7 @@ export const GSTAT_ICONS = [
     {value: wt_deleted, display: $"(ansi red)D:(ansi reset)"}
     {value: wt_type_changed, display: $"(ansi yellow)T:(ansi reset)"}
     {value: wt_renamed, display: $"(ansi purple)R:(ansi reset)"}
-    {value: conflicts, display: $"(ansi red_bold)C(ansi reset)"}
+    {value: conflicts, display: $"(ansi red_bold)C:(ansi reset)"}
     {value: stashes, display: $"(ansi magenta)S:(ansi reset)"}
     {value: ahead, display: $"(ansi green)↑:(ansi reset)"}
     {value: behind, display: $"(ansi red)↓:(ansi reset)"}
