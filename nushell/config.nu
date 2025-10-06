@@ -2,8 +2,6 @@
 #                                   config.nu                                  #
 # ---------------------------------------------------------------------------- #
 
-use std null-device
-
 source aliases.nu
 source zoxide.nu
 source ~/.sys-commands.nu
@@ -23,7 +21,20 @@ $env.PROMPT_INDICATOR_VI_NORMAL = { generate prompt-indicator }
 $env.PROMPT_INDICATOR_VI_INSERT = { generate prompt-indicator }
 $env.PROMPT_MULTILINE_INDICATOR = ''
 
-load-env (get-keys '~/Arrowhead/Files/keys.toml')
+$env.BIOS_CONFIGS = try { open ~/.bios-configs.toml } catch { null }
+$env.FIRST_PROMPT = true
+$env.PROCEDURE_LEVEL = 0
+$env.PROCEDURE_DEBUG = false
+
+match (ls-colors) {
+    null => {}
+    $ls_colors => { $env.LS_COLORS = $ls_colors }
+}
+
+match (get-keys ~/Arrowhead/Files/keys.toml) {
+    null => {}
+    $keys => { load-env $keys }
+}
 
 $env.PATH = $env.PATH | append ([
     '~/Projects/bar/target/release/'
@@ -35,14 +46,6 @@ $env.PATH = $env.PATH | append ([
     '~/Library/Python/3.9/bin/'
     '~/.cargo/bin/'
 ] | each { path expand } | where { path exists })
-
-# ----------------------------- custom variables ----------------------------- #
-
-$env.LS_COLORS = ls-colors
-$env.BIOS_CONFIGS = try { open ~/.bios-configs.toml } catch { null }
-$env.FIRST_PROMPT = true
-$env.PROCEDURE_LEVEL = 0
-$env.PROCEDURE_DEBUG = false
 
 # ---------------------------------- config ---------------------------------- #
 
@@ -59,12 +62,8 @@ $env.config.show_banner = false
 
 $env.config.plugins.highlight.theme = 'ansi'
 
-$env.config.hooks.pre_prompt = [
-    {|| job spawn {gstat | job send 0 --tag 42 } }
-]
-$env.config.hooks.pre_execution = [
-    {|| if $env.FIRST_PROMPT { $env.FIRST_PROMPT = false } }
-]
+$env.config.hooks.pre_prompt = [{ job spawn {gstat | job send 0 --tag 42 }}]
+$env.config.hooks.pre_execution = [{ if $env.FIRST_PROMPT { $env.FIRST_PROMPT = false }}]
 
 # ---------------------------------------------------------------------------- #
 

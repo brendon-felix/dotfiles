@@ -1,6 +1,6 @@
 
 
-use modules/status.nu 'status memory'
+use modules/status.nu ['status memory' 'status uptime' 'status startup']
 use modules/path.nu 'path highlight'
 use modules/git.nu GSTAT_ICONS
 
@@ -18,7 +18,11 @@ export def `generate prompt-left` [] {
 # }
 
 export def `generate prompt-right` [] {
-    mut info = [(status memory)]
+    mut info = [(status memory -i)]
+    if $env.FIRST_PROMPT {
+        $env.FIRST_PROMPT = false
+        $info = $info | prepend [(status uptime -i) (status startup -i)]
+    }
     try {
         let git_status = job recv --all --timeout 50ms | last
         if $git_status.repo_name != no_repository {
@@ -47,7 +51,7 @@ export def `generate prompt-right` [] {
             $info = $info | prepend $git_info
         }
     }
-    $info | grid | lines | first
+    (ansi reset) + ($info | grid | lines | first)
 }
 
 export def `generate prompt-indicator` [] {
@@ -66,17 +70,18 @@ export def ls-colors [] {
         $ls_colors | save $ls_colors_file
         $ls_colors
     } else {
+        print -e $"(ansi yellow)vivid not found, skipping loading LS_COLORS(ansi reset)"
         null
     }
 }
 
-export def --env get-keys [file: path]: nothing -> record {
+export def get-keys [file: path]: nothing -> record {
     if ($file | path exists) {
-        open ~/Arrowhead/Files/keys.toml | items {|k, v|
+        open $file | items {|k, v|
             {($k | str upcase): $v}
         } | into record
     } else {
-        print -e "keys.toml not found, skipping loading API keys"
-        {}
+        print -e $"(ansi yellow)keys.toml not found, skipping loading API keys(ansi reset)"
+        null
     }
 }

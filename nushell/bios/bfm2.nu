@@ -7,6 +7,37 @@ use ../modules/paint.nu main
 use ../modules/splash.nu *
 use ../modules/path.nu 'path stem-append'
 
+const BIOS_CONFIGS = {
+    springs: {
+        id: "X60"
+        name: "Springs"
+        repo: "HpSpringsWks"
+        build_script: "HpBldSprings.bat"
+        bios_id_file: 'MultiProject\X60Steamboat\BLD\BiosId.env'
+    }
+    winters: {
+        id: "U61"
+        name: "Winters"
+        repo: "HpWintersWks"
+        build_script: "HpBldBlizzard.bat"
+        bios_id_file: 'MultiProject\U61Blizzard\BLD\BiosId.env'
+    }
+    glacier: {
+        id: "U60"
+        name: "Glacier"
+        repo: "HpWintersWks"
+        build_script: "HpBldGlacier.bat"
+        bios_id_file: 'MultiProject\U60Glacier\BLD\BiosId.env'
+    }
+    avalanche: {
+        id: "U65"
+        name: "Avalanche"
+        repo: "HpAvalancheWks"
+        build_script: "HpBiosBuild.bat"
+        bios_id_file: 'BLD\RSPS\Avalanche\BiosId.env'
+    }
+}
+
 const BIOS_DEV_PATH = 'C:\Users\felixb\BIOS'
 const LOCAL_BOOTLEGS_PATH = 'C:\Users\felixb\BIOS\Bootlegs'
 const NETWORK_BOOTLEGS_PATH = '\\wks-file.ftc.rd.hpicorp.net\MAIN_LAB\SHARES\LAB\Brendon Felix\Bootlegs'
@@ -46,7 +77,7 @@ export def --env `bios build` [
     --no-decrement(-d)        # Don't decrement the feature number
     --set-version(-v): int    # Set the feature version number directly
 ]: nothing -> path {
-    let config = $env.BIOS_CONFIGS | get $platform
+    let config = $BIOS_CONFIGS | get $platform
     let repo_path = match $tree {
         null => ($BIOS_DEV_PATH | path join $config.repo)
         $t => {
@@ -94,7 +125,7 @@ export def `bios bootleg` [
     --select(-s)
     --tree(-t): path
 ] {
-    let config = $env.BIOS_CONFIGS | get $platform
+    let config = $BIOS_CONFIGS | get $platform
     if $upload_existing {
         let files = ls ($LOCAL_BOOTLEGS_PATH | path join $config.name) | where name =~ '^(?i)(?!.*pvt).*?(32|64).*\.bin$' | sort-by -r modified
         if ($files | is-empty) {
@@ -149,7 +180,7 @@ export def `bios flash` [
     --path(-p): path
     --no-info(-n)
 ] {
-    let config = $env.BIOS_CONFIGS | get $platform
+    let config = $BIOS_CONFIGS | get $platform
     let binary = match $path {
         null => {
             if $bootleg {

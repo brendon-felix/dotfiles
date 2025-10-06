@@ -3,6 +3,8 @@
 #                                    git.nu                                    #
 # ---------------------------------------------------------------------------- #
 
+use path.nu 'path highlight'
+
 export const GSTAT_ICONS = [
     {value: idx_added_staged, display: $"(ansi green)+A:(ansi reset)"}
     {value: idx_modified_staged, display: $"(ansi blue)+M:(ansi reset)"}
@@ -50,7 +52,7 @@ export def gpsh [] {
 def display_entry [e type] {
     let state = $STATES | get ($e | get $type)
     let state_str = $"(ansi $state.state_style)($state.display)(ansi reset)"
-    let file_str = $"(ansi $state.file_style)($e.file)(ansi reset)"
+    let file_str = $"(ansi $state.file_style)($e.file | path highlight)(ansi reset)"
     { state: $state_str, file: $file_str }
 }
 
