@@ -17,14 +17,3 @@ export def `update commands` [] {
         open $module | save -a everything.nu
     }
 }
-
-export def `path stem-append` [
-    s: string
-    --separator(-s): string = '_'
-] {
-    $in | each {|e|
-        mut parsed = $e | path parse
-        $parsed.stem += $separator + $s
-        $parsed | path join
-    }
-}

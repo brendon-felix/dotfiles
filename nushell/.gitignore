@@ -1,5 +1,6 @@
-commands.nu
-test.nu
-test.txt
+history.txt
+plugin.msgpackz
+.ls-colors
+vars.toml
+test.*
 run.nu
-

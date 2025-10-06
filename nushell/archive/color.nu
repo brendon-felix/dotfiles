@@ -8,7 +8,7 @@ use rgb.nu ['into rgb' 'rgb get-hex']
 export const AVAILABLE_ANSI: list<string> = (ansi --list | get name)
 
 # apply ANSI color or attributes to a piped string
-export def `ansi apply` [
+export def `paint` [
     color           # the color or escape to apply (see `ansi --list`)
     --strip(-s)     # strip ANSI codes from input before applying color
     --no-reset(-r)  # do not reset ansi after applying
@@ -50,7 +50,7 @@ export def `color interpolate` [
     mut color = $start | interpolate $end $t
     if $hsv { $color = $color | rgb from-hsv }
     let hex = $color | rgb get-hex
-    $in | each {|e| $e | ansi apply {fg: $hex} --strip=$strip --no-reset=$no_reset}
+    $in | each {|e| $e | paint {fg: $hex} --strip=$strip --no-reset=$no_reset}
 }
 
 export def `color gradient` [
@@ -69,7 +69,7 @@ export def `color gradient` [
             mut interpolated = $start | interpolate $end $t
             if $hsv { $interpolated = $interpolated | rgb from-hsv }
             let hex = $interpolated | rgb get-hex
-            $i.item | ansi apply {fg: $hex} --strip=$strip --no-reset=$no_reset
+            $i.item | paint {fg: $hex} --strip=$strip --no-reset=$no_reset
             # $"(ansi -e {fg: $hex})($e.item)(ansi reset)"
         }
     } | str join
@@ -79,7 +79,7 @@ export def `color cycle` [i] {
     let colors = [
         "red",
         "green",
-        "blue", 
+        "blue",
         "yellow",
         "magenta",
         "cyan",
@@ -87,7 +87,7 @@ export def `color cycle` [i] {
     ]
     $in | each {|e|
         let index = ($i | into int) mod ($colors | length)
-        $e | ansi apply ($colors | get $index)
+        $e | paint ($colors | get $index)
     }
 }
 
@@ -102,7 +102,6 @@ export def `color random` [
         } else {
             {r: (random int 0..255), g: (random int 0..255), b: (random int 0..255)}
         }
-        $e | ansi apply $color --strip=$strip --no-reset=$no_reset
+        $e | paint $color --strip=$strip --no-reset=$no_reset
     }
 }
-

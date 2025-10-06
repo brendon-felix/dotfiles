@@ -10,5 +10,3 @@ export def main [
 export def `sync marlin` [--verbose(-v)] {
     main ~/School marlin:/s/bach/g/under/bcfelix/School --verbose=$verbose
 }
-
-

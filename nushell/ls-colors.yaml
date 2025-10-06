@@ -1,0 +1,136 @@
+# One Half Dark for vivid - Improved color distribution and font styles
+
+# directory
+# symlink, multi_hard_link
+# executable_file, executable
+#
+
+colors:
+  background_color: "282c34"
+  white: "dcdfe4"
+  red: "e06c75"
+  green: "98c379"
+  yellow: "e5c07b"
+  blue: "61afef"
+  purple: "c678dd"
+  cyan: "56b6c2"
+  orange: "d19a66"
+
+  black: "000000"
+  gray: "999999"
+  darkgray: "666666"
+  darkergray: "333333"
+
+core:
+  normal_text: {}
+  regular_file:
+    foreground: white
+  reset_to_normal: {}
+
+  directory:
+    foreground: cyan
+
+  symlink:
+    foreground: red
+
+  multi_hard_link: {}
+
+  fifo:
+    foreground: black
+    background: cyan
+
+  socket:
+    foreground: black
+    background: red
+
+  door:
+    foreground: black
+    background: red
+
+  block_device:
+    foreground: cyan
+    background: darkergray
+    font-style: bold
+
+  character_device:
+    foreground: purple
+    background: darkergray
+    font-style: bold
+
+  broken_symlink:
+    foreground: white
+    background: red
+    font-style: bold
+
+  missing_symlink_target:
+    foreground: white
+    background: red
+    font-style: italic
+
+  setuid: {}
+
+  setgid: {}
+
+  file_with_capability: {}
+
+  sticky_other_writable: {}
+
+  other_writable: {}
+
+  sticky: {}
+
+  executable_file:
+    foreground: red
+    font-style: bold
+
+text:
+  special:
+    foreground: yellow
+    font-style: bold
+
+  todo:
+    foreground: yellow
+    font-style: bold
+
+  licenses:
+    foreground: gray
+    font-style: italic
+
+  configuration:
+    foreground: green
+    font-style: bold
+
+  other: {}
+
+markup:
+  foreground: purple
+  font-style: italic
+
+programming:
+  source:
+    foreground: green
+
+  tooling:
+    foreground: green
+    font-style: italic
+
+    continuous-integration:
+      foreground: yellow
+      font-style: italic
+
+media:
+  foreground: purple
+
+office:
+  foreground: yellow
+
+archives:
+  foreground: orange
+  font-style: underline
+
+executable:
+  foreground: red
+  font-style: bold
+
+unimportant:
+  foreground: darkgray

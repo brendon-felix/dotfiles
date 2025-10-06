@@ -3,12 +3,9 @@
 # ---------------------------------------------------------------------------- #
 
 use ../modules/format.nu 'format hex'
-use ../modules/print-utils.nu countdown
-use ../modules/debug.nu *
-use ../modules/color.nu 'ansi apply'
+use ../modules/paint.nu main
 use ../modules/splash.nu *
-use ../modules/procedure.nu *
-use ../modules/rest.nu ['path stem-append']
+use ../modules/path.nu 'path stem-append'
 
 const BIOS_DEV_PATH = 'C:\Users\felixb\BIOS'
 const LOCAL_BOOTLEGS_PATH = 'C:\Users\felixb\BIOS\Bootlegs'
@@ -33,7 +30,7 @@ def set-version [file: path, version?: int] {
         null => (($curr_version - 1) mod 100)
         $v => ($v mod 100)
     }
-    print $"(ansi yellow)Setting feature version: ($curr_version | into string | ansi apply {fg: "#808080"}) -> ($new_version | into string | ansi apply blue)(ansi reset)"
+    print $"(ansi yellow)Setting feature version: ($curr_version | into string | paint grey46) -> ($new_version | into string | paint blue)(ansi reset)"
     let new_contents = open $file | lines | each {|e|
         if ($e | str contains VERSION_FEATURE) {
             $e | str replace $curr_version_str ($new_version | format hex -r)

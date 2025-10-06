@@ -137,7 +137,7 @@ export def `link dotfiles` [] {
                         }
                     }
                 } else {
-                    procedure new-task $"Linking ($link.link | path slice (-2)..(-1) | ansi apply blue) to ($link.target | path slice (-2)..(-1) | ansi apply cyan)" {
+                    procedure new-task $"Linking ($link.link | path slice (-2)..(-1) | paint blue) to ($link.target | path slice (-2)..(-1) | paint cyan)" {
                         $link.link | link $link.target
                     }
                 }
@@ -145,4 +145,3 @@ export def `link dotfiles` [] {
         }
     }
 }
-

@@ -3,7 +3,8 @@
 #                                  monitor.nu                                  #
 # ---------------------------------------------------------------------------- #
 
-use ../modules/color.nu 'ansi apply'
+use status.nu 'status memory'
+use paint.nu main
 
 export def main [
     task: closure,
@@ -21,7 +22,7 @@ export def main [
         "  ⣀ ",
         " ⣀  ",
         "⠦   ",
-    ] | ansi apply cyan
+    ] | paint cyan
     let loading_len = $loading | length
     # mut cursor_start = cursor position
     mut term_size = term size
@@ -56,33 +57,33 @@ export def main [
     cursor on
 }
 
-export def `monitor disk` [--no-bar(-b), --all(-a)] {
-    let task = match $all {
-        true => { status disks --no-bar=($no_bar) }
-        false => {
-            let disks = sys disks | upsert display {|e| $"($e.mount) \(($e.device)\)"}
-            let disk_choice = ($disks | input list -d display)
-            { (status disks --no-bar=($no_bar)) | select $disk_choice.mount }
-        }
-    }
-    main $task
+# export def `monitor disk` [--no-bar(-b), --all(-a)] {
+#     let task = match $all {
+#         true => { status disks --no-bar=($no_bar) }
+#         false => {
+#             let disks = sys disks | upsert display {|e| $"($e.mount) \(($e.device)\)"}
+#             let disk_choice = ($disks | input list -d display)
+#             { (status disks --no-bar=($no_bar)) | select $disk_choice.mount }
+#         }
+#     }
+#     main $task
+# }
+
+# export def `monitor memory` [--no-bar(-b), --all(-a)] {
+#     let task = match $all {
+#         true => { status memory --no-bar=($no_bar) }
+#         false => {
+#             let mem_choice = ['RAM' 'Swap'] | input list
+#             { status memory --no-bar=($no_bar) | select $mem_choice }
+#         }
+#     }
+#     main $task
+# }
+
+export def `monitor memory` [--no-bar(-b)] {
+    main { status memory --bar=(not $no_bar) }
 }
 
-export def `monitor memory` [--no-bar(-b), --all(-a)] {
-    let task = match $all {
-        true => { status memory --no-bar=($no_bar) }
-        false => {
-            let mem_choice = ['RAM' 'Swap'] | input list
-            { status memory --no-bar=($no_bar) | select $mem_choice }
-        }
-    }
-    main $task
-}
-
-export def `monitor ram` [--no-bar(-b)] {
-    main { status memory --no-bar=($no_bar) | select RAM }
-}
-
-export def `monitor banner` [] {
-    main { print banner }
-}
+# export def `monitor banner` [] {
+#     main { print banner }
+# }

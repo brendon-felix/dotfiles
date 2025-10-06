@@ -82,7 +82,7 @@ def "nu-complete winget install id" [] {
 
 def "nu-complete winget parse table" [lines: any] {
     let header = (
-        $lines 
+        $lines
         | first
         | parse -r '(?P<name>Name\s+)(?P<id>Id\s+)(?P<version>Version\s+)?(?P<match>Match\s+)?(?P<available>Available\s+)?(?P<source>Source\s*)?'
         | first
@@ -367,7 +367,7 @@ export def "winget list" [
             (do $flagify header $header)
             (do $flagify accept_source_agreements $accept_source_agreements)
             (do $flagify help $help)
-        ] 
+        ]
         | flatten
         | where { not ($in | is-empty) })
     )
@@ -381,7 +381,7 @@ export def "winget list" [
             $"(ansi light_red)($lines | first)(ansi reset)"
         } else {
             let truncated = $lines | last | $in == "<additional entries truncated due to result limit>"
-            nu-complete winget parse table (if $truncated { $lines | drop } else { $lines }) 
+            nu-complete winget parse table (if $truncated { $lines | drop } else { $lines })
                 | reject match
                 # Because of a bug: https://github.com/microsoft/winget-cli/issues/4236
                 # we need to filter it with the "where" command

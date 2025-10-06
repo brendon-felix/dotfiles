@@ -11,9 +11,10 @@ export def wa [...input: string] {
     curl $url
 }
 
-export def timer [duration: duration] {
-    countdown $duration
-    "Done" | contain -p t | blink | splash green
-    # print $"(ansi green)("Done")(erase right)(ansi reset)"
-}
+export alias spew = spewcap2
 
+export alias hey = hey -p ~/Arrowhead/Files/Prompts/gpt_prompt.txt
+export alias askvim = hey -p ~/Arrowhead/Files/Prompts/askvim_prompt.txt
+export alias eg = hey -p ~/Arrowhead/Files/Prompts/eg_prompt.txt
+
+export alias jupyter = /opt/homebrew/opt/jupyterlab/bin/jupyter-lab

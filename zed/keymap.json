@@ -21,7 +21,7 @@
   {
     "context": "Editor && vim_mode == visual",
     "bindings": {
-      "shift-s": ["vim::PushAddSurrounds", {}]
+      "shift-s": "vim::PushAddSurrounds"
     }
   },
   {

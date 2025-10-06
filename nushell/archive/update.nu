@@ -4,7 +4,7 @@
 # ---------------------------------------------------------------------------- #
 
 use debug.nu *
-use color.nu 'ansi apply'
+use paint.nu main
 use procedure.nu 'procedure new-task'
 
 export def `update imports` [] {
@@ -18,10 +18,9 @@ export def `update imports` [] {
         }
         false => {
             let imports = $modules | each {|e| $"export use ($e) *" }
-            procedure new-task $"Saving ($modules | length | into string | ansi apply blue) imports to ('modules/mod.nu' | ansi apply blue)" {
+            procedure new-task $"Saving ($modules | length | into string | paint blue) imports to ('modules/mod.nu' | paint blue)" {
                 $imports | save -f ($path | path join mod.nu)
             }
         }
     }
 }
-

@@ -4,10 +4,10 @@
 # ---------------------------------------------------------------------------- #
 
 use std repeat
-use print-utils.nu separator
-use color.nu 'ansi apply'
+
+use print-utils.nu [separator suppress]
+use paint.nu main
 use ansi.nu ['cursor off' 'cursor on']
-use core.nu suppress
 
 export def `procedure run` [
     name: string
@@ -21,10 +21,10 @@ export def `procedure run` [
     # $env.PROCEDURE_LEAF = true
     try {
         do $closure
-        print ($"\n($name) successful" | ansi apply green)
+        print ($"\n($name) successful" | paint green)
         print (separator)
     } catch {
-        print ($"\n($name) failed" | ansi apply red)
+        print ($"\n($name) failed" | paint red)
         print (separator)
     }
     cursor on
@@ -58,13 +58,13 @@ def print-result [result] {
     match ($env.PROCEDURE_LEVEL - 1) {
         $n if ($env.PROCEDURE_LEAF and ($n >= 1)) => {()}
         0 => {
-            print ($"  │" | ansi apply $result.color)
-            print ($"  ╰─→ ($result.text)\n" | ansi apply $result.color)
+            print ($"  │" | paint $result.color)
+            print ($"  ╰─→ ($result.text)\n" | paint $result.color)
         }
         $n => {
             let left_margin = left_margin $n
-            print ($left_margin + ($"╭─────╯ ($result.icon)" | ansi apply $result.color))
-            print ($left_margin + ($"│" | ansi apply $result.color))
+            print ($left_margin + ($"╭─────╯ ($result.icon)" | paint $result.color))
+            print ($left_margin + ($"│" | paint $result.color))
         }
     }
 }
@@ -111,26 +111,26 @@ export def --env `procedure new-task` [
 
 export def `procedure print` [
     message: string
-    --color(-c): any = 'default'
+    --color(-c): string = 'default'
 ] {
     let message = match ($env.PROCEDURE_LEVEL - 1) {
         $n if $n < 0 => (error make -u { msg: "invalid procedure level" }),
-        $n if $n == 0 => ("  │    ╰─ " + $message | ansi apply $color),
-        $n => ($"(left_margin $n)" + ("│    ╰─ " + $message | ansi apply $color))
+        $n if $n == 0 => ("  │    ╰─ " + $message | paint $color),
+        $n => ($"(left_margin $n)" + ("│    ╰─ " + $message | paint $color))
     }
     print $message
 }
 
 export def `procedure get-input` [
     prompt: string
-    --color(-c): any = 'default'
+    --color(-c): string = 'default'
     --numchar(-n): int,
     --default(-d): string,
 ] {
     let prompt = match ($env.PROCEDURE_LEVEL - 1) {
         $n if $n < 0 => (error make -u { msg: "invalid procedure level" }),
-        $n if $n == 0 => ("  │    ╰─ " + $prompt | ansi apply $color),
-        $n => ($"(left_margin $n)" + ("│    ╰─ " + $prompt | ansi apply $color))
+        $n if $n == 0 => ("  │    ╰─ " + $prompt | paint $color),
+        $n => ($"(left_margin $n)" + ("│    ╰─ " + $prompt | paint $color))
     }
     input $prompt --numchar=$numchar --default=$default
 }

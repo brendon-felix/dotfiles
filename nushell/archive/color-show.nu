@@ -3,9 +3,14 @@
 #                                 color-show.nu                                #
 # ---------------------------------------------------------------------------- #
 
+use std ellie
 use rgb.nu ['rgb get-hex' 'into rgb' 'rgb from-hsv']
-use color.nu 'ansi apply'
-use container.nu ['row' 'container print']
+use paint.nu main
+use container.nu ['contain' 'row' 'container print']
+
+def my-ellie []: nothing -> list<string> {
+    ellie | ansi strip | contain -x 2 --pad-bottom 1
+}
 
 export def `color show` [] {
     $in | each {|e|
@@ -23,7 +28,7 @@ export def `color show` [] {
         mut container = []
         for ansi_color in $ansi_colors {
             # print $"(ansi -e $ansi_color)(ansi reset)"
-            $container = $container | row (my-ellie | ansi apply $ansi_color)
+            $container = $container | row (my-ellie | each {|e| $"(ansi -e $ansi_color)($e)(ansi reset)"})
         }
         $container | container print
     }
@@ -39,4 +44,3 @@ export def `print window` [] {
     ]
     $container | container print
 }
-

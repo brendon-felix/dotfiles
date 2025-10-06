@@ -3,6 +3,32 @@
 #                                    git.nu                                    #
 # ---------------------------------------------------------------------------- #
 
+export const GSTAT_ICONS = [
+    {value: idx_added_staged, display: $"(ansi green)+A:(ansi reset)"}
+    {value: idx_modified_staged, display: $"(ansi blue)+M:(ansi reset)"}
+    {value: idx_deleted_staged, display: $"(ansi red)+D:(ansi reset)"}
+    {value: idx_renamed, display: $"(ansi purple)+R:(ansi reset)"}
+    {value: idx_type_changed, display: $"(ansi yellow)+T:(ansi reset)"}
+    {value: wt_untracked, display: $"(ansi green)U:(ansi reset)"}
+    {value: wt_modified, display: $"(ansi blue)M:(ansi reset)"}
+    {value: wt_deleted, display: $"(ansi red)D:(ansi reset)"}
+    {value: wt_type_changed, display: $"(ansi yellow)T:(ansi reset)"}
+    {value: wt_renamed, display: $"(ansi purple)R:(ansi reset)"}
+    {value: conflicts, display: $"(ansi red_bold)C(ansi reset)"}
+    {value: stashes, display: $"(ansi magenta)S:(ansi reset)"}
+    {value: ahead, display: $"(ansi green)↑:(ansi reset)"}
+    {value: behind, display: $"(ansi red)↓:(ansi reset)"}
+]
+
+const STATES = {
+    'M': {display: modified, state_style: blue, file_style: default}
+    'A': {display: added, state_style: green, file_style: default}
+    'D': {display: deleted, state_style: red, file_style: attr_strike}
+    'R': {display: renamed, state_style: yellow, file_style: default}
+    'C': {display: conflict, state_style: purple, file_style: red}
+    '?': {display: untracked, state_style: default, file_style: yellow}
+}
+
 export alias gsw = git switch
 export alias gbr = git branch
 export alias grh = git reset --hard
@@ -19,55 +45,35 @@ export def gpsh [] {
     git push
 }
 
+# ---------------------------------------------------------------------------- #
+
+def display_entry [e type] {
+    let state = $STATES | get ($e | get $type)
+    let state_str = $"(ansi $state.state_style)($state.display)(ansi reset)"
+    let file_str = $"(ansi $state.file_style)($e.file)(ansi reset)"
+    { state: $state_str, file: $file_str }
+}
+
 export def `git stat` [] {
-    let status = git status --porcelain | lines | parse -r '^(?<staged>.)(?<unstaged>.) (?<file>.+)$' | str trim
-    let staged = $status | where staged != ''
+    let entries = git status --porcelain | lines | parse -r '^(?<idx>.)(?<wt>.) (?<file>.+)$' | str trim
+    let staged = $entries | where {|e| $e.idx != '' and $e.idx != '?'}
+    let unstaged = $entries | where {|e| $e.wt != '' and $e.wt != '?'}
+    let untracked = $entries | where {|e| $e.idx == '?' and $e.wt == '?'}
+
     print "Changes to be committed:"
-    for entry in $staged {
-        match $entry.staged {
-            'M' => { print $"  (ansi blue)Modified:(ansi reset) (ansi green)($entry.file)(ansi reset)" }
-            'A' => { print $"  (ansi green)Added:(ansi reset) (ansi green)($entry.file)(ansi reset)" }
-            'D' => { print $"  (ansi red)Deleted:(ansi reset) (ansi green)(ansi attr_strike)($entry.file)(ansi reset)" }
-            'R' => { print $"  (ansi yellow)Renamed:(ansi reset) (ansi green)($entry.file)(ansi reset)" }
-            'C' => { print $"  (ansi magenta)Copied:(ansi reset) (ansi green)($entry.file)(ansi reset)" }
-            # '?' => { print $"  (ansi cyan)Untracked:(ansi reset) ($entry.file)" }
-            '?' => { } # Untracked files cannot be staged, so ignore this case
-            _ => { print $"  (ansi gray)Unknown:(ansi reset) ($entry.file)" }
-        }
-    }
-    # let staged_display = $staged | where staged != '?' | each { |entry|
-    #     match $entry.staged {
-    #         'M' => { display: Modified, color: blue, file_style: null }
-    #         'A' => { display: Added, color: green, file_style: null }
-    #         'D' => { display: Deleted, color: red, file_style: attr_str }
-    #         'R' => { display: Renamed, color: yellow, file_style: null }
-    #         'C' => { display: Copied, color: purple, file_style: null }
-    #         _ => { display: Unknown, color: gray, file_style: null }
-    #     }
-    # }
-    # for entry in $staged_display {
-    # }
-    print ""
+    let staged = $staged | each {|e| display_entry $e 'idx' }
+    print $staged ""
+
     print "Changes not staged for commit:"
-    let unstaged = $status | where unstaged != ''
-    mut untracked = []
-    for entry in $unstaged {
-        match $entry.unstaged {
-            'M' => { print $"  (ansi blue)Modified:(ansi reset) ($entry.file)" }
-            'A' => { print $"  (ansi green)Added:(ansi reset) ($entry.file)" }
-            'D' => { print $"  (ansi red)Deleted:(ansi reset) (ansi attr_strike)($entry.file)(ansi reset)" }
-            'R' => { print $"  (ansi yellow)Renamed:(ansi reset) ($entry.file)" }
-            'C' => { print $"  (ansi magenta)Copied:(ansi reset) ($entry.file)"  }
-            # '?' => { print $"  (ansi cyan)Untracked:(ansi reset) ($entry.file)"  }
-            '?' => { $untracked = $untracked | append $entry }
-            _ => { print $"  (ansi gray)Unknown:(ansi reset) ($entry.file)"  }
-        }
+    let unstaged = $unstaged | each {|e| display_entry $e 'wt' }
+    print $unstaged ""
+
+    let untracked = $untracked | each {|e|
+        let state = $STATES | get '?'
+        $"(ansi $state.file_style)($e.file)(ansi reset)"
     }
     if ($untracked | length) > 0 {
-        print ""
         print "Untracked files:"
-        for entry in $untracked {
-            print $"  (ansi cyan)Untracked:(ansi reset) (ansi yellow)($entry.file)(ansi reset)"
-        }
+        print $untracked
     }
 }

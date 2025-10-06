@@ -41,14 +41,3 @@ export def "round duration" [unit?]: duration -> duration {
         $rounded_ns | into duration
     }
 }
-
-# export def round [] {
-#     each { |e|
-#         if ($e | describe) == "duration" {
-#             $e | round duration
-#         } else {
-#             $e | math round
-#         }
-#     }
-# }
-

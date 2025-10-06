@@ -3,63 +3,12 @@
 #                                    ansi.nu                                   #
 # ---------------------------------------------------------------------------- #
 
-export def `strip length` []: [
-    string -> int
-    list<string> -> list<int>
-] {
-    $in | ansi strip | str length -g
-}
-
 export def `ansi alternate` [] {
     ansi -e "?1049h"
 }
 
 export def `ansi main` [] {
     ansi -e "?1049l"
-}
-
-# -------------------------------- formatting -------------------------------- #
-
-export def bold [] {
-    each { |e|
-        $"(ansi attr_bold)($e)(ansi reset)"
-    }
-}
-
-export def dimmed [] {
-    each { |e|
-        $"(ansi attr_dimmed)($e)(ansi reset)"
-    }
-}
-
-export def italic [] {
-    each { |e|
-        $"(ansi attr_italic)($e)(ansi reset)"
-    }
-}
-
-export def underline [] {
-    each { |e|
-        $"(ansi attr_underline)($e)(ansi reset)"
-    }
-}
-
-export def blink [] {
-    each { |e|
-        $"(ansi attr_blink)($e)(ansi reset)"
-    }
-}
-
-export def hidden [] {
-    each { |e|
-        $"(ansi attr_hidden)($e)(ansi reset)"
-    }
-}
-
-export def strike [] {
-    each { |e|
-        $"(ansi attr_strike)($e)(ansi reset)"
-    }
 }
 
 # ------------------------------ cursor commands ----------------------------- #
@@ -121,4 +70,3 @@ export def `cursor move-to` [
 ] {
     print -n (ansi -e $"($pos.row);($pos.col)f")
 }
-

@@ -4,7 +4,7 @@
 # ---------------------------------------------------------------------------- #
 
 use std repeat
-use color.nu 'ansi apply'
+use paint.nu main
 
 # Converts piped input into a container (list of strings)
 export def contain [
@@ -47,7 +47,7 @@ export def contain [
         $line | fill -a $alignment -w $max_length
     }
     let container_width = $max_length + $pad_left + $pad_right
-    $filled | each {|line| 
+    $filled | each {|line|
         $padding.left + $line + $padding.right
     }
 }
@@ -75,7 +75,11 @@ export def double-box []: list<string> -> list<string> {
     let top_border = $"╔($horizontal_border)╗"
     let middle = $container | each { |line| $"║($line)║" }
     let bottom_border = $"╚($horizontal_border)╝"
-    $middle | prepend $top_border | append $bottom_border
+    [
+        $top_border
+        ...$middle
+        $bottom_border
+    ]
 }
 
 # places a container to the right of another container
@@ -108,15 +112,15 @@ export def row [
             right: { top: ($tpad.right / 2 | math ceil), bottom: ($tpad.right / 2 | math floor) }
         }
     }
-    let left_pad_line = "" | fill -w ($left | strip length | math max)
-    let right_pad_line = "" | fill -w ($right | strip length | math max)
+    let left_pad_line = "" | fill -w ($left | ansi strip | str length -g | math max)
+    let right_pad_line = "" | fill -w ($right | ansi strip | str length -g | math max)
     let padding = {
         left: {
-            top: ($left_pad_line | repeat $padding.left.top), 
+            top: ($left_pad_line | repeat $padding.left.top),
             bottom: ($left_pad_line | repeat $padding.left.bottom)
         }
         right: {
-            top: ($right_pad_line | repeat $padding.right.top), 
+            top: ($right_pad_line | repeat $padding.right.top),
             bottom: ($right_pad_line | repeat $padding.right.bottom)
         }
     }
@@ -196,15 +200,15 @@ export def div [
         }
     }
     let padding = {
-        top: ("" | fill -w $term_size.columns | repeat $y_padding_height.top | ansi apply {bg: $background})
-        bottom: ("" | fill -w $term_size.columns | repeat $y_padding_height.bottom | ansi apply {bg: $background})
-        left: ("" | fill -w $x_padding_width.left | ansi apply {bg: $background})
-        right: ("" | fill -w $x_padding_width.right | ansi apply {bg: $background})
+        top: ("" | fill -w $term_size.columns | repeat $y_padding_height.top | each {|e| $"(ansi -e {bg: $background})($e)(ansi reset)"})
+        bottom: ("" | fill -w $term_size.columns | repeat $y_padding_height.bottom | each {|e| $"(ansi -e {bg: $background})($e)(ansi reset)"})
+        left: ("" | fill -w $x_padding_width.left | each {|e| $"(ansi -e {bg: $background})($e)(ansi reset)"})
+        right: ("" | fill -w $x_padding_width.right | each {|e| $"(ansi -e {bg: $background})($e)(ansi reset)"})
     }
-    let middle = $container | each { |line| 
+    let middle = $container | each { |line|
         mut line = $padding.left + $line + $padding.right
         if $fill {
-            $line = $line | ansi apply {bg: $background}
+            $line = $"(ansi -e {bg: $background})($line)(ansi reset)"
         }
         $line
     }
@@ -218,4 +222,3 @@ export def div [
 export def "container print" []: list<string> -> nothing {
     print ($in | str join "\n")
 }
-

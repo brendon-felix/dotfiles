@@ -3,53 +3,18 @@
 #                                print-utils.nu                                #
 # ---------------------------------------------------------------------------- #
 
-use rgb.nu ['into rgb' 'rgb get-hex']
-use ansi.nu ['cursor off' 'cursor on' 'erase right']
-use interpolate.nu main
-use round.nu 'round duration'
-use color.nu 'ansi apply'
-
-export def `char block` [
-    shade?: int = 4
-] {
-    match $shade {
-        1 => "░"
-        2 => "▒"
-        3 => "▓"
-        _ => "█"
-    }
-}
-
-export def blocks [
-    length: int
-    --shade(-s): int = 4
-] {
-    "" | fill -c (char block $shade) -w $length
-}
+use std null-device
 
 export def bar [
     value: float
     --length(-l): int = 12
-    --fg-color(-f): any = 'white'
-    --bg-color(-b): any = 'gray'
-    --attr(-a): string
+    --fg-color(-f): any = '#DCDFE4'
+    --bg-color(-b): any = '#505050'
+    # --attr(-a): string
 ] {
-    # asciibar --empty '░' --half-filled '▓' --filled '█' --length 12 $value
-    let attr = match $attr {
-        null => ""
-        _ => $attr
-    }
-    let bar_exe = match $nu.os-info.name {
-        "windows" => 'bar.exe'
-        "macos" | "linux" => 'bar'
-    }
-    let bar = ^$bar_exe -l $length $value
-    let ansi_color = {
-        fg: ($fg_color | into rgb | rgb get-hex),
-        bg: ($bg_color | into rgb | rgb get-hex),
-        attr: $attr,
-    }
-    $bar | ansi apply $ansi_color
+    let bar = ^bar -l $length $value
+    let ansi_color = {fg: $fg_color, bg: $bg_color}
+    $"(ansi -e $ansi_color)($bar)(ansi reset)"
 }
 
 export def separator [
@@ -71,77 +36,23 @@ export def separator [
     $input | fill -a $alignment -c '─' -w $length
 }
 
-export def countdown [
-    duration: duration
-    --no-bar(-b)
-    --bar-length(-l): int = 12
-    --start-color(-s): any = white
-    --end-color(-e): any = white
-] {
-    if $duration < 1ms {
-        error make {
-            msg: "invalid duration",
-            label: {
-                text: "must be greater than or equal to 1ms",
-                span: (metadata $duration).span,
+export def --env suppress [
+    what: string = 'all'
+    --environment(-e)
+]: closure -> nothing {
+    let closure = $in
+    match $what {
+        'a' | 'all' => (do --env=$environment $closure o+e> (null-device))
+        'e' | 'err' | 'stderr' => (do --env=$environment $closure e> (null-device))
+        'o' | 'out' | 'stdout' => (do --env=$environment $closure o> (null-device))
+        _ => {
+            error make {
+                msg: "invalid argument"
+                label: {
+                    text: "valid arguments are: 'all', 'err', 'stderr', 'out', 'stdout'"
+                    span: (metadata $what).span
+                }
             }
         }
     }
-    let start_time = date now
-    let end_time = $start_time + $duration
-    mut $remaining = $duration
-    cursor off
-    while $remaining > 0sec {
-        let proportion = $remaining / $duration
-        let color = ($start_color | into rgb) | interpolate ($end_color | into rgb) $proportion
-        mut status = $"($remaining | round duration)" | ansi apply $color
-        if not $no_bar {
-            let bar = bar --length=$bar_length --fg-color $color ($remaining / $duration)
-            $status = $"($bar) ($status)"
-        }
-        print -n $status
-        erase right
-        print -n "\r"
-        $remaining = $end_time - (date now)
-    }
-    # print $"(ansi green)("Done")(erase right)(ansi reset)"
-    # print -n $"(ansi reset)"
 }
-
-export def countup [
-    duration: duration
-    --no-bar(-b)
-    --bar-length(-l): int = 12
-    --start-color(-s): any = white
-    --end-color(-e): any = white
-] {
-    if $duration < 1ms {
-        error make {
-            msg: "invalid duration",
-            label: {
-                text: "must be greater than or equal to 1ms",
-                span: (metadata $duration).span,
-            }
-        }
-    }
-    let start_time = date now
-    let end_time = $start_time + $duration
-    mut $remaining = $duration
-    cursor off
-    while $remaining > 0sec {
-        let proportion = $remaining / $duration
-        let color = ($start_color | into rgb) | interpolate ($end_color | into rgb) $proportion
-        mut status = $"(($duration - $remaining) | round duration)" | ansi apply $color
-        if not $no_bar {
-            let bar = bar --length=$bar_length --fg-color $color (($duration - $remaining) / $duration)
-            $status = $"($bar) ($status)"
-        }
-        print -n $status
-        erase right
-        print -n "\r"
-        $remaining = $end_time - (date now)
-    }
-    # print $"(ansi green)("Done")(erase right)(ansi reset)"
-    # print -n $"(ansi reset)"
-}
-

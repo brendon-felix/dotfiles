@@ -19,13 +19,13 @@ def choose_process [choices] {
             $l => (($e.name | str substring 0..($MAX_NAME_LENGTH - 3)) + "...")
         }
         match $e.mem {
-            $m if $m > 1GB => ($name | ansi apply red),
-            $m if $m > 100MB => ($name | ansi apply yellow),
-            $m if $m > 10MB => ($name | ansi apply green),
-            $m if $m > 1MB => ($name | ansi apply blue),
+            $m if $m > 1GB => ($name | paint red),
+            $m if $m > 100MB => ($name | paint yellow),
+            $m if $m > 10MB => ($name | paint green),
+            $m if $m > 1MB => ($name | paint blue),
         }
     }
-    let w = $choices | get dis_name | strip length | math max
+    let w = $choices | get dis_name | ansi strip | str length -g | math max
     let choices = $choices | upsert display {|e|
         $"($e.dis_name | fill -w $w) [($e.mem)] - ($e.start_time | date humanize)"
     }
@@ -52,7 +52,7 @@ def close_by_name [
     --all
     --force
 ] {
-    
+
     let choices = $apps | where {|e| $e.name | str downcase | str contains ($process_name | str downcase)}
     match ($choices | length) {
         0 => {
@@ -115,4 +115,3 @@ export def close [
         }
     }
 }
-

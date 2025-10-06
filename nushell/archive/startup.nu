@@ -2,7 +2,7 @@
 #                                  startup.nu                                  #
 # ---------------------------------------------------------------------------- #
 
-use modules/color.nu 'ansi apply'
+use modules/paint.nu main
 use modules/ansi.nu ['cursor off' 'cursor on']
 use modules/version.nu 'version full-check'
 use modules/procedure.nu ['procedure run' 'procedure new-task']
@@ -69,7 +69,7 @@ procedure run "Startup" {
             byte-converter
         ]
         for repo in $cargo_repos {
-            procedure new-task -c $"Updating ($repo | ansi apply blue)" {
+            procedure new-task -c $"Updating ($repo | paint blue)" {
                 let path = ['~' 'Projects' $repo] | path join
                 procedure new-task "Verifying project directory exists" {
                     if not ($path | path exists) {
@@ -100,10 +100,10 @@ procedure run "Startup" {
             nu_plugin_semver
         ]
         for package in $nushell_plugins {
-            procedure new-task -c $"Updating ($package | ansi apply blue)" {
+            procedure new-task -c $"Updating ($package | paint blue)" {
                 cargo install $package
             }
-            procedure new-task -c $"Registering ($package | ansi apply blue)" {
+            procedure new-task -c $"Registering ($package | paint blue)" {
                 let bin = ls ~/.cargo/bin | get name | where {|f| $f | str contains $package} | first
                 plugin add $bin
             }
@@ -123,7 +123,7 @@ procedure run "Startup" {
             # zoxide
         ]
         for package in $cargo_packages {
-            procedure new-task -c $"Updating ($package | ansi apply blue)" {
+            procedure new-task -c $"Updating ($package | paint blue)" {
                 cargo install $package
             }
         }

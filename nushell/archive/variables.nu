@@ -3,13 +3,15 @@
 #                                 variables.nu                                 #
 # ---------------------------------------------------------------------------- #
 
+const VARS_FILE = $nu.data-dir | path join "vars.toml"
+
 def check_vars_file [] {
-    if not ($env.VARS_FILE | path exists) {
+    if not ($VARS_FILE | path exists) {
         error make {
             msg: "vars file does not exist"
             label: {
                 text: "create a vars file first with `var update`"
-                span: (metadata $env.VARS_FILE).span
+                span: (metadata $VARS_FILE).span
             }
         }
     }
@@ -17,22 +19,22 @@ def check_vars_file [] {
 
 export def `var update` [new_values?: record = {}] {
     check_vars_file
-    let vars = open $env.VARS_FILE
+    let vars = open $VARS_FILE
     let updated = $vars | merge $new_values
-    $updated | to toml | save -f $env.VARS_FILE
+    $updated | to toml | save -f $VARS_FILE
 }
 
 export def `var save` [name: string] {
     check_vars_file
     let value = $in
-    let vars = open $env.VARS_FILE
+    let vars = open $VARS_FILE
     let updated = $vars | upsert $name $value
-    $updated | to toml | save -f $env.VARS_FILE
+    $updated | to toml | save -f $VARS_FILE
 }
 
 export def `var load` [name?: string] {
     check_vars_file
-    let vars = open $env.VARS_FILE
+    let vars = open $VARS_FILE
     if $name != null {
         $vars | get -o $name
     } else {
@@ -42,7 +44,6 @@ export def `var load` [name?: string] {
 
 export def `var delete` [name: string] {
     check_vars_file
-    let vars = open $env.VARS_FILE
+    let vars = open $VARS_FILE
     $vars | reject $name | to toml | save -f $env.VARS_FILE
 }
-
