@@ -10,11 +10,13 @@
   "ssh_connections": [
     {
       "host": "marlin.cs.colostate.edu",
+      "args": [],
       "projects": [
         {
-          "paths": [
-            "/s/bach/g/under/bcfelix/School/CS475/pa2/./"
-          ]
+          "paths": ["/s/bach/g/under/bcfelix/School/CS475/pa2/./"]
+        },
+        {
+          "paths": ["/s/bach/g/under/bcfelix/School/CS475/pa3/./"]
         }
       ]
     }

@@ -41,10 +41,11 @@ $env.PATH = $env.PATH | append ([
     '~/Projects/hey/target/release/'
     '~/Projects/spewcap/target/release/'
     '~/Projects/size-converter/target/release/'
-    '/usr/local/bin'
+    '/usr/local/bin/'
     '/opt/homebrew/bin/'
     '~/Library/Python/3.9/bin/'
     '~/.cargo/bin/'
+    '~/neovim/build/bin/'
 ] | each { path expand } | where { path exists })
 
 # ---------------------------------- config ---------------------------------- #
