@@ -2,14 +2,15 @@
 #                                   path.nu                                    #
 # ---------------------------------------------------------------------------- #
 
-use paint.nu main
+use paint.nu [main 'paint with']
 
+# Get a path's parent directory, with options to get n levels up and return only the basename
 export def `path parent` [
     n: int = 1
     --basename(-b)
 ]: [
-    string -> string
-    list<string> -> list<string>
+    path -> path
+    list<path> -> list<path>
 ] {
     each {|e|
         let split = $e | path expand | path split
@@ -30,9 +31,10 @@ export def `path parent` [
     }
 }
 
+# Expand a path and return only the last n components
 export def `path expand-by` [n: int = 1]: [
-    string -> string
-    list<string> -> list<string>
+    path -> path
+    list<path> -> list<path>
 ] {
     each {|e|
         let unexpanded = $e | path split
@@ -44,9 +46,10 @@ export def `path expand-by` [n: int = 1]: [
     }
 }
 
+# Get a slice of the components of a path
 export def `path slice` [range: range]: [
-    string -> string
-    list<string> -> list<string>
+    path -> path
+    list<path> -> list<path>
 ] {
     each {|e|
         let split = $e | path split
@@ -54,18 +57,30 @@ export def `path slice` [range: range]: [
     }
 }
 
+# Append a string to the stem of a path, replacing spaces with a separator
 export def `path stem-append` [
     s: string
     --separator(-s): string = '_'
+]: [
+    path -> path
+    list<path> -> list<path>
 ] {
     each {|e|
         mut parsed = $e | path parse
-        $parsed.stem += $separator + $s
+        $parsed.stem += $separator + ($s | str replace --all ' ' $separator)
         $parsed | path join
     }
 }
 
-export def `path highlight` []: [
+# Highlight the different parts of a path with different colors
+export def `path highlight` [
+    colors: record = {
+        dirname: 'green'
+        basename: 'purple'
+        separator: 'cyan'
+    }
+    --ls-colorize(-l)  # use ls-colorize to get the color for the basename
+]: [
     path -> string
     list<path> -> list<string>
 ] {
@@ -74,8 +89,11 @@ export def `path highlight` []: [
         if $nu.os-info.name == windows {
             $splits = $splits | split row '/' | flatten # use '\' and '/' on windows
         }
-        let last = $splits | last | paint purple
-        let colored = $splits | drop | paint green | append $last
-        $colored | str join (char path_sep | paint cyan)
+        let last = match $ls_colorize {
+            true => ($splits | last | paint with ($path | ls-colorize --get-color))
+            false => ($splits | last | paint $colors.basename)
+        }
+        let colored = $splits | drop | paint $colors.dirname | append $last
+        $colored | str join (char path_sep | paint $colors.separator)
     }
 }

@@ -4,7 +4,7 @@ use modules/status.nu ['status memory' 'status uptime' 'status startup']
 use modules/path.nu 'path highlight'
 use modules/git.nu GSTAT_ICONS
 
-export def `generate prompt-left` [] {
+export def `generate prompt-left` []: nothing -> string {
     let dir = match (do -i { $env.PWD | path relative-to $nu.home-path }) {
         null => $env.PWD
         '' => '~'
@@ -17,7 +17,7 @@ export def `generate prompt-left` [] {
 #     date now | format date "%a-%d %r"
 # }
 
-export def `generate prompt-right` [] {
+export def `generate prompt-right` []: nothing -> string {
     mut info = [(status memory -i)]
     if $env.FIRST_PROMPT {
         $env.FIRST_PROMPT = false
@@ -54,9 +54,8 @@ export def `generate prompt-right` [] {
     (ansi reset) + ($info | grid | lines | first)
 }
 
-export def `generate prompt-indicator` [] {
+export def `generate prompt-indicator` [char: string = '>']: nothing -> string {
     let color = (if (is-admin) { ansi red } else { ansi green })
-    let char = '>'
     $"(ansi reset)($color)($char)(ansi reset) "
 }
 

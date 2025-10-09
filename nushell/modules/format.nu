@@ -1,10 +1,10 @@
-
 # ---------------------------------------------------------------------------- #
 #                                   format.nu                                  #
 # ---------------------------------------------------------------------------- #
 
 use str.nu 'str remove'
 
+# Format a number as a hex string
 export def `format hex` [
     --lower(-l)
     --width(-w): int
@@ -24,6 +24,7 @@ export def `format hex` [
     }
 }
 
+# Format a number as a binary string
 export def `format bin` [
     --width(-w): int
     --remove-prefix(-r)

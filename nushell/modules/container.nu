@@ -1,4 +1,3 @@
-
 # ---------------------------------------------------------------------------- #
 #                                 container.nu                                 #
 # ---------------------------------------------------------------------------- #
@@ -219,6 +218,7 @@ export def div [
     ]
 }
 
+# Prints a container to the terminal
 export def "container print" []: list<string> -> nothing {
     print ($in | str join "\n")
 }

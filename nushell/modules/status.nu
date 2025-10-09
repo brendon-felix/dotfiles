@@ -52,9 +52,9 @@ export def `status memory` [
     let memory = sys mem
     let proportion_used = $memory.used / $memory.total
     let percent_used = ($proportion_used * 100 | math round | into int)
-    let color = match $proportion_used {
-        _ if $percent_used < 60 => 'green'
-        _ if $percent_used < 80 => 'yellow'
+    let color = match $percent_used {
+        $p if $p < 60 => 'green'
+        $p if $p < 80 => 'yellow'
         _ => 'red'
     }
     let memory_status = $"($memory.used) \(($percent_used)%\)"
@@ -67,6 +67,31 @@ export def `status memory` [
     if $icon { $"(char -u efc5)  " + $memory_status } else { $memory_status }
 }
 
+export def `status disks` [
+    --icon(-i)
+    --bar(-b)
+] {
+    sys disks | each {|disk|
+        let disk_label = $"($disk.mount)"
+        let amount_used = $disk.total - $disk.free
+        let proportion_used = $amount_used / $disk.total
+        let percent_used = ($proportion_used * 100 | math round | into int)
+        let disk_status = $"($amount_used) \(($percent_used)%\)"
+        let color = match $percent_used {
+            $p if $p < 60 => 'green'
+            $p if $p < 80 => 'yellow'
+            _ => 'red'
+        }
+        let disk_status = if $bar {
+            let disk_bar = bar $proportion_used -f $color
+            $"($disk_bar) ($disk_status | paint $color)"
+        } else {
+            $disk_status | paint $color
+        }
+        {mount: $disk.mount, status: (if $icon { $"(char -u f0a0)  " + $disk_status } else { $disk_status }) }
+    }
+}
+
 export def main [
     --icons(-i)
     --bar(-b)
@@ -76,19 +101,23 @@ export def main [
         let startup = status startup
         let uptime = status uptime
         let memory = status memory
+        let disk = status disks | first | get status
         [
             $"It took ($startup) to start this shell."
             $"This system has been up for ($uptime)."
             $"($memory) of memory is in use."
+            $"Disk usage on ($disk.mount) is at ($disk)."
         ]
     } else {
         let startup = status startup --icon=$icons
         let uptime = status uptime --icon=$icons
         let memory = status memory --icon=$icons --bar=$bar
+        let disk = status disks --icon=$icons --bar=$bar | first | get status
         {
             startup: $startup
             uptime: $uptime
             memory: $memory
+            disk: $disk
         }
     }
 }

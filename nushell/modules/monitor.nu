@@ -1,4 +1,3 @@
-
 # ---------------------------------------------------------------------------- #
 #                                  monitor.nu                                  #
 # ---------------------------------------------------------------------------- #
@@ -69,21 +68,6 @@ export def main [
 #     main $task
 # }
 
-# export def `monitor memory` [--no-bar(-b), --all(-a)] {
-#     let task = match $all {
-#         true => { status memory --no-bar=($no_bar) }
-#         false => {
-#             let mem_choice = ['RAM' 'Swap'] | input list
-#             { status memory --no-bar=($no_bar) | select $mem_choice }
-#         }
-#     }
-#     main $task
-# }
-
 export def `monitor memory` [--no-bar(-b)] {
     main { status memory --bar=(not $no_bar) }
 }
-
-# export def `monitor banner` [] {
-#     main { print banner }
-# }
