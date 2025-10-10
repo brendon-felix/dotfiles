@@ -13,10 +13,19 @@
       "args": [],
       "projects": [
         {
-          "paths": ["/s/bach/g/under/bcfelix/School/CS475/pa2/./"]
+          "paths": [
+            "/s/bach/g/under/bcfelix/School/CS475/lab4/./"
+          ]
         },
         {
-          "paths": ["/s/bach/g/under/bcfelix/School/CS475/pa3/./"]
+          "paths": [
+            "/s/bach/g/under/bcfelix/School/CS475/pa2/./"
+          ]
+        },
+        {
+          "paths": [
+            "/s/bach/g/under/bcfelix/School/CS475/pa3/./"
+          ]
         }
       ]
     }
@@ -24,7 +33,7 @@
   "agent": {
     "always_allow_tool_actions": true,
     "default_model": {
-      "provider": "copilot_chat",
+      "provider": "zed.dev",
       "model": "claude-sonnet-4"
     }
   },

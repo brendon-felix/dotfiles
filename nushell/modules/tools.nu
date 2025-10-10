@@ -13,8 +13,8 @@ export def wa [...input: string] {
 
 export alias spew = spewcap2
 
-export alias hey = hey -p ~/Arrowhead/Files/Prompts/gpt_prompt.txt
-export alias askvim = hey -p ~/Arrowhead/Files/Prompts/askvim_prompt.txt
-export alias eg = hey -p ~/Arrowhead/Files/Prompts/eg_prompt.txt
+export alias hey = ^hey -p ~/Arrowhead/Files/Prompts/gpt_prompt.txt
+export alias askvim = ^hey -p ~/Arrowhead/Files/Prompts/askvim_prompt.txt
+export alias eg = ^hey -p ~/Arrowhead/Files/Prompts/eg_prompt.txt
 
 export alias jupyter = /opt/homebrew/opt/jupyterlab/bin/jupyter-lab
