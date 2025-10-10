@@ -13,7 +13,7 @@ use macos.nu *
 
 # ------------------------------ env variables ------------------------------- #
 
-$env.EDITOR = 'nvim'
+$env.EDITOR = 'zed'
 
 $env.PROMPT_COMMAND = { generate prompt-left }
 $env.PROMPT_COMMAND_RIGHT = { generate prompt-right }
@@ -50,7 +50,7 @@ $env.PATH = $env.PATH | append ([
 
 # ---------------------------------- config ---------------------------------- #
 
-$env.config.buffer_editor = $env.EDITOR
+$env.config.buffer_editor = 'nvim'
 $env.config.edit_mode = 'vi'
 $env.config.float_precision = 3
 $env.config.table.index_mode = 'auto'
