@@ -101,23 +101,23 @@ export def main [
         let startup = status startup
         let uptime = status uptime
         let memory = status memory
-        let disk = status disks | first | get status
+        let disk = status disks | first
         [
             $"It took ($startup) to start this shell."
             $"This system has been up for ($uptime)."
-            $"($memory) of memory is in use."
-            $"Disk usage on ($disk.mount) is at ($disk)."
+            $"There is ($memory) of memory in use."
+            $"The ($disk.mount | paint cyan) drive is ($disk.status) full."
         ]
     } else {
         let startup = status startup --icon=$icons
         let uptime = status uptime --icon=$icons
         let memory = status memory --icon=$icons --bar=$bar
-        let disk = status disks --icon=$icons --bar=$bar | first | get status
+        let disk = status disks --icon=$icons --bar=$bar | first
         {
             startup: $startup
             uptime: $uptime
             memory: $memory
-            disk: $disk
+            disk: $disk.status
         }
     }
 }

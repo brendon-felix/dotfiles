@@ -1,7 +1,9 @@
 
 
 use modules/status.nu ['status memory' 'status uptime' 'status startup']
+use modules/round.nu 'round duration'
 use modules/path.nu 'path highlight'
+use modules/paint.nu main
 use modules/git.nu GSTAT_ICONS
 
 export def `generate prompt-left` []: nothing -> string {
@@ -24,10 +26,9 @@ export def `generate prompt-right` []: nothing -> string {
         $info = $info | prepend [(status uptime -i) (status startup -i)]
     }
     try {
-        let git_status = job recv --all --timeout 50ms | last
+        let git_status = job recv --all --tag 42 --timeout 50ms | last
         if $git_status.repo_name != no_repository {
-            let values = $GSTAT_ICONS
-            let values = $values | upsert num {|row| $git_status | get $row.value}
+            let values = $GSTAT_ICONS | upsert num {|row| $git_status | get $row.value}
             let num_changes = $values | get num | math sum
             let branch_color = if $num_changes > 0 {
                 if $git_status.conflicts > 0  or $git_status.behind > 0 {
@@ -41,16 +42,29 @@ export def `generate prompt-right` []: nothing -> string {
                 'green_bold'
             }
             let values = $values
-                | where { |row| $row.num > 0}
+                | where num > 0
                 | each { |row| $"($row.display) ($row.num)" }
             let branch = $git_status.branch
-            mut git_info = [$"(ansi $branch_color)(char -u f062c) ($branch)(ansi reset)"]
+            mut git_info = [
+                $"(ansi $branch_color)(char -u f062c)
+                ($branch)(ansi reset)"
+            ]
             if not ($values | is-empty) {
                 $git_info = $git_info | append $values
             }
             $info = $info | prepend $git_info
         }
     }
+    # try {
+    #     if $env.CMD_EXECUTION_TIME != null {
+    #         let color = match $env.CMD_EXECUTION_TIME {
+    #             _ if $env.CMD_EXECUTION_TIME < 1sec => 'green'
+    #             _ if $env.CMD_EXECUTION_TIME < 10sec => 'yellow'
+    #             _ => 'red'
+    #         }
+    #         $info = $info | prepend ($"took ($env.CMD_EXECUTION_TIME | round duration)" | paint $color)
+    #     }
+    # }
     (ansi reset) + ($info | grid | lines | first)
 }
 

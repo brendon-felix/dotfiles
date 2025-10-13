@@ -63,8 +63,14 @@ $env.config.show_banner = false
 
 $env.config.plugins.highlight.theme = 'ansi'
 
-$env.config.hooks.pre_prompt = [{ job spawn {gstat | job send 0 --tag 42 }}]
-$env.config.hooks.pre_execution = [{ if $env.FIRST_PROMPT { $env.FIRST_PROMPT = false }}]
+$env.config.hooks.pre_prompt = [
+    { $env.CMD_EXECUTION_TIME = try { (date now) - $env.PRE_EXECUTION_TIME } catch { null } }
+    { job spawn {gstat | job send 0 --tag 42 }}
+]
+$env.config.hooks.pre_execution = [
+    { if $env.FIRST_PROMPT { $env.FIRST_PROMPT = false }}
+    { $env.PRE_EXECUTION_TIME = date now }
+]
 
 # ---------------------------------------------------------------------------- #
 

@@ -1,9 +1,4 @@
-# One Half Dark for vivid - Improved color distribution and font styles
-
-# directory
-# symlink, multi_hard_link
-# executable_file, executable
-#
+# One Half Dark for vivid
 
 colors:
   background_color: "282c34"
@@ -65,7 +60,7 @@ core:
   missing_symlink_target:
     foreground: white
     background: red
-    font-style: italic
+    font-style: bold
 
   setuid: {}
 
@@ -104,19 +99,17 @@ text:
 
 markup:
   foreground: purple
-  font-style: italic
+  font-style: bold
 
 programming:
   source:
     foreground: green
 
   tooling:
-    foreground: green
-    font-style: italic
+    foreground: yellow
 
     continuous-integration:
       foreground: yellow
-      font-style: italic
 
 media:
   foreground: purple
