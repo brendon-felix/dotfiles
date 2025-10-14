@@ -28,49 +28,39 @@ export def `generate prompt-right` []: nothing -> string {
     try {
         let git_status = job recv --all --tag 42 --timeout 50ms | last
         if $git_status.repo_name != no_repository {
-            let values = $GSTAT_ICONS | upsert num {|row| $git_status | get $row.value}
+            let values = $GSTAT_ICONS | upsert num {|e| $git_status | get $e.value}
             let num_changes = $values | get num | math sum
-            let branch_color = if $num_changes > 0 {
-                if $git_status.conflicts > 0  or $git_status.behind > 0 {
-                    'red_bold'
-                } else if $git_status.ahead == $num_changes {
-                    'green_bold'
-                } else {
-                    'yellow_bold'
-                }
-            } else {
-                'green_bold'
+            let branch_color = match $git_status {
+                {conflicts: $c} if $c > 0 => 'red_bold'
+                {ahead: $a} if $a == $num_changes => 'green_bold'
+                _ => 'yellow_bold'
             }
-            let values = $values
-                | where num > 0
-                | each { |row| $"($row.display) ($row.num)" }
+            let values = $values | where num > 0 | each { |e| $"($e.display) ($e.num)" }
             let branch = $git_status.branch
-            mut git_info = [
-                $"(ansi $branch_color)(char -u f062c)
-                ($branch)(ansi reset)"
-            ]
+            mut git_info = [$"(ansi $branch_color)(char -u f062c) ($branch)(ansi reset)"]
             if not ($values | is-empty) {
                 $git_info = $git_info | append $values
             }
             $info = $info | prepend $git_info
         }
     }
-    # try {
-    #     if $env.CMD_EXECUTION_TIME != null {
-    #         let color = match $env.CMD_EXECUTION_TIME {
-    #             _ if $env.CMD_EXECUTION_TIME < 1sec => 'green'
-    #             _ if $env.CMD_EXECUTION_TIME < 10sec => 'yellow'
-    #             _ => 'red'
-    #         }
-    #         $info = $info | prepend ($"took ($env.CMD_EXECUTION_TIME | round duration)" | paint $color)
-    #     }
-    # }
+    try {
+        if $env.CMD_EXECUTION_TIME > 100ms {
+            let exec_time_str = $"(char -u f520)  ($env.CMD_EXECUTION_TIME | round duration -w | paint grey69)"
+            $info = $info | prepend $exec_time_str
+        }
+    }
     (ansi reset) + ($info | grid | lines | first)
 }
 
 export def `generate prompt-indicator` [char: string = '>']: nothing -> string {
-    let color = (if (is-admin) { ansi red } else { ansi green })
-    $"(ansi reset)($color)($char)(ansi reset) "
+    # let color = (if (is-admin) { ansi red } else { ansi green })
+    # $"(ansi reset)($color)($char)(ansi reset) "
+    if (is-admin) {
+        "!> " | paint red_bold
+    } else {
+        $"($char) " | paint green_bold
+    }
 }
 
 export def ls-colors [] {
