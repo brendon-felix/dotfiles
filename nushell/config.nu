@@ -5,11 +5,13 @@
 source aliases.nu
 source zoxide.nu
 source ~/.sys-commands.nu
+
+use std repeat
 use modules *
 use bios *
 use completions *
-use config-helpers.nu *
 use macos.nu *
+use helpers.nu *
 
 # ------------------------------ env variables ------------------------------- #
 
@@ -43,6 +45,7 @@ $env.PATH = $env.PATH | append ([
     '~/Projects/size-converter/target/release/'
     '/usr/local/bin/'
     '/opt/homebrew/bin/'
+    '~/.local/bin/'
     '~/Library/Python/3.9/bin/'
     '~/.cargo/bin/'
     '~/neovim/build/bin/'

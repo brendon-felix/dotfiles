@@ -11,30 +11,14 @@
     {
       "host": "marlin.cs.colostate.edu",
       "args": [],
-      "projects": [
-        {
-          "paths": [
-            "/s/bach/g/under/bcfelix/School/CS475/lab4/./"
-          ]
-        },
-        {
-          "paths": [
-            "/s/bach/g/under/bcfelix/School/CS475/pa2/./"
-          ]
-        },
-        {
-          "paths": [
-            "/s/bach/g/under/bcfelix/School/CS475/pa3/./"
-          ]
-        }
-      ]
+      "projects": []
     }
   ],
   "agent": {
     "always_allow_tool_actions": true,
     "default_model": {
       "provider": "zed.dev",
-      "model": "claude-sonnet-4"
+      "model": "claude-sonnet-4-5"
     }
   },
   "features": {

@@ -2,12 +2,6 @@
 #                                   jobs.nu                                    #
 # ---------------------------------------------------------------------------- #
 
-export def --env `job try-recv` [
-    --tag: int
-] {
-    try { job recv --tag=$tag --timeout 0sec } catch { null }
-}
-
 export alias `job recv-builtin` = job recv
 
 export def `job recv` [
@@ -15,22 +9,39 @@ export def `job recv` [
     --timeout(-t): duration
     --all(-a)
 ] {
-    let timeout = if $all { 0sec } else { $timeout }
-    let cmd = match $tag {
-        null => { match $timeout {
-            null => {|| job recv-builtin }
-            _ => {|| job recv-builtin --timeout=$timeout }
-        }}
-        $tag => { match $timeout {
-            null => {|| job recv-builtin --tag=$tag }
-            _ => {|| job recv-builtin --tag=$tag --timeout=$timeout }
-        }}
-    }
     if $all {
-        mut messages = []
-        loop { try { $messages = $messages | append (do $cmd) } catch { break } }
-        $messages
+        job recv-all --tag=$tag --timeout=$timeout
     } else {
-        do $cmd
+        match {tag: $tag, timeout: $timeout} {
+			{tag: null, timeout: null} => { job recv-builtin }
+			{$tag, timeout: null} => { job recv-builtin --tag=$tag }
+			{tag: null, $timeout} => { job recv-builtin --timeout=$timeout }
+			{$tag, $timeout} => { job recv-builtin --timeout=$timeout --tag=$tag }
+		}
     }
+}
+
+export def "job recv-all" [
+	--tag: int # A tag for the messages
+	--timeout: duration # The maximum time duration to wait for
+] {
+	null
+	generate {|e = null|
+		let out = match {tag: $tag, timeout: $timeout} {
+			{tag: null, timeout: null} => { job recv-builtin }
+			{$tag, timeout: null} => { job recv-builtin --tag=$tag }
+			{$tag, $timeout} => {
+				try {
+					if $tag == null {
+						job recv-builtin --timeout=$timeout
+					} else {
+						job recv-builtin --timeout=$timeout --tag=$tag
+					}
+				} catch {|err|
+					if $err.json has "recv_timeout" { return {} } else { return $err.raw }
+				}
+			}
+		}
+		{out: $out, next: null}
+	}
 }

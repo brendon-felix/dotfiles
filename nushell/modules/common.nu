@@ -32,3 +32,7 @@ export def lstr [
 ] {
     ^lstr $path --level $level --gitignore
 }
+
+export def hexdump [file: path] {
+    open $file | into binary
+}
