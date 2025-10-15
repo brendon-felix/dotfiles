@@ -89,11 +89,14 @@ export def `path highlight` [
         if $nu.os-info.name == windows {
             $splits = $splits | split row '/' | flatten # use '\' and '/' on windows
         }
+        let is_dir = $splits | last | is-empty
+        if $is_dir { $splits = $splits | drop }
         let last = match $ls_colorize {
             true => ($splits | last | paint with ($path | ls-colorize --get-color))
             false => ($splits | last | paint $colors.basename)
         }
-        let colored = $splits | drop | paint $colors.dirname | append $last
+        mut colored = $splits | drop | paint $colors.dirname | append $last
+        if $is_dir { $colored = $colored | append '' }
         $colored | str join (char path_sep | paint $colors.separator)
     }
 }
