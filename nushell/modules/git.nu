@@ -61,32 +61,56 @@ def display_entry [e type] {
 }
 
 export def `git stat` [] {
-    let branch_name = (git branch --show-current) | str trim
-    print $"On branch ($branch_name | paint with purple)" ""
+    let gstat = gstat
+    if $gstat.repo_name == no_repository {
+        error make -u {msg: "Not a git repository"}
+    }
+    let fetch = git fetch | complete
+    if not ($fetch.stdout | is-empty) and $fetch.exit_code == 0 {
+        print $"Fetched updates from ($gstat.remote | paint blue)" ""
+    }
+    print $"On branch ($gstat.branch | paint cyan)"
+
+    if $gstat.remote != '' {
+        match $gstat {
+            {behind: 0, ahead: 0} => {
+                print $"  which is ('up to date' | paint green) with ($gstat.remote | paint green)."
+            }
+            {behind: $b, ahead: 0} => {
+                print $"  which is ('behind' | paint yellow) ($gstat.remote | paint green) by ($b | paint purple)."
+            }
+            {behind: 0, ahead: $a} => {
+                print $"  which is ('ahead' | paint green) of ($gstat.remote | paint yellow) by ($a | paint purple)."
+            }
+            {behind: $b, ahead: $a} => {
+                print $"  which is ('ahead' | paint green) of ($gstat.remote | paint yellow) by ($a | paint purple) and ('behind' | paint yellow) by ($b | paint purple)."
+            }
+        }
+    }
+
+    print ""
 
     let entries = git status --porcelain | lines | parse -r '^(?<idx>.)(?<wt>.) (?<name>.+)$' | str trim
 
     if ($entries | is-empty) {
-        print "nothing to commit, working tree clean"
+        print $"Nothing to commit - working tree ('clean' | paint green)"
         return
     }
 
     let staged = $entries | where {|e| $e.idx != '' and $e.idx != '?'}
     let has_staged = not ($staged | is-empty)
     if $has_staged {
-        print "Changes to be committed:"
+        print $"Changes ('staged' | paint green) for commit:"
         let staged = $staged | each {|e| display_entry $e 'idx' }
         print $staged ""
-        true
     }
 
     let unstaged = $entries | where {|e| $e.wt != '' and $e.wt != '?'}
     let has_unstaged = not ($unstaged | is-empty)
     if $has_unstaged {
-        print "Changes not staged for commit:"
+        print $"Changes ('not staged' | paint yellow) for commit:"
         let unstaged = $unstaged | each {|e| display_entry $e 'wt' }
         print $unstaged ""
-        true
     }
 
     let untracked = $entries | where {|e| $e.idx == '?' and $e.wt == '?'}
@@ -95,10 +119,9 @@ export def `git stat` [] {
         print "Untracked files:"
         let untracked = $untracked | each {|e| (display_entry $e 'wt').name }
         print $untracked ""
-        true
     }
 
-    if not $has_staged and ($has_unstaged or $has_untracked) {
-        print "no changes added to commit (use \"git add\" and/or \"git commit -a\")"
-    }
+    # if not $has_staged and ($has_unstaged or $has_untracked) {
+    #     print "No changes added to commit"
+    # }
 }
