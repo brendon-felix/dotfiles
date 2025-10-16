@@ -17,6 +17,7 @@ export use rgb.nu *
 export use round.nu *
 export use splash.nu *
 export use status.nu *
+export use stopwatch.nu *
 export use str.nu *
 export use symlink.nu *
 export use sync.nu *

@@ -27,6 +27,11 @@ $env.BIOS_CONFIGS = try { open ~/.bios-configs.toml } catch { null }
 $env.FIRST_PROMPT = true
 $env.PROCEDURE_LEVEL = 0
 $env.PROCEDURE_DEBUG = false
+$env.STOPWATCHES = []
+$env.STOPWATCH_ID = 0
+if $nu.os-info.name == windows {
+    $env.YAZI_FILE_ONE = 'C:\Program Files\Git\usr\bin\file.exe'
+}
 
 match (ls-colors) {
     null => {}

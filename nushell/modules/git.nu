@@ -60,31 +60,39 @@ def display_entry [e type] {
     { state: $state_str, name: $file_str }
 }
 
+alias up-to-date = echo ('up to date' | paint green)
+alias ahead = echo ('ahead' | paint green)
+alias behind = echo ('behind' | paint yellow)
+
+def n_commits [n] {
+    if $n == 1 {
+        $"('1' | paint purple) commit"
+    } else {
+        $"($n | paint purple) commits"
+    }
+}
+
+def fetch [] {
+    print ("Fetching updates..." | paint yellow)
+    git fetch
+    $env.LAST_FETCH = {dir: $env.PWD, time: (date now)}
+}
+
 export def `git stat` [] {
     let gstat = gstat
     if $gstat.repo_name == no_repository {
         error make -u {msg: "Not a git repository"}
     }
-    let fetch = git fetch | complete
-    if not ($fetch.stdout | is-empty) and $fetch.exit_code == 0 {
-        print $"Fetched updates from ($gstat.remote | paint blue)" ""
-    }
+    # if $gstat.remote != '' { fetch; $gstat = gstat }
     print $"On branch ($gstat.branch | paint cyan)"
 
     if $gstat.remote != '' {
+        let remote = 'remote ' + ($gstat.remote | paint blue)
         match $gstat {
-            {behind: 0, ahead: 0} => {
-                print $"  which is ('up to date' | paint green) with ($gstat.remote | paint green)."
-            }
-            {behind: $b, ahead: 0} => {
-                print $"  which is ('behind' | paint yellow) ($gstat.remote | paint green) by ($b | paint purple)."
-            }
-            {behind: 0, ahead: $a} => {
-                print $"  which is ('ahead' | paint green) of ($gstat.remote | paint yellow) by ($a | paint purple)."
-            }
-            {behind: $b, ahead: $a} => {
-                print $"  which is ('ahead' | paint green) of ($gstat.remote | paint yellow) by ($a | paint purple) and ('behind' | paint yellow) by ($b | paint purple)."
-            }
+            {behind: 0, ahead: 0} => { print $"  which is (up-to-date) with ($remote)." }
+            {behind: $b, ahead: 0} => { print $"  which is (behind) ($remote) by (n_commits $b)." }
+            {behind: 0, ahead: $a} => { print $"  which is (ahead) of ($remote) by (n_commits $a)." }
+            {behind: $b, ahead: $a} => { print $"  which is (ahead) of ($remote) by (n_commits $a) and (behind) by (n_commits $b)." }
         }
     }
 

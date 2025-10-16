@@ -1,3 +1,4 @@
+alias c = clear
 alias r = nu ./run.nu
 alias du = dust
 alias vim = nvim
@@ -12,5 +13,4 @@ alias `reload bios-modules` = overlay use ($nu.data-dir | path join 'bios');
 alias fzf = fzf --height ~80% --layout=reverse --preview 'bat --theme=ansi --style=numbers --color=always -r 1:100 --style plain {}' --preview-window=right:60% --bind $"enter:become\(($env.EDITOR) {+}\)"
 
 alias `bat update` = bat cache --build
-
-alias browse = yazi
+alias `bat update-all` = bat cache --build --all
