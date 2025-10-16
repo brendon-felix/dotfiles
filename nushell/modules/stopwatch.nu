@@ -43,6 +43,9 @@ export def --env `stopwatch stop` [
         }
     } else {
         let id = match $id {
+            _ if ($env.STOPWATCHES | is-empty) => {
+                error make -u {msg: "no running stopwatches"}
+            }
             null => ($env.STOPWATCHES | last | get id)
             $i if $i in ($env.STOPWATCHES | get id) => $i
             _ => {
