@@ -1,0 +1,4 @@
+--theme="Fleetish"
+--italic-text=always
+--paging=never
+--map-syntax ".ignore:Git Ignore"

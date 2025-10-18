@@ -37,3 +37,7 @@ export def `config helix` [] {
 export def `config win-term` [] {
     ^$env.EDITOR ~/Projects/dotfiles/windows-terminal/settings.json
 }
+
+export def `config yazi` [] {
+    ^$env.EDITOR ~/Projects/dotfiles/yazi/yazi.toml
+}

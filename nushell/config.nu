@@ -69,7 +69,8 @@ $env.config.display_errors.termination_signal = false
 # $env.config.show_banner = 'short'
 $env.config.show_banner = false
 
-$env.config.plugins.highlight.theme = 'ansi'
+$env.config.plugins.highlight.custom_themes = '~/Projects/dotfiles/bat/themes'
+$env.config.plugins.highlight.theme = 'Fleetish'
 
 $env.config.hooks.pre_prompt = [
     { $env.CMD_EXECUTION_TIME = try { (date now) - $env.PRE_EXECUTION_TIME } catch { null } }

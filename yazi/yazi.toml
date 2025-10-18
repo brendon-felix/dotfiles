@@ -1,0 +1,18 @@
+[mgr]
+ratio = [1, 2, 4]
+
+[preview]
+image_delay = 0
+max_height = 4096
+max_width = 4096
+
+[tasks]
+image_alloc = 0
+image_bound = [0, 0]
+
+[plugin]
+prepend_previewers = [
+  {name = "*.md", run = 'piper -- CLICOLOR_FORCE=1 glow -w=$w -s=dark "$1"' },
+  {name = "*.ipynb", run  = 'piper -- nbpreview --no-paging --nerd-font --decorated --no-files --unicode --color --images --color-system=standard --theme=ansi_dark "$1"' },
+  {mime = "text/*" , run = 'piper -- bat --style=numbers,rule --color=always "$1"' },
+]
