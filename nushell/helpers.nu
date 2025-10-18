@@ -59,7 +59,7 @@ export def `generate prompt-indicator` [char: string = '>']: nothing -> string {
     if (is-admin) {
         "!> " | paint red_bold
     } else {
-        $"($char) " | paint green_bold
+        $"($char) " | paint cyan_bold
     }
 }
 

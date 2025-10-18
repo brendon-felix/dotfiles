@@ -33,15 +33,11 @@ if $nu.os-info.name == windows {
     $env.YAZI_FILE_ONE = 'C:\Program Files\Git\usr\bin\file.exe'
 }
 
-match (ls-colors) {
-    null => {}
-    $ls_colors => { $env.LS_COLORS = $ls_colors }
-}
+let ls_colors = ls-colors
+if $ls_colors != null { $env.LS_COLORS = $ls_colors }
 
-match (get-keys ~/Arrowhead/Files/keys.toml) {
-    null => {}
-    $keys => { load-env $keys }
-}
+let keys = get-keys ~/Arrowhead/Files/keys.toml
+if $keys != null { load-env $keys }
 
 $env.PATH = $env.PATH | append ([
     '~/Projects/bar/target/release/'

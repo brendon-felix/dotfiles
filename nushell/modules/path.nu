@@ -75,9 +75,9 @@ export def `path stem-append` [
 # Highlight the different parts of a path with different colors
 export def `path highlight` [
     colors: record = {
-        dirname: 'green'
-        basename: 'purple'
-        separator: 'cyan'
+        dirname: 'cyan'
+        basename: 'green'
+        separator: 'grey69'
     }
     --ls-colorize(-l)  # use ls-colorize to get the color for the basename
 ]: [

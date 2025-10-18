@@ -55,8 +55,7 @@ export def gpsh [] {
 def display_entry [e type] {
     let state = $STATES | get ($e | get $type)
     let state_str = $state.display | paint with $state.style
-    let path_colors = {dirname: 'green_dimmed', basename: 'cyan', separator: 'cyan_dimmed'}
-    let file_str = $e.name | path highlight $path_colors -l
+    let file_str = $e.name | path highlight -l
     { state: $state_str, name: $file_str }
 }
 

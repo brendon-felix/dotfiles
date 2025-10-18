@@ -5,7 +5,7 @@
 use std [repeat ellie]
 
 use container.nu ['contain' 'container print' 'row' 'box']
-use status.nu ['status startup' 'status uptime' 'status memory']
+use status.nu *
 use paint.nu main
 
 def header_text []: nothing -> list<string> {
