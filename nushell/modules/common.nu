@@ -46,3 +46,12 @@ export def --env y [...args] {
 	}
 	rm -fp $tmp
 }
+
+export def r [
+    ...args
+] {
+    if not ('run.nu' | path exists) {
+        error make -u {msg: "run.nu not found in the current directory"}
+    }
+    nu run.nu ...$args
+}

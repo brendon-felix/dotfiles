@@ -32,21 +32,50 @@ const STATES = {
     '?': {display: untracked, style: default}
 }
 
-export alias gsw = git switch
-export alias gbr = git branch
-export alias grh = git reset --hard
-export alias grh = git reset --soft
-export alias gcl = git clean -fd
-export alias gplr = ^git pull --rebase
+def "nu-complete git log" [] {
+    git log -n 32 --pretty=%h»¦«%s | lines | split column "»¦«" value description
+    | each {|x| $x | update value $"($x.value)"}
+}
+def "nu-complete git branches" [] {
+    git branch | lines | where {|x| not ($x | str starts-with '*')} | each {|x| $"($x|str trim)"}
+}
+export def --wrapped grh [
+    commit?: string@"nu-complete git log"
+    ...rest
+] {
+    if ($commit | is-empty) { ^git reset --hard ...$rest } else { ^git reset --hard $commit ...$rest }
+}
+export def --wrapped grs [
+    commit?: string@"nu-complete git log"
+    ...rest
+] {
+    if ($commit | is-empty) { ^git reset --soft ...$rest } else { ^git reset --soft $commit ...$rest }
+}
+export def --wrapped gsw [
+    branch: string@"nu-complete git branches"
+    ...rest
+] {
+    if ($branch | is-empty) { ^git switch ...$rest } else { ^git switch $branch ...$rest }
+}
+export def --wrapped gbD [
+    branch: string@"nu-complete git branches"
+    ...rest
+] {
+    if ($branch | is-empty) { ^git branch -D ...$rest } else { ^git branch -D $branch ...$rest }
+}
+
+export alias gpr = ^git pull --rebase
 
 export def grst [] {
     git reset --hard
     git clean -fd
 }
 
-export def gpsh [] {
+export def gpsh [
+    --message(-m): string = "quick update"
+] {
     git add .
-    git commit -m "quick update"
+    git commit -m $message
     git push
 }
 
