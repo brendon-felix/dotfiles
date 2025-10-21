@@ -39,7 +39,8 @@
   {
     "context": "Workspace",
     "bindings": {
-      "cmd-shift-d": "git_panel::ToggleFocus"
+      "cmd-shift-d": "git_panel::ToggleFocus",
+      "ctrl-shift-d": "git_panel::ToggleFocus"
     }
   },
   {
