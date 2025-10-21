@@ -55,3 +55,19 @@ export def r [
     }
     nu run.nu ...$args
 }
+
+# Run a closure n times, passing the current index to the closure
+export def do-n [
+    n: int
+    closure: closure
+] {
+    if $n < 1 {
+        error make {
+            msg: "invalid value of n"
+            label: "n must be greater than zero"
+        }
+    }
+    for i in 1..$n {
+        do $closure $i
+    }
+}
