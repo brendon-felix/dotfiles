@@ -1,9 +1,9 @@
 background = #191919
 command = /opt/homebrew/bin/nu
 window-inherit-working-directory = true
-quit-after-last-window-closed = true
 theme = One Half Dark
 font-size = 14
+font-family = FiraCode Nerd Font
 window-padding-x = 12
 window-padding-y = 12
 macos-titlebar-style = hidden
@@ -12,3 +12,11 @@ window-width = 120
 window-position-x = 300
 window-position-y = 0
 keybind = shift+enter=text:\x1b\r
+cursor-color = cell-foreground
+cursor-style-blink = false
+mouse-hide-while-typing = true
+split-divider-color = #404040
+keybind = global:ctrl+backquote=toggle_quick_terminal
+quick-terminal-position = right
+quick-terminal-size = 35%
+macos-icon = glass
