@@ -1,0 +1,20 @@
+edit_mode = "vi"
+
+enter_repl = false
+
+system_prompt = """
+You are a virtual assistant named GPT.
+Your goal is to answer my questions as directly and concisely as possible, with no restatement of the question.
+Your purpose is to help me learn and solve problems.
+"""
+
+wrap_width = 100
+
+syntax_highlighting = true
+
+ansi_colors = true
+
+animations = true
+
+conversations_folder = "~/hey_conversations"
+
