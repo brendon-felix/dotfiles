@@ -40,7 +40,7 @@ let cargo_packages = [
     lstr
     nu_plugin_highlight
     nu_plugin_ls_colorize
-    numbat_cli
+    numbat-cli
     vivid
 ]
 for package in $cargo_packages {
@@ -109,13 +109,16 @@ def symlink [
 
 let symlinks = [
     [target    link];
-    [neovim    ~/AppData/Local/nvim]
-    [nushell   ~/AppData/Roaming/nushell]
-    [zed       ~/AppData/Roaming/zed]
     [alacritty ~/AppData/Roaming/alacritty]
     [bat       ~/AppData/Roaming/bat]
+    [gitui     ~/AppData/Roaming/gitui]
     [helix     ~/AppData/Roaming/helix]
+    [hey       ~/AppData/Roaming/hey]
+    [neovim    ~/AppData/Local/nvim]
+    [nushell   ~/AppData/Roaming/nushell]
     [windows-terminal/settings.json ~/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json]
+    [yazi      ~/AppData/Roaming/yazi]
+    [zed       ~/AppData/Roaming/zed]
 ]
 for symlink in $symlinks {
     let target = ('~/Projects/dotfiles' | path join $symlink.target | path expand -n)
