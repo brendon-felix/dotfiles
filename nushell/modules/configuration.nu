@@ -7,18 +7,20 @@ use common.nu show
 def "nu-complete configs" [--paths] {
     let configs = [
         [  name                         path                                ];
+        [ alacritty     ~/Projects/dotfiles/alacritty/alacritty.toml        ]
+        [ bat           ~/Projects/dotfiles/bat/config                      ]
+        [ ghostty       ~/Projects/dotfiles/ghostty/config                  ]
+        [ gitui         ~/Projects/dotfiles/gitui/key_bindings.ron          ]
+        [ helix         ~/Projects/dotfiles/helix/config.toml               ]
+        [ hey           ~/Projects/dotfiles/hey/hey.toml                    ]
+        [ neovim        ~/Projects/dotfiles/neovim/init.lu                  ]
+        [ win-term      ~/Projects/dotfiles/windows-terminal/settings.json  ]
+        [ yazi          ~/Projects/dotfiles/yazi/yazi.toml                  ]
         [ nushell       ~/Projects/dotfiles/nushell/config.nu               ]
         [ helpers       ~/Projects/dotfiles/nushell/helpers.nu              ]
         [ common        ~/Projects/dotfiles/nushell/modules/common.nu       ]
         [ aliases       ~/Projects/dotfiles/nushell/aliases.nu              ]
         [ banner        ~/Projects/dotfiles/nushell/modules/banner.nu       ]
-        [ gitui         ~/Projects/dotfiles/gitui/key_bindings.ron          ]
-        [ ghostty       ~/Projects/dotfiles/ghostty/config                  ]
-        [ alacritty     ~/Projects/dotfiles/alacritty/alacritty.toml        ]
-        [ neovim        ~/Projects/dotfiles/neovim/init.lu                  ]
-        [ helix         ~/Projects/dotfiles/helix/config.toml               ]
-        [ win-term      ~/Projects/dotfiles/windows-terminal/settings.json  ]
-        [ yazi          ~/Projects/dotfiles/yazi/yazi.toml                  ]
     ]
     if $paths {
         $configs
