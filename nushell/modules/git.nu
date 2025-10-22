@@ -26,6 +26,7 @@ export const GSTAT_ICONS = [
 const STATES = {
     'M': {display: modified, style: blue}
     'A': {display: added, style: green}
+    'U': {display: untracked, style: green}
     'D': {display: deleted, style: red}
     'R': {display: renamed, style: yellow}
     'C': {display: conflict, style: purple}
