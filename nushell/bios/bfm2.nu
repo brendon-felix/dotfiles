@@ -42,6 +42,10 @@ const BIOS_DEV_PATH = 'C:\Users\felixb\BIOS'
 const LOCAL_BOOTLEGS_PATH = 'C:\Users\felixb\BIOS\Bootlegs'
 const NETWORK_BOOTLEGS_PATH = '\\wks-file.ftc.rd.hpicorp.net\MAIN_LAB\SHARES\LAB\Brendon Felix\Bootlegs'
 
+def "nu-complete bios-platforms" [] {
+    $BIOS_CONFIGS | keys
+}
+
 def find-binary [path: path] {
     try {
         ls $path | where name =~ '^(?i)(?!.*pvt).*?(32|64).*\.bin$' | sort-by modified | last
@@ -71,7 +75,7 @@ def set-version [file: path, version?: int] {
 }
 
 export def --env `bios build` [
-    platform: string
+    platform: string@"nu-complete bios-platforms"
     --release(-r)             # Build a release binary
     --tree(-t): path          # Specify a specific tree to use
     --no-decrement(-d)        # Don't decrement the feature number
@@ -118,7 +122,7 @@ export def --env `bios build` [
 }
 
 export def `bios bootleg` [
-    platform: string
+    platform: string@"nu-complete bios-platforms"
     --append(-a): string
     --upload(-u)
     --upload-existing(-e)
@@ -172,10 +176,22 @@ export def `bios bootleg` [
     }
 }
 
-
+def "nu-complete bootlegs" [context: string] {
+    let platform = $context | split words | get 2
+    let dir = $LOCAL_BOOTLEGS_PATH | path join ($BIOS_CONFIGS | get $platform).name
+    let completions = ls $dir
+        | where name =~ '^(?i)(?!.*pvt).*?(32|64).*\.bin$'
+        | sort-by -r modified
+        | get name
+        | path basename
+    {
+        options: { sort: false }
+        completions: $completions
+    }
+}
 export def `bios flash` [
-    platform: string
-    --bootleg(-l)
+    platform: string@"nu-complete bios-platforms"
+    --bootleg(-l): string@"nu-complete bootlegs"
     --select(-s)
     --path(-p): path
     --no-info(-n)
@@ -183,41 +199,22 @@ export def `bios flash` [
     let config = $BIOS_CONFIGS | get $platform
     let binary = match $path {
         null => {
-            if $bootleg {
-                let files = ls ($LOCAL_BOOTLEGS_PATH | path join $config.name) | where name =~ '^(?i)(?!.*pvt).*?(32|64).*\.bin$' | sort-by -r modified
-                if ($files | is-empty) {
-                    error make -u { msg: "No matching binaries found" }
-                }
-                if $select {
-                    let idx = $files | get name | path basename | input list -f --index "Select a binary"
-                    if $idx == null {
-                        error make -u { msg: "No binary selected" }
-                    }
-                    let binary = $files | get $idx
-                    if not $no_info {
-                        print $"Selected binary in bootlegs folder: (ansi blue)($binary.name | path basename)(ansi reset)"
-                        print $"Size: ($binary.size | format filesize MiB)"
-                    }
-                    $binary
-                } else {
-                    let binary = $files | first
-                    if not $no_info {
-                        print $"Found recent binary in bootlegs folder: (ansi blue)($binary.name | path basename)(ansi reset)"
-                        print $"Size: ($binary.size | format filesize MiB)"
-                    }
-                    $binary
-                }
+            let bin_info = if $bootleg != null {
+                let path = ($LOCAL_BOOTLEGS_PATH | path join $config.name $bootleg)
+                { path: $path, type: "bootleg" }
             } else {
-                let binary = find-binary ($BIOS_DEV_PATH | path join $config.repo 'HpPlatformPkg' 'BLD' 'FV')
-                if $binary == null {
-                    error make -u { msg: "No binary found in build folder" }
-                }
-                if not $no_info {
-                    print $"Found binary in build folder: (ansi blue)($binary.name | path basename)(ansi reset)"
-                    print $"Size: ($binary.size | format filesize MiB)"
-                }
-                $binary
+                let path = ($BIOS_DEV_PATH | path join $config.repo 'HpPlatformPkg' 'BLD' 'FV')
+                { path: $path, type: "build" }
             }
+            let binary = find-binary $bin_info.path
+            if $binary == null {
+                error make -u { msg: "No binary found in build folder" }
+            }
+            if not $no_info {
+                print $"Found binary in ($bin_info.type) folder: (ansi blue)($binary.name | path basename)(ansi reset)"
+                print $"Size: ($binary.size | format filesize MiB)"
+            }
+            $binary
         }
         $p => {
             let binary = find-binary $p
@@ -244,7 +241,7 @@ export def `bios flash` [
 }
 
 export def `bios batch` [
-    platform: string
+    platform: string@"nu-complete bios-platforms"
     --release(-r)             # Build a release binary
     --tree(-t): path          # Specify a specific tree to use
     --no-decrement(-d)        # Don't decrement the feature number

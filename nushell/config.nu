@@ -61,6 +61,7 @@ $env.config.table.index_mode = 'auto'
 $env.config.cursor_shape.vi_insert = "blink_line"
 $env.config.cursor_shape.vi_normal = "blink_block"
 $env.config.display_errors.termination_signal = false
+$env.config.completions.algorithm = 'fuzzy'
 
 # $env.config.show_banner = 'short'
 $env.config.show_banner = false
