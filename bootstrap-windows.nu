@@ -2,6 +2,8 @@ if not (is-admin) {
     error make -u {msg: "this script requires admin privileges"}
 }
 
+touch ~/.sys-commands.nu
+
 let winget_packages = [
     # languages
     OpenJS.NodeJS
@@ -35,6 +37,13 @@ for package in $winget_packages {
     print ""
 }
 
+if (which rustup | is-empty) {
+    print -e "rustup is not installed!"
+    exit 1
+} else {
+    rustup update
+}
+
 let cargo_packages = [
     du-dust
     lstr
@@ -66,12 +75,15 @@ let projects = [
     hey
     spewcap
     bar
-    byte-converter
+    # byte-converter
+    regiman
+    automatick
 ]
 if not ('~/Projects' | path exists) {
     print "Creating ~/Projects directory"
     try { mkdir ~/Projects }
 }
+let cwd = $env.PWD
 cd ~/Projects
 for project in $projects {
     if not ('~/Projects' | path join $project | path exists) {
@@ -80,10 +92,16 @@ for project in $projects {
         try { git clone $url } catch { print -e "Could not clone repo" }
     } else {
         print $"Skipping ($project)"
+        continue
+    }
+    cd ('~/Projects' | path join | $project)
+    if ('Cargo.toml' | path exists) {
+        print $"Building ($project)"
+        cargo build --release
     }
     print ""
 }
-cd -
+cd $cwd
 
 def symlink [
     source: path
@@ -98,6 +116,7 @@ def symlink [
             return
         }
     }
+    print ""
     if ($source | path type) == dir {
         print $"Creating directory symlink ($link) -> ($source)"
         ^mklink /D ($link | path expand) ($source | path expand)
@@ -131,3 +150,15 @@ for symlink in $symlinks {
     try { symlink $target $link } catch { print -e "Could not create link" }
     print ""
 }
+
+if (which clang | is-empty) {
+    print -e "clang is not accessible!"
+    if not ('C:\Program Files\LLVM\bin' | path exists) {
+        print -e "LLVM is not installed!"
+        exit 1
+    }
+    print "temporarily adding LLVM to Path"
+    $env.Path = $env.Path | append 'C:\Program Files\LLVM\bin'
+}
+print "Installing Neovim plugins..."
+nvim --headless nvim --headless +"Lazy! sync" +qa

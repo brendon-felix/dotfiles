@@ -7,43 +7,20 @@ use ../modules/paint.nu main
 use ../modules/splash.nu *
 use ../modules/path.nu 'path stem-append'
 
-const BIOS_CONFIGS = {
-    springs: {
-        id: "X60"
-        name: "Springs"
-        repo: "HpSpringsWks"
-        build_script: "HpBldSprings.bat"
-        bios_id_file: 'MultiProject\X60Steamboat\BLD\BiosId.env'
-    }
-    winters: {
-        id: "U61"
-        name: "Winters"
-        repo: "HpWintersWks"
-        build_script: "HpBldBlizzard.bat"
-        bios_id_file: 'MultiProject\U61Blizzard\BLD\BiosId.env'
-    }
-    glacier: {
-        id: "U60"
-        name: "Glacier"
-        repo: "HpWintersWks"
-        build_script: "HpBldGlacier.bat"
-        bios_id_file: 'MultiProject\U60Glacier\BLD\BiosId.env'
-    }
-    avalanche: {
-        id: "U65"
-        name: "Avalanche"
-        repo: "HpAvalancheWks"
-        build_script: "HpBiosBuild.bat"
-        bios_id_file: 'BLD\RSPS\Avalanche\BiosId.env'
-    }
-}
-
 const BIOS_DEV_PATH = 'C:\Users\felixb\BIOS'
 const LOCAL_BOOTLEGS_PATH = 'C:\Users\felixb\BIOS\Bootlegs'
 const NETWORK_BOOTLEGS_PATH = '\\wks-file.ftc.rd.hpicorp.net\MAIN_LAB\SHARES\LAB\Brendon Felix\Bootlegs'
 
+def `cursor off` [] {
+    print -n $"(ansi cursor_off)"
+}
+
+def `cursor on` [] {
+    print -n $"(ansi cursor_on)"
+}
+
 def "nu-complete bios-platforms" [] {
-    $BIOS_CONFIGS | keys
+    $env.BIOS_CONFIGS | keys
 }
 
 def find-binary [path: path] {
@@ -56,7 +33,7 @@ def find-binary [path: path] {
 
 def set-version [file: path, version?: int] {
     if not ($file | path exists) {
-        print $"(ansi red)BiosId.env file not found at ($file | path basename)(ansi reset)"
+        print $"BiosId.env file ('not found' | paint red) at ($file | path basename | paint grey)"
         error make -u { msg: "BiosId.env file not found" }
     }
     let curr_version_str = open $file | lines | parse "VERSION_FEATURE{_}={version}" | str trim | get version | first
@@ -65,7 +42,7 @@ def set-version [file: path, version?: int] {
         null => (($curr_version - 1) mod 100)
         $v => ($v mod 100)
     }
-    print $"(ansi yellow)Setting feature version: ($curr_version | into string | paint grey46) -> ($new_version | into string | paint blue)(ansi reset)"
+    print $"Setting ('feature version' | paint blue): ($curr_version | paint grey46) -> ($new_version | paint cyan)"
     let new_contents = open $file | lines | each {|e|
         if ($e | str contains VERSION_FEATURE) {
             $e | str replace $curr_version_str ($new_version | format hex -r)
@@ -81,7 +58,7 @@ export def --env `bios build` [
     --no-decrement(-d)        # Don't decrement the feature number
     --set-version(-v): int    # Set the feature version number directly
 ]: nothing -> path {
-    let config = $BIOS_CONFIGS | get $platform
+    let config = $env.BIOS_CONFIGS | get $platform
     let repo_path = match $tree {
         null => ($BIOS_DEV_PATH | path join $config.repo)
         $t => {
@@ -101,7 +78,7 @@ export def --env `bios build` [
         true => [$config.build_script, 'r']
         false => [$config.build_script]
     }
-    let type_str = if $release { "RELEASE" } else { "DEBUG" }
+    let type_str = if $release { "release" | paint green_bold } else { "debug" | paint yellow_bold }
     let platform_pkg = $repo_path | path join 'HpPlatformPkg'
     let bios_id_file = $platform_pkg | path join $config.bios_id_file
     if $set_version != null {
@@ -109,13 +86,41 @@ export def --env `bios build` [
     } else if not $no_decrement {
         set-version $bios_id_file
     }
-    print $"(ansi purple)Building ($type_str) binary...(ansi reset)"
+    print $"Building ($type_str) binary..."
+    # let max_length = 160
+    let term_width = term size | get columns
+    let max_length = [160 $term_width] | math min
+    cursor off
     try {
-        do { cd $platform_pkg; run-external ...$cmd }
-        # let build = find-binary ($repo_path | path join 'HpPlatformPkg' 'BLD' 'FV')
-        # let var_name = $"($config.name | str upcase)_BUILD"
-        # load-env {$var_name: $build.name}
+        do {
+            cd $platform_pkg
+            run-external ...$cmd o+e>| lines | each {|line|
+                if ($line | str contains 'Active Platform') {
+                    let platform = $line | split row ' ' | last | path basename
+                    print $"Building for package: ($platform | paint purple)"
+                } else if ($line =~ 'fatal') {
+                    print ($line | str | paint red)
+                } else if ($line | str length) < $max_length {
+                    if ($line =~ 'Building') or ($line =~ 'Generating') or ($line =~ 'EDKII') {
+                        let printed_line = $line | str trim
+                        if $printed_line != '' {
+                            print -n ($printed_line | fill -w $term_width) "\r"
+                        }
+                    }
+                } else {
+                    print -n ('...' | paint attr_blink | fill -w ($term_width - 3)) "\r"
+                }
+            } | ignore
+        }
+        # do {
+        #     cd $platform_pkg
+        #     run-external ...$cmd o+e>| lines | print
+        # } | ignore
+        cursor on
+        print ""
     } catch {
+        cursor on
+        print ""
         "Build failed" | splash red -s 3
         error make -u {msg: "Build failed"}
     }
@@ -129,7 +134,7 @@ export def `bios bootleg` [
     --select(-s)
     --tree(-t): path
 ] {
-    let config = $BIOS_CONFIGS | get $platform
+    let config = $env.BIOS_CONFIGS | get $platform
     if $upload_existing {
         let files = ls ($LOCAL_BOOTLEGS_PATH | path join $config.name) | where name =~ '^(?i)(?!.*pvt).*?(32|64).*\.bin$' | sort-by -r modified
         if ($files | is-empty) {
@@ -141,17 +146,17 @@ export def `bios bootleg` [
                 error make -u { msg: "No binary selected" }
             }
             let binary = $files | get $idx
-            print $"Selected binary in bootlegs folder: (ansi blue)($binary.name | path basename)(ansi reset)"
-            print $"Size: ($binary.size | format filesize MiB)"
+            print $"Selected binary in bootlegs folder: ($binary.name | path basename | paint blue)"
+            print $"Size: ($binary.size | format filesize MiB | paint cyan)"
             $binary
         } else {
             let binary = $files | first
-            print $"Found recent binary in bootlegs folder: (ansi blue)($binary.name | path basename)(ansi reset)"
-            print $"Size: ($binary.size | format filesize MiB)"
+            print $"Found recent binary in bootlegs folder: ($binary.name | path basename | paint blue)"
+            print $"Size: ($binary.size | format filesize MiB | paint cyan)"
             $binary
         }
         cp $binary.name ($NETWORK_BOOTLEGS_PATH | path join $config.name ($binary.name | path basename))
-        print $"Uploaded existing bootleg (ansi blue)($binary.name | path basename)(ansi reset) to network bootlegs folder"
+        print $"Uploaded existing bootleg ($binary.name | path basename | paint blue) to network bootlegs folder"
     } else {
         print $"(ansi purple)Saving binary...(ansi reset)"
         let binary = match $tree {
@@ -161,24 +166,24 @@ export def `bios bootleg` [
         if $binary == null {
             error make -u { msg: "No binary found in build folder" }
         }
-        print $"Found binary in build folder: (ansi blue)($binary.name | path basename)(ansi reset)"
-        print $"Size: ($binary.size | format filesize MiB)"
+        print $"Found binary in build folder: ($binary.name | path basename | paint blue)"
+        print $"Size: ($binary.size | format filesize MiB | paint cyan)"
         let basename = match $append {
             null => ($binary.name | path basename)
             $a => ($binary.name | path basename | path stem-append $a)
         }
         cp $binary.name ($LOCAL_BOOTLEGS_PATH | path join $config.name $basename)
-        print $"Saved bootleg (ansi blue)($basename)(ansi reset) to local bootlegs folder"
+        print $"Saved bootleg ($basename | paint blue) to local bootlegs folder"
         if $upload {
             cp $binary.name ($NETWORK_BOOTLEGS_PATH | path join $config.name $basename)
-            print $"Uploaded bootleg (ansi blue)($basename)(ansi reset) to network bootlegs folder"
+            print $"Uploaded bootleg ($basename | paint blue) to network bootlegs folder"
         }
     }
 }
 
 def "nu-complete bootlegs" [context: string] {
     let platform = $context | split words | get 2
-    let dir = $LOCAL_BOOTLEGS_PATH | path join ($BIOS_CONFIGS | get $platform).name
+    let dir = $LOCAL_BOOTLEGS_PATH | path join ($env.BIOS_CONFIGS | get $platform).name
     let completions = ls $dir
         | where name =~ '^(?i)(?!.*pvt).*?(32|64).*\.bin$'
         | sort-by -r modified
@@ -196,7 +201,7 @@ export def `bios flash` [
     --path(-p): path
     --no-info(-n)
 ] {
-    let config = $BIOS_CONFIGS | get $platform
+    let config = $env.BIOS_CONFIGS | get $platform
     let binary = match $path {
         null => {
             let bin_info = if $bootleg != null {
@@ -211,8 +216,8 @@ export def `bios flash` [
                 error make -u { msg: "No binary found in build folder" }
             }
             if not $no_info {
-                print $"Found binary in ($bin_info.type) folder: (ansi blue)($binary.name | path basename)(ansi reset)"
-                print $"Size: ($binary.size | format filesize MiB)"
+                print $"Found binary in ($bin_info.type | paint purple) folder: ($binary.name | path basename | paint blue)"
+                print $"Size: ($binary.size | format filesize MiB | paint cyan)"
             }
             $binary
         }
@@ -222,13 +227,13 @@ export def `bios flash` [
                 error make -u { msg: "No binary found at specified path" }
             }
             if not $no_info {
-                print $"Found specified binary: (ansi blue)($binary.name | path basename)(ansi reset)"
-                print $"Size: ($binary.size | format filesize MiB)"
+                print $"Found specified binary: ($binary.name | path basename | paint blue)"
+                print $"Size: ($binary.size | format filesize MiB | paint cyan)"
             }
             $binary
         }
     }
-    print $"(ansi purple)Flashing binary...(ansi reset)"
+    print ("Flashing binary..." | paint purple)
     try {
         do {dpcmd --batch $binary.name --verify}
         print ""
@@ -257,6 +262,6 @@ export def `bios batch` [
     if $flash {
         bios flash $platform --bootleg --path=$path --no-info
     } else {
-        print $"(ansi yellow)Skipped flash(ansi reset)"
+        print ("Skipped flashing" | paint yellow)
     }
 }
