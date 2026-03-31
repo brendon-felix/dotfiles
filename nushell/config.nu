@@ -15,6 +15,17 @@ use helpers.nu *
 
 # ------------------------------ env variables ------------------------------- #
 
+$env.IP_ADDR = [
+    [hostname ip tail_ip];
+    [fermi, '192.168.0.103' '100.112.215.8']
+    [turing, '192.168.0.103' '100.87.7.95']
+    [pluto, '192.168.0.238' null]
+]
+
+$env.ANDROID_HOME = '~/Library/Android/sdk'
+
+$env.DATABASE_URL = "sqlite://subroutine.db"
+
 $env.EDITOR = 'zed'
 
 $env.PROMPT_COMMAND = { generate prompt-left }
@@ -43,11 +54,15 @@ $env.PATH = $env.PATH | append ([
     '~/Projects/bar/target/release/'
     '~/Projects/hey/target/release/'
     '~/Projects/spewcap/target/release/'
+    '~/Projects/regiman/target/release/'
+    '~/Projects/automatick/target/release/'
     '~/Projects/size-converter/target/release/'
+    '~/Projects/subroutine/target/release/'
     '/usr/local/bin/'
     '/opt/homebrew/bin/'
     '~/.local/bin/'
     '~/Library/Python/3.9/bin/'
+    '~/Library/Android/sdk/platform-tools/'
     '~/.cargo/bin/'
     '~/neovim/build/bin/'
 ] | each { path expand } | where { path exists })

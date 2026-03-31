@@ -47,9 +47,7 @@ export def --env y [...args] {
 	rm -fp $tmp
 }
 
-export def r [
-    ...args
-] {
+export def r [...args] {
     if not ('run.nu' | path exists) {
         error make -u {msg: "run.nu not found in the current directory"}
     }
@@ -71,3 +69,64 @@ export def do-n [
         do $closure $i
     }
 }
+
+export def `describe generic` []: any -> string {
+    match $in {
+        $v if ($v | describe) == "int" => "number"
+        $v if ($v | describe) == "float" => "number"
+        _ => ($in | describe | str replace --regex '<.*' '')
+    }
+}
+
+# # Interpolate between two values based on a parameter `t`, which can be a float (0.0 to 1.0) or an int (0 to 100).
+# export def interpolate [
+#     end: number,
+#     t: number,
+# ]: [
+#     int -> int
+#     float -> float
+# ] {
+#     let $start = $in
+#     if ($end | describe) != ($start | describe) {
+#         error make {
+#             msg: "type mismatch"
+#             label: {
+#                 text: "start and end must be of the same type"
+#                 span: (metadata $end).span
+#             }
+#         }
+#     }
+
+#     let t = match $t {
+#         $t if ($t | describe) == 'int' => {
+#             if $t >= 0 and $t <= 100 {
+#                 ($t | into float) / 100.0
+#             } else {
+#                 error make {
+#                     msg: "invalid value"
+#                     label: {
+#                         text: "t must be between 0 and 100"
+#                         span: (metadata $t).span
+#                     }
+#                 }
+#             }
+#         }
+#         $t => {
+#             if $t < 0.0 or $t > 1.0 {
+#                 error make {
+#                     msg: "invalid value"
+#                     label: {
+#                         text: "t must be between 0.0 and 1.0"
+#                         span: (metadata $t).span
+#                     }
+#                 }
+#             }
+#             $t
+#         }
+#     }
+
+#     match $start {
+#         $s if ($s | describe) == "int" => ($s + (($end - $s) * $t) | math round)
+#         $s if ($s | describe) == "float" => ($s + (($end - $s) * $t))
+#     }
+# }

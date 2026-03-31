@@ -5,6 +5,20 @@
 
 use std null-device
 
+export def `print each` [--no-newline(-n)] {
+    each {|e|
+        if $no_newline {
+            print -n $e
+        } else {
+            print $e
+        }
+    } | ignore
+}
+
+export def blocks [n: int] {
+    "" | fill -c '█' -w $n
+}
+
 export def bar [
     value: float
     --length(-l): int = 12

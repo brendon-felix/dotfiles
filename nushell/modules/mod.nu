@@ -6,6 +6,7 @@ export use container.nu *
 export use format.nu *
 export use git.nu *
 export use jobs.nu *
+export use math.nu *
 export use monitor.nu *
 export use nushell.nu *
 export use paint.nu *
@@ -13,8 +14,9 @@ export use path.nu *
 export use print-utils.nu *
 export use procedure.nu *
 export use records.nu *
-export use rgb.nu *
+export use color.nu *
 export use round.nu *
+export use server.nu *
 export use splash.nu *
 export use status.nu *
 export use stopwatch.nu *

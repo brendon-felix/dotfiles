@@ -2,17 +2,16 @@
 
 use modules/status.nu ['status memory' 'status uptime' 'status startup']
 use modules/round.nu 'round duration'
-use modules/path.nu 'path highlight'
-use modules/paint.nu main
+use modules/paint.nu [main 'paint path']
 use modules/git.nu GSTAT_ICONS
 
 export def `generate prompt-left` []: nothing -> string {
-    let dir = match (do -i { $env.PWD | path relative-to $nu.home-path }) {
+    let dir = match (do -i { $env.PWD | path relative-to $nu.home-dir }) {
         null => $env.PWD
         '' => '~'
         $relative_pwd => ([~ $relative_pwd] | path join)
     }
-    $dir | path highlight
+    $dir | paint path
 }
 
 # export def `generate prompt-right` [] {
@@ -48,6 +47,12 @@ export def `generate prompt-right` []: nothing -> string {
         if $env.CMD_EXECUTION_TIME > 100ms {
             let exec_time_str = $"(char -u f520)  ($env.CMD_EXECUTION_TIME | round duration -w | paint grey69)"
             $info = $info | prepend $exec_time_str
+        }
+    }
+    try {
+        if $env.SSH_CONNECTION != null {
+            let hostname = sys host | get hostname | str replace '.local' '' | paint magenta
+            $info = $info | prepend hostname
         }
     }
     (ansi reset) + ($info | grid | lines | first)

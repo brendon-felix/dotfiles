@@ -8,5 +8,5 @@ export use rg-completions.nu *
 export use ssh-completions.nu *
 export use tar-completions.nu *
 export use vscode-completions.nu *
-export use winget-completions.nu *
+# export use winget-completions.nu *
 export use zoxide-completions.nu *
