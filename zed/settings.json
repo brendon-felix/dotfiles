@@ -7,6 +7,16 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "colorize_brackets": true,
+  "agent": {
+    "default_profile": "write",
+    "always_allow_tool_actions": true,
+    "default_model": {
+      "provider": "copilot_chat",
+      "model": "claude-sonnet-4.6"
+    },
+    "model_parameters": []
+  },
   "ssh_connections": [
     {
       "host": "marlin.cs.colostate.edu",
@@ -14,13 +24,6 @@
       "projects": []
     }
   ],
-  "agent": {
-    "always_allow_tool_actions": true,
-    "default_model": {
-      "provider": "anthropic",
-      "model": "claude-sonnet-4-5-latest"
-    }
-  },
   "features": {
     "edit_prediction_provider": "copilot"
   },

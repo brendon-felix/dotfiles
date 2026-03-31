@@ -48,5 +48,10 @@
     "bindings": {
       "alt-'": "workspace::ToggleBottomDock"
     }
+  },
+  {
+    "bindings": {
+      "ctrl-cmd-s": null
+    }
   }
 ]

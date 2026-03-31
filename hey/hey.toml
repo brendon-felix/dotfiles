@@ -10,11 +10,7 @@ Your purpose is to help me learn and solve problems.
 
 wrap_width = 100
 
-syntax_highlighting = true
+greetings = false
 
-ansi_colors = true
-
-animations = true
-
-conversations_folder = "~/hey_conversations"
+conversations_folder = "~/.hey/conversations"
 
