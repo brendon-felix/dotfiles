@@ -52,7 +52,7 @@ export def `generate prompt-right` []: nothing -> string {
     try {
         if $env.SSH_CONNECTION != null {
             let hostname = sys host | get hostname | str replace '.local' '' | paint magenta
-            $info = $info | prepend hostname
+            $info = $info | prepend $hostname
         }
     }
     (ansi reset) + ($info | grid | lines | first)
