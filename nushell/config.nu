@@ -2,36 +2,35 @@
 #                                   config.nu                                  #
 # ---------------------------------------------------------------------------- #
 
-source aliases.nu
-source zoxide.nu
-source ~/.sys-commands.nu
-
 use std repeat
 use modules *
-use bios *
 use completions *
-use macos.nu *
 use helpers.nu *
+use hp *
+
+source aliases.nu
+source zoxide.nu
+
+const PRIVATE_CONFIG = '~/Vault/nushell/private.nu'
+source (
+    if ($PRIVATE_CONFIG | path exists) {
+        $PRIVATE_CONFIG
+    } else {
+        warn $"($PRIVATE_CONFIG) not found"
+    }
+)
+
+source (if $nu.os-info.name == macos { 'macos.nu' })
+source (if $nu.os-info.name == windows { 'windows.nu' })
 
 # ------------------------------ env variables ------------------------------- #
 
-$env.IP_ADDR = [
-    [hostname ip tail_ip];
-    [fermi, '192.168.0.103' '100.112.215.8']
-    [turing, '192.168.0.103' '100.87.7.95']
-    [pluto, '192.168.0.238' null]
-]
-
-$env.ANDROID_HOME = '~/Library/Android/sdk'
-
-$env.DATABASE_URL = "sqlite://subroutine.db"
-
 $env.EDITOR = 'zed'
 
-$env.PROMPT_COMMAND = { generate prompt-left }
-$env.PROMPT_COMMAND_RIGHT = { generate prompt-right }
-$env.PROMPT_INDICATOR_VI_NORMAL = { generate prompt-indicator }
-$env.PROMPT_INDICATOR_VI_INSERT = { generate prompt-indicator }
+$env.PROMPT_COMMAND = { prompt-left }
+$env.PROMPT_COMMAND_RIGHT = { prompt-right }
+$env.PROMPT_INDICATOR_VI_NORMAL = { prompt-indicator }
+$env.PROMPT_INDICATOR_VI_INSERT = { prompt-indicator }
 $env.PROMPT_MULTILINE_INDICATOR = ''
 
 $env.BIOS_CONFIGS = try { open ~/.bios-configs.toml } catch { null }
@@ -40,36 +39,40 @@ $env.PROCEDURE_LEVEL = 0
 $env.PROCEDURE_DEBUG = false
 $env.STOPWATCHES = []
 $env.STOPWATCH_ID = 0
-if $nu.os-info.name == windows {
-    $env.YAZI_FILE_ONE = 'C:\Program Files\Git\usr\bin\file.exe'
-}
 
 let ls_colors = ls-colors
 if $ls_colors != null { $env.LS_COLORS = $ls_colors }
 
-let keys = get-keys ~/Arrowhead/Files/keys.toml
+const KEYS = '~/Vault/keys.toml'
+let keys = load-keys $KEYS
 if $keys != null { load-env $keys }
 
-$env.PATH = $env.PATH | append ([
-    '~/Projects/bar/target/release/'
-    '~/Projects/hey/target/release/'
-    '~/Projects/spewcap/target/release/'
-    '~/Projects/regiman/target/release/'
-    '~/Projects/automatick/target/release/'
-    '~/Projects/size-converter/target/release/'
-    '~/Projects/subroutine/target/release/'
-    '/usr/local/bin/'
-    '/opt/homebrew/bin/'
-    '~/.local/bin/'
-    '~/Library/Python/3.9/bin/'
-    '~/Library/Android/sdk/platform-tools/'
-    '~/.cargo/bin/'
-    '~/neovim/build/bin/'
-] | each { path expand } | where { path exists })
+let paths = [
+    ~/.local/bin/
+    ~/.cargo/bin/
+    ~/neovim/build/bin/
+    ~/Library/Python/3.9/bin/
+    ~/Library/Android/sdk/platform-tools/
+    ~/Projects/subroutine/target/release/
+    ~/Projects/bar/target/release/
+    ~/Projects/hey/target/release/
+    ~/Projects/spewcap/target/release/
+    ~/Projects/regiman/target/release/
+    ~/Projects/automatick/target/release/
+    ~/Projects/size-converter/target/release/
+    /usr/local/bin/
+    /opt/homebrew/bin/
+    /opt/homebrew/opt/libpq/bin/
+] | each { path expand } | where { path exists }
+
+$env.PATH = $env.PATH | append $paths
+
 
 # ---------------------------------- config ---------------------------------- #
 
 $env.config.buffer_editor = 'nvim'
+$env.config.buffer_editor = if (which 'nvim' | is-not-empty) { 'nvim' } else { 'hx' }
+
 $env.config.edit_mode = 'vi'
 $env.config.float_precision = 3
 $env.config.table.index_mode = 'auto'
@@ -95,4 +98,6 @@ $env.config.hooks.pre_execution = [
 
 # ---------------------------------------------------------------------------- #
 
-print banner header
+if (sys host | get hostname) != 'fermi' {
+    print banner header
+}

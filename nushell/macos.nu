@@ -1,3 +1,4 @@
+$env.ANDROID_HOME = '~/Library/Android/sdk'
 
 export def `eject installers` [] {
     if $nu.os-info.name != "macos" {

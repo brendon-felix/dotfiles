@@ -17,6 +17,7 @@ def "nu-complete configs" [--paths] {
         [ win-term      ~/Projects/dotfiles/windows-terminal/settings.json  ]
         [ yazi          ~/Projects/dotfiles/yazi/yazi.toml                  ]
         [ nushell       ~/Projects/dotfiles/nushell/config.nu               ]
+        [ private       ~/Vault/nushell/private.nu                          ]
         [ helpers       ~/Projects/dotfiles/nushell/helpers.nu              ]
         [ common        ~/Projects/dotfiles/nushell/modules/common.nu       ]
         [ aliases       ~/Projects/dotfiles/nushell/aliases.nu              ]

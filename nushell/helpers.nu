@@ -5,7 +5,7 @@ use modules/round.nu 'round duration'
 use modules/paint.nu [main 'paint path']
 use modules/git.nu GSTAT_ICONS
 
-export def `generate prompt-left` []: nothing -> string {
+export def prompt-left []: nothing -> string {
     let dir = match (do -i { $env.PWD | path relative-to $nu.home-dir }) {
         null => $env.PWD
         '' => '~'
@@ -14,11 +14,7 @@ export def `generate prompt-left` []: nothing -> string {
     $dir | paint path
 }
 
-# export def `generate prompt-right` [] {
-#     date now | format date "%a-%d %r"
-# }
-
-export def `generate prompt-right` []: nothing -> string {
+export def prompt-right []: nothing -> string {
     mut info = [(status memory -i)]
     if $env.FIRST_PROMPT {
         $env.FIRST_PROMPT = false
@@ -58,7 +54,7 @@ export def `generate prompt-right` []: nothing -> string {
     (ansi reset) + ($info | grid | lines | first)
 }
 
-export def `generate prompt-indicator` [char: string = '>']: nothing -> string {
+export def prompt-indicator [char: string = '>']: nothing -> string {
     # let color = (if (is-admin) { ansi red } else { ansi green })
     # $"(ansi reset)($color)($char)(ansi reset) "
     if (is-admin) {
@@ -66,6 +62,11 @@ export def `generate prompt-indicator` [char: string = '>']: nothing -> string {
     } else {
         $"($char) " | paint cyan_bold
     }
+}
+
+export def find-editor [choices: list<string>] {
+
+    $choices | find {|e| which $e | is-not-empty }
 }
 
 export def ls-colors [] {
@@ -78,18 +79,20 @@ export def ls-colors [] {
         $ls_colors | save $ls_colors_file
         $ls_colors
     } else {
-        print -e $"(ansi yellow)vivid not found, skipping loading LS_COLORS(ansi reset)"
-        null
+        warn "vivid not found"
     }
 }
 
-export def get-keys [file: path]: nothing -> record {
+export def load-keys [file: path]: nothing -> record {
     if ($file | path exists) {
         open $file | items {|k, v|
             {($k | str upcase): $v}
         } | into record
     } else {
-        print -e $"(ansi yellow)keys.toml not found, skipping loading API keys(ansi reset)"
-        null
+        warn $"($file) not found"
     }
+}
+
+export def warn [message: string]  {
+    print -e $"(ansi yellow)warning:(ansi reset) ($message)"
 }
