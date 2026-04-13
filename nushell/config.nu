@@ -2,12 +2,6 @@
 #                                   config.nu                                  #
 # ---------------------------------------------------------------------------- #
 
-use std repeat
-use modules *
-use completions *
-use helpers.nu *
-use hp *
-
 source aliases.nu
 source zoxide.nu
 
@@ -22,6 +16,12 @@ source (
 
 source (if $nu.os-info.name == macos { 'macos.nu' })
 source (if $nu.os-info.name == windows { 'windows.nu' })
+
+use std repeat
+use modules *
+use completions *
+use helpers.nu *
+use hp *
 
 # ------------------------------ env variables ------------------------------- #
 
@@ -43,8 +43,7 @@ $env.STOPWATCH_ID = 0
 let ls_colors = ls-colors
 if $ls_colors != null { $env.LS_COLORS = $ls_colors }
 
-const KEYS = '~/Vault/keys.toml'
-let keys = load-keys $KEYS
+let keys = load-keys ~/Vault/keys.toml
 if $keys != null { load-env $keys }
 
 let paths = [
