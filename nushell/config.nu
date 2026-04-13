@@ -97,6 +97,4 @@ $env.config.hooks.pre_execution = [
 
 # ---------------------------------------------------------------------------- #
 
-if (sys host | get hostname) != 'fermi' {
-    print banner header
-}
+print banner header
