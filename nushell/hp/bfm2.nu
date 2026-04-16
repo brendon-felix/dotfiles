@@ -95,20 +95,23 @@ export def --env `bios build` [
         do {
             cd $platform_pkg
             run-external ...$cmd o+e>| lines | each {|line|
-                if ($line | str contains 'Active Platform') {
+                if ($line =~ 'Active Platform') {
                     let platform = $line | split row ' ' | last | path basename
                     print $"Building for package: ($platform | paint purple)"
                 } else if ($line =~ 'fatal') {
-                    print ($line | str | paint red)
-                } else if ($line | str length) < $max_length {
-                    if ($line =~ 'Building') or ($line =~ 'Generating') or ($line =~ 'EDKII') {
-                        let printed_line = $line | str trim
-                        if $printed_line != '' {
-                            print -n ($printed_line | fill -w $term_width) "\r"
-                        }
-                    }
+                    print ($line | paint red)
+                    error make -u {msg: "Fatal error during build"}
+                } else if ($line =~ 'Building \.\.\. ') {
+                    let parsed = $line | parse "{_}Building ... {path} {arch}" | first
+                    let path = $parsed.path | path relative-to $repo_path
+                    print $"Building ($parsed.arch | fill -w 6) ($path | path highlight)"
+                } else if ($line =~ 'Generating') and not ($line =~ 'Generating code') and not ($line =~ 'Generating makefile') {
+                    let parsed = $line | parse "{_}Generating {rest}" | first
+                    print $"Generating ($parsed.rest | paint blue)"
+                } else if ($line =~ 'EDKII') and ($line =~ 'success') {
+                    print ($line | paint green)
                 } else {
-                    print -n ('...' | paint attr_blink | fill -w ($term_width - 3)) "\r"
+                    print -n ('...' | paint attr_blink) "\r"
                 }
             } | ignore
         }
@@ -118,10 +121,11 @@ export def --env `bios build` [
         # } | ignore
         cursor on
         print ""
-    } catch {
+    } catch {|e|
+        print $e.rendered
         cursor on
         print ""
-        "Build failed" | splash red -s 3
+        # "Build failed" | splash red -s 3
         error make -u {msg: "Build failed"}
     }
 }
@@ -197,7 +201,7 @@ def "nu-complete bootlegs" [context: string] {
 export def `bios flash` [
     platform: string@"nu-complete bios-platforms"
     --bootleg(-l): string@"nu-complete bootlegs"
-    --select(-s)
+    --autoselect-bootleg
     --path(-p): path
     --no-info(-n)
 ] {
@@ -206,6 +210,9 @@ export def `bios flash` [
         null => {
             let bin_info = if $bootleg != null {
                 let path = ($LOCAL_BOOTLEGS_PATH | path join $config.name $bootleg)
+                { path: $path, type: "bootleg" }
+            } else if $autoselect_bootleg {
+                let path = ($LOCAL_BOOTLEGS_PATH | path join $config.name)
                 { path: $path, type: "bootleg" }
             } else {
                 let path = ($BIOS_DEV_PATH | path join $config.repo 'HpPlatformPkg' 'BLD' 'FV')
@@ -254,13 +261,12 @@ export def `bios batch` [
     --append(-a): string
     --upload(-u)
     --flash(-f)
-    --bootleg(-l)
     --path(-p): path
 ] {
     bios build $platform --release=$release --tree=$tree --no-decrement=$no_decrement --set-version=$set_version
     bios bootleg $platform --append=$append --upload=$upload --tree=$tree
     if $flash {
-        bios flash $platform --bootleg --path=$path --no-info
+        bios flash $platform --autoselect-bootleg --path=$path --no-info
     } else {
         print ("Skipped flashing" | paint yellow)
     }

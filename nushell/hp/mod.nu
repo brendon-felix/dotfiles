@@ -1,5 +1,6 @@
 export use bfm2.nu *
 export use epsc.nu *
+export use sioct.nu *
 export use siofw.nu *
 
 export-env {

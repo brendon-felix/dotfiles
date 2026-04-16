@@ -5,6 +5,8 @@ if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
     exit
 }
 
+start "" "C:\Windows\Resources\Themes\dark.theme"
+
 Write-Host "Installing Nushell..."
 winget install Nushell.Nushell --accept-source-agreements --accept-package-agreements
 Write-Host ""
@@ -12,4 +14,4 @@ Write-Host ""
 Write-Host "Running Nushell bootstrap script"
 Write-Host ""
 # cmd /c "nu bootstrap-windows.nu"
-Start-Process nu -ArgumentList "bootstrap-windows.nu" -NoNewWindow -Wait
+Start-Process nu -ArgumentList ".\bootstrap-windows.nu" -NoNewWindow -Wait

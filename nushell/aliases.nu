@@ -22,3 +22,5 @@ alias `bat update` = bat cache --build
 alias `what is` = hey what is
 alias `what are` = hey what are
 alias `explain` = hey explain
+
+alias guidgen = `C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\guidgen.exe`

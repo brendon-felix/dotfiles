@@ -3,6 +3,7 @@ if not (is-admin) {
 }
 
 touch ~/.sys-commands.nu
+mkdir ~/Projects
 
 let winget_packages = [
     # languages
@@ -13,10 +14,14 @@ let winget_packages = [
     BurntSushi.ripgrep.MSVC
     Kitware.CMake
     # applications
+    Zen-Team.Zen-Browser
     Neovim.Neovim
     StephanDilly.gitui
+    Microsoft.VisualStudioCode
+    Canonical.Ubuntu.2404
     # utilities
     Git.Git
+    Balena.Etcher
     Gyan.FFmpeg
     Rclone.Rclone
     ajeetdsouza.zoxide
@@ -28,6 +33,7 @@ let winget_packages = [
     7zip.7zip
     ImageMagick.ImageMagick
     sxyazi.yazi
+    CharlesMilette.TranslucentTB
 ]
 for package in $winget_packages {
     print $"Installing winget package: ($package)"
@@ -39,7 +45,10 @@ for package in $winget_packages {
 
 if (which rustup | is-empty) {
     print -e "rustup is not installed!"
-    exit 1
+    if (input -n 1 "Install rustup? [Y/n]: ") in ['y', 'Y', ''] {
+        start 'https://win.rustup.rs/x86_64'
+        input -n 1 "Press any key after installing rustup to continue..."
+    }
 } else {
     rustup update
 }
@@ -50,6 +59,7 @@ let cargo_packages = [
     nu_plugin_highlight
     nu_plugin_ls_colorize
     numbat-cli
+    uu_ln
     vivid
 ]
 for package in $cargo_packages {
@@ -89,7 +99,7 @@ for project in $projects {
     if not ('~/Projects' | path join $project | path exists) {
         let url = $"https://github.com/brendon-felix/($project).git"
         print $"Cloning ($url)"
-        try { git clone $url } catch { print -e "Could not clone repo" }
+        try { cd ~/Projects; git clone $url } catch { print -e "Could not clone repo" }
     } else {
         print $"Skipping ($project)"
         continue
@@ -128,7 +138,7 @@ def symlink [
 
 let symlinks = [
     [target    link];
-    [alacritty ~/AppData/Roaming/alacritty]
+    # [alacritty ~/AppData/Roaming/alacritty]
     [bat       ~/AppData/Roaming/bat]
     [gitui     ~/AppData/Roaming/gitui]
     [helix     ~/AppData/Roaming/helix]
@@ -162,3 +172,7 @@ if (which clang | is-empty) {
 }
 print "Installing Neovim plugins..."
 nvim --headless nvim --headless +"Lazy! sync" +qa
+
+start 'https://zed.dev/download-success?asset=Zed-x86_64.exe&version=0.230.0&channel=stable'
+start 'https://obsidian.md/download'
+start 'https://apps.microsoft.com/store/detail/XPFCS9QJBKTHVZ?launch=true&mode=mini'

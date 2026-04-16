@@ -7,31 +7,31 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
-  "git_panel": {
-    "dock": "left"
-  },
   "project_panel": {
-    "dock": "left"
+    "dock": "left",
+  },
+  "outline_panel": {
+    "dock": "left",
+  },
+  "collaboration_panel": {
+    "dock": "left",
+  },
+  "git_panel": {
+    "dock": "left",
   },
   "colorize_brackets": true,
   "agent": {
+    "sidebar_side": "right",
+    "dock": "right",
     "default_profile": "write",
     "always_allow_tool_actions": true,
     "default_model": {
       "provider": "copilot_chat",
-      "model": "claude-sonnet-4.6"
+      "model": "claude-sonnet-4.6",
     },
-    "model_parameters": []
   },
-  "ssh_connections": [
-    {
-      "host": "marlin.cs.colostate.edu",
-      "args": [],
-      "projects": []
-    }
-  ],
   "features": {
-    "edit_prediction_provider": "copilot"
+    "edit_prediction_provider": "copilot",
   },
   "vim_mode": true,
   "ui_font_size": 15,
@@ -40,10 +40,10 @@
   "theme": {
     "mode": "system",
     "light": "Fleet Light",
-    "dark": "Anysphere Dark"
+    "dark": "Anysphere Dark",
   },
   "title_bar": {
-    "show_branch_icon": true
+    "show_branch_icon": true,
   },
   "use_system_path_prompts": false,
   "use_system_prompts": false,
@@ -51,30 +51,30 @@
   //   "inactive_opacity": 0.9
   // },
   "minimap": {
-    "show": "auto"
+    "show": "auto",
   },
   "gutter": {
     "runnables": false,
     "breakpoints": false,
     "folds": false,
-    "min_line_number_digits": 3
+    "min_line_number_digits": 3,
   },
   "indent_guides": {
-    "line_width": 1
+    "line_width": 1,
   },
   "tab_bar": {
-    "show": false
+    "show": false,
   },
   "terminal": {
     "dock": "right",
     "shell": {
-      "program": "nu"
+      "program": "nu",
     },
     "toolbar": {
-      "breadcrumbs": false
+      "breadcrumbs": false,
     },
-    "font_family": "FiraCode Nerd Font"
+    "font_family": "FiraCode Nerd Font",
   },
   "soft_wrap": "editor_width",
-  "use_smartcase_search": true
+  "use_smartcase_search": true,
 }

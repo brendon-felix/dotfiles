@@ -6,7 +6,7 @@ use ../modules/path.nu 'path slice'
 use ../modules/procedure.nu *
 
 const springs_target_path = 'C:\Users\felixb\BIOS\HpSpringsWks\'
-const springs_source_path = 'C:\Users\felixb\BIOS\HpEpsc\HpNuvoton324Pkg\Include'
+const springs_source_path = 'C:\Users\felixb\BIOS\HpEpsc\HpNuvoton324Pkg\Include\2024'
 
 def pull_source [] {
     print $"Pulling latest source from HpEpsc repository..."
@@ -24,16 +24,16 @@ export def `epsc springs` [--regs(-r)] {
 
         mut updates = [
             {
-                # source: 'HpSioDev\HpSioFireBirdFwVersion.equ'
-                source: 'HpSioFireBirdFwVersion.equ'
+                source: 'HpSioDev\HpSioFireBirdFwVersion.equ'
+                # source: 'HpSioFireBirdFwVersion.equ'
                 targets: [
                     'HpEpsc\HpNuvoton324Pkg\Include\HpSioDev\HpSioFireBirdFwVersion.equ'
                     'HpPlatformPkg\MultiProject\X60Steamboat\SIOFW\HpSioDev\HpSioFireBirdFwVersion.equ'
                 ]
             }
             {
-                # source: 'HpSioDev\HpSuperIoFw.bin'
-                source: 'HpSuperIoFw.bin'
+                source: 'HpSioDev\HpSuperIoFw.bin'
+                # source: 'HpSuperIoFw.bin'
                 targets: [
                     'HpEpsc\HpNuvoton324Pkg\Include\HpSioDev\HpSuperIoFw.bin'
                     'HpPlatformPkg\MultiProject\X60Steamboat\SIOFW\HpSioDev\HpSuperIoFw.bin'
@@ -188,7 +188,7 @@ export def `epsc winters` [--regs(-r)] {
             #         ]
             #     }
             # ]
-            
+
             print "NOT SUPPORTED YET"
         }
 
@@ -274,7 +274,7 @@ export def `epsc avalanche` [--regs(-r)] {
             #         ]
             #     }
             # ]
-            
+
             print "NOT SUPPORTED YET"
         }
 
