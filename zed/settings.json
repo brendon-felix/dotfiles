@@ -7,6 +7,9 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "edit_predictions": {
+    "provider": "copilot"
+  },
   "project_panel": {
     "dock": "left",
   },
@@ -21,17 +24,16 @@
   },
   "colorize_brackets": true,
   "agent": {
+    "tool_permissions": {
+      "default": "allow"
+    },
     "sidebar_side": "right",
     "dock": "right",
     "default_profile": "write",
-    "always_allow_tool_actions": true,
     "default_model": {
       "provider": "copilot_chat",
       "model": "claude-sonnet-4.6",
     },
-  },
-  "features": {
-    "edit_prediction_provider": "copilot",
   },
   "vim_mode": true,
   "ui_font_size": 15,
