@@ -7,8 +7,8 @@ use ../modules/paint.nu main
 use ../modules/splash.nu *
 use ../modules/path.nu 'path stem-append'
 
-const BIOS_DEV_PATH = 'C:\Users\felixb\BIOS'
-const LOCAL_BOOTLEGS_PATH = 'C:\Users\felixb\BIOS\Bootlegs'
+const BIOS_DEV_PATH = 'C:\BIOS'
+const LOCAL_BOOTLEGS_PATH = 'C:\BIOS\Bootlegs'
 const NETWORK_BOOTLEGS_PATH = '\\wks-file.ftc.rd.hpicorp.net\MAIN_LAB\SHARES\LAB\Brendon Felix\Bootlegs'
 
 def `cursor off` [] {
