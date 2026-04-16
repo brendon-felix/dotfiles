@@ -4,7 +4,8 @@
 
 use ../modules/procedure.nu *
 
-const repo_path = 'C:\Users\felixb\BIOS\HpSpringsWks\'
+# const repo_path = 'C:\Users\felixb\BIOS\HpSpringsWks\'
+const repo_path = 'C:\BIOS\HpSpringsWks\'
 
 def get_ver [file] {
     let val = $file | parse -r '(?P<version>[a-fA-F0-9]{7})h' | first | get version
