@@ -10,7 +10,8 @@ source (
     if ($PRIVATE_CONFIG | path exists) {
         $PRIVATE_CONFIG
     } else {
-        warn $"($PRIVATE_CONFIG) not found"
+        # warn $"($PRIVATE_CONFIG) not found"
+        null
     }
 )
 
