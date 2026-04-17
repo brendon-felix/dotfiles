@@ -2,13 +2,12 @@
 #                                  common.nu                                   #
 # ---------------------------------------------------------------------------- #
 
-export def edit [path?: path] {
+export def e [path?: path] {
     match $path {
         null => (^$env.EDITOR)
         _ => (^$env.EDITOR $path)
     }
 }
-export alias e = edit
 
 export def show [file: path] {
     let content = open $file -r | highlight

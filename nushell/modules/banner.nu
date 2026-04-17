@@ -28,7 +28,7 @@ def header_text []: nothing -> list<string> {
     [$shell $separator $user] | contain -p t -a l
 }
 
-def my-ellie []: nothing -> list<string> {
+export def my-ellie []: nothing -> list<string> {
     ellie | ansi strip | contain -x 2 --pad-bottom 1
 }
 

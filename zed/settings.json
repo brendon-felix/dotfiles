@@ -8,7 +8,7 @@
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
   "edit_predictions": {
-    "provider": "copilot"
+    "provider": "copilot",
   },
   "project_panel": {
     "dock": "left",
@@ -25,15 +25,20 @@
   "colorize_brackets": true,
   "agent": {
     "tool_permissions": {
-      "default": "allow"
+      "default": "allow",
     },
     "sidebar_side": "right",
     "dock": "right",
     "default_profile": "write",
     "default_model": {
+      "effort": "medium",
       "provider": "copilot_chat",
       "model": "claude-sonnet-4.6",
+      "enable_thinking": true,
     },
+    "sidebar_side": "right",
+    "favorite_models": [],
+    "model_parameters": [],
   },
   "vim_mode": true,
   "ui_font_size": 15,

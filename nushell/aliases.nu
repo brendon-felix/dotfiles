@@ -8,9 +8,9 @@ alias py = python3
 alias tick = automatick
 alias sr = subroutine-cli
 
-alias `ssh marlin` = ssh bcfelix@marlin.cs.colostate.edu -t 'nu'
-
-alias `ssh server` = ssh felixb@100.112.215.8
+# alias `ssh marlin` = ssh bcfelix@marlin.cs.colostate.edu -t 'nu'
+# alias `ssh fermi` = ssh felixb@100.112.215.8
+# alias `ssh server` = ssh felixb@100.112.215.8
 
 alias `reload modules` = overlay use ($nu.data-dir | path join 'modules');
 alias `reload bios-modules` = overlay use ($nu.data-dir | path join 'bios');

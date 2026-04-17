@@ -26,7 +26,7 @@ use hp *
 
 # ------------------------------ env variables ------------------------------- #
 
-$env.EDITOR = 'zed'
+$env.EDITOR = find program [zed code nvim hx vim vi nano edit]
 
 $env.PROMPT_COMMAND = { prompt-left }
 $env.PROMPT_COMMAND_RIGHT = { prompt-right }
@@ -41,10 +41,10 @@ $env.PROCEDURE_DEBUG = false
 $env.STOPWATCHES = []
 $env.STOPWATCH_ID = 0
 
-let ls_colors = ls-colors
+let ls_colors = load ls-colors
 if $ls_colors != null { $env.LS_COLORS = $ls_colors }
 
-let keys = load-keys ~/Vault/keys.toml
+let keys = load keys ~/Vault/keys.toml
 if $keys != null { load-env $keys }
 
 let paths = [
@@ -58,21 +58,17 @@ let paths = [
     ~/Projects/hey/target/release/
     ~/Projects/spewcap/target/release/
     ~/Projects/regiman/target/release/
-    ~/Projects/automatick/target/release/
-    ~/Projects/size-converter/target/release/
     /usr/local/bin/
     /opt/homebrew/bin/
     /opt/homebrew/opt/libpq/bin/
+    /Applications/Android Studio.app/Contents/jbr/Contents/Home/bin
 ] | each { path expand } | where { path exists }
 
-$env.PATH = $env.PATH | append $paths
-
+$env.PATH = $env.PATH ++ $paths
 
 # ---------------------------------- config ---------------------------------- #
 
-$env.config.buffer_editor = 'nvim'
-$env.config.buffer_editor = if (which 'nvim' | is-not-empty) { 'nvim' } else { 'hx' }
-
+$env.config.buffer_editor = find program [nvim hx vim vi nano edit]
 $env.config.edit_mode = 'vi'
 $env.config.float_precision = 3
 $env.config.table.index_mode = 'auto'
@@ -80,21 +76,13 @@ $env.config.cursor_shape.vi_insert = "blink_line"
 $env.config.cursor_shape.vi_normal = "blink_block"
 $env.config.display_errors.termination_signal = false
 $env.config.completions.algorithm = 'fuzzy'
+$env.config.show_banner = false # true, false, or 'short'
 
-# $env.config.show_banner = 'short'
-$env.config.show_banner = false
+$env.config.hooks.pre_prompt = pre-prompt
+$env.config.hooks.pre_execution = pre-execution
 
 $env.config.plugins.highlight.custom_themes = '~/Projects/dotfiles/bat/themes'
 $env.config.plugins.highlight.theme = 'Fleetish'
-
-$env.config.hooks.pre_prompt = [
-    { $env.CMD_EXECUTION_TIME = try { (date now) - $env.PRE_EXECUTION_TIME } catch { null } }
-    { job spawn {gstat | job send 0 --tag 42 }}
-]
-$env.config.hooks.pre_execution = [
-    { if $env.FIRST_PROMPT { $env.FIRST_PROMPT = false }}
-    { $env.PRE_EXECUTION_TIME = date now }
-]
 
 # ---------------------------------------------------------------------------- #
 
