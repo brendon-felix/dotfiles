@@ -89,3 +89,49 @@ export def `interpolate-modulus` [
 
     }
 }
+
+export def `math clamp` [
+    min: number
+    max: number
+]: [
+    int -> int
+    float -> float
+    list<int> -> list<int>
+    list<float> -> list<float>
+] {
+    let $value = $in
+    if ($min | describe) != ($value | describe) or ($max | describe) != ($value | describe) {
+        error make {
+            msg: "type mismatch"
+            label: {
+                text: "value, min, and max must be of the same type"
+                span: (metadata $min).span
+            }
+        }
+    }
+    if $min > $max {
+        error make {
+            msg: "invalid range"
+            label: {
+                text: "min must be less than or equal to max"
+                span: (metadata $min).span
+            }
+        }
+    }
+
+    match $value {
+        $v if ($v | describe) == "int" => {
+            if $v < $min { $min } else if $v > $max { $max } else { $v }
+        }
+        $v if ($v | describe) == "float" => {
+            if $v < $min { $min } else if $v > $max { $max } else { $v }
+        }
+        $v if ($v | describe) == "list<int>" => ($value | each {|e|
+            if $e < $min { $min } else if $e > $max { $max } else { $e }
+        }),
+        $v if ($v | describe) == "list<float>" => ($value | each {|e|
+            if $e < $min { $min } else if $e > $max { $max } else { $e }
+        }),
+    }
+
+}

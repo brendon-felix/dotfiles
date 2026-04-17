@@ -16,7 +16,6 @@ export use procedure.nu *
 export use records.nu *
 export use color.nu *
 export use round.nu *
-export use server.nu *
 export use splash.nu *
 export use status.nu *
 export use stopwatch.nu *

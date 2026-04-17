@@ -6,7 +6,7 @@ use paint.nu [main 'paint with' 'paint path']
 
 export const GSTAT_ICONS = [
     [value                  display];
-    [idx_added_staged       ($"(ansi green)+A(ansi reset)")]
+    [idx_added_staged       ($"(ansi green)+A(ansi reset)")] # can't use `paint` for const
     [idx_modified_staged    ($"(ansi blue)+M(ansi reset)")]
     [idx_deleted_staged     ($"(ansi red)+D(ansi reset)")]
     [idx_renamed            ($"(ansi cyan)+R(ansi reset)")]

@@ -5,7 +5,7 @@
 
 use records.nu 'each value'
 use format.nu 'format hex'
-use math.nu ['interpolate' 'interpolate-modulus']
+use math.nu ['interpolate' 'interpolate-modulus' 'math clamp']
 
 # RGB: record<r: int, g: int, b: int>
 # HSV: record<h: int, s: float, v: float>
@@ -15,13 +15,10 @@ use math.nu ['interpolate' 'interpolate-modulus']
 
 
 # Convert an RGB record to a hex string
-export def `rgb to-hex` []: record<r: int, g: int, b: int> -> string {
+export def `format rgb` []: any -> string {
     each {|e|
-        let rgb = $e | each value {|v|
-            if $v < 0 or $v > 255 {
-                error make -u { msg: "RGB value out of range" }
-            }
-            $v | format hex -r -w 2
+        let rgb = $e | into rgb | each value {|v|
+            $v | format hex -w 2 -r
         }
         $"#($rgb.r)($rgb.g)($rgb.b)"
     }
@@ -63,9 +60,9 @@ export def `into rgb` []: any -> record<r: int, g: int, b: int> {
                 if $i < 0 or $i > 0xFFFFFF {
                     error make "hex value out of range"
                 }
-                let r = $i | bits shr -n 4 16 | bits and 0xFF
-                let g = $i | bits shr -n 4 8| bits and 0xFF
-                let b = $i | bits and 0xFF
+                let r = $i | bit-shr -n 4 16 | bit-and 0xFF
+                let g = $i | bit-shr -n 4 8| bit-and 0xFF
+                let b = $i | bit-and 0xFF
                 {r: $r, g: $g, b: $b}
             }
             $f if ($f | describe) == "float" => {
@@ -86,6 +83,7 @@ export def `into rgb` []: any -> record<r: int, g: int, b: int> {
                 }
                 $h | hsv to-rgb
             }
+            $o if ($o | describe) == "record<L: float, a: float, b: float>" => ($o | oklab to-rgb)
             _ => { error make "cannot convert value to RGB" }
         }
     }
@@ -107,8 +105,20 @@ export def `into hsv` []: any -> record<h: int, s: float, v: float> {
     }
 }
 
+export def `into oklab` []: any -> record<L: float, a: float, b: float> {
+    each {|e|
+        match $e {
+            $s if ($s | describe) == "string" => ($s | into rgb | rgb to-oklab)
+            $r if ($r | describe) == "record<r: int, g: int, b: int>" => ($r | rgb to-oklab)
+            $h if ($h | describe) == "record<h: int, s: float, v: float>" => ($h | hsv to-oklab)
+            $o if ($o | describe) == "record<L: float, a: float, b: float>" => $o
+            _ => { error make "cannot convert to Oklab" }
+        }
+    }
+}
+
 # Convert an RGB record to HSV
-export def `rgb to-hsv` []: [
+def `rgb to-hsv` []: [
     record<r: int, g: int, b: int> -> record<h: int, s: float, v: float>
 ] {
     each {|e|
@@ -135,7 +145,50 @@ export def `rgb to-hsv` []: [
     }
 }
 
-export def `hsv to-rgb` []: [
+# Decode sRGB gamma (gamma-encoded 0..1 -> linear 0..1)
+def srgb-decode []: float -> float {
+    if $in <= 0.04045 {
+        $in / 12.92
+    } else {
+        (($in + 0.055) / 1.055) ** 2.4
+    }
+}
+
+# Encode sRGB gamma (linear 0..1 -> gamma-encoded 0..1)
+def srgb-encode []: float -> float {
+    let v = $in | math clamp 0.0 1.0
+    if $v <= 0.0031308 {
+        $v * 12.92
+    } else {
+        1.055 * ($v ** (1.0 / 2.4)) - 0.055
+    }
+}
+
+def `rgb to-oklab` []: [
+    record<r: int, g: int, b: int> -> record<L: float, a: float, b: float>
+] {
+    each {|e|
+        let r = ($e.r / 255.0) | srgb-decode
+        let g = ($e.g / 255.0) | srgb-decode
+        let b = ($e.b / 255.0) | srgb-decode
+
+        let l = 0.4122214708 * $r + 0.5363325363 * $g + 0.0514459929 * $b
+        let m = 0.2119034982 * $r + 0.6806995451 * $g + 0.1073969566 * $b
+        let s = 0.0883024619 * $r + 0.2817188376 * $g + 0.6299787005 * $b
+
+        let l_ = $l ** (1 / 3)
+        let m_ = $m ** (1 / 3)
+        let s_ = $s ** (1 / 3)
+
+        let L = (0.2104542553 * $l_) + (0.7936177850 * $m_) - (0.0040720468 * $s_)
+        let a = (1.9779984951 * $l_) - (2.4285922050 * $m_) + (0.4505937099 * $s_)
+        let b = (0.0259040371 * $l_) + (0.7827717662 * $m_) - (0.8086757660 * $s_)
+
+        {L: $L, a: $a, b: $b}
+    }
+}
+
+def `hsv to-rgb` []: [
     record<h: int, s: float, v: float> -> record<r: int, g: int, b: int>
 ] {
     each {|e|
@@ -150,7 +203,45 @@ export def `hsv to-rgb` []: [
             $h if $h < 5 => {r: $x, g: 0, b: $c},
             _ => {r: $c, g: 0, b: $x}
         }
-        $rgb | each value {|v| (($v + $m) * 255 | into int)}
+        $rgb | each value {|v| (($v + $m) * 255 | into int | math clamp 0 255)}
+    }
+}
+
+def `hsv to-oklab` []: [
+    record<h: int, s: float, v: float> -> record<L: float, a: float, b: float>
+] {
+    each {|e|
+        let rgb = $e | hsv to-rgb
+        $rgb | rgb to-oklab
+    }
+}
+
+def `oklab to-rgb` []: [
+    record<L: float, a: float, b: float> -> record<r: int, g: int, b: int>
+] {
+    each {|e|
+        let l_ = $e.L + (0.3963377774 * $e.a) + (0.2158037573 * $e.b)
+        let m_ = $e.L - (0.1055613458 * $e.a) - (0.0638541728 * $e.b)
+        let s_ = $e.L - (0.0894841775 * $e.a) - (1.2914855480 * $e.b)
+
+        let l = $l_ ** 3
+        let m = $m_ ** 3
+        let s = $s_ ** 3
+
+        let r = ((4.0767416621 * $l) - (3.3077115913 * $m) + (0.2309699292 * $s)) | srgb-encode
+        let g = ((-1.2684380046 * $l) + (2.6097574011 * $m) - (0.3413193965 * $s)) | srgb-encode
+        let b = ((-0.0041960863 * $l) - (0.7034186147 * $m) + (1.7076147010 * $s)) | srgb-encode
+
+        {r: ($r * 255 | math round | into int), g: ($g * 255 | math round | into int), b: ($b * 255 | math round | into int)}
+    }
+}
+
+def `oklab to-hsv` []: [
+    record<L: float, a: float, b: float> -> record<h: int, s: float, v: float>
+] {
+    each {|e|
+        let rgb = $e | oklab to-rgb
+        $rgb | rgb to-hsv
     }
 }
 
@@ -177,6 +268,7 @@ export def `color blend` [
 ]: [
     record<r: int, g: int, b: int> -> record<r: int, g: int, b: int>
     record<h: int, s: float, v: float> -> record<h: int, s: float, v: float>
+    record<L: float, a: float, b: float> -> record<L: float, a: float, b: float>
 ] {
     match $in {
         $s if ($s | describe) == "record<r: int, g: int, b: int>" => {
@@ -198,6 +290,15 @@ export def `color blend` [
                 v: ($start.v | interpolate $end.v $t)
             }
         }
+        $l if ($l | describe) == "record<L: float, a: float, b: float>" => {
+            let start = $l | into oklab
+            let end = $end | into oklab
+            {
+                L: ($start.L | interpolate $end.L $t),
+                a: ($start.a | interpolate $end.a $t),
+                b: ($start.b | interpolate $end.b $t)
+            }
+        }
     }
 }
 
@@ -207,6 +308,7 @@ export def `color gradient` [
 ]: [
     record<r: int, g: int, b: int> -> list<record<r: int, g: int, b: int>>
     record<h: int, s: float, v: float> -> list<record<h: int, s: float, v: float>>
+    record<L: float, a: float, b: float> -> list<record<L: float, a: float, b: float>>
 ] {
     let start = $in
     if $n < 2 {
@@ -236,7 +338,7 @@ export def `color cycle` [
             5 => "cyan"
         }
     } else {
-        let color = match ($i mod 6) {
+        match ($i mod 6) {
             0 => (red)
             1 => (green)
             2 => (blue)
@@ -307,12 +409,12 @@ export def gray [] {
     {r: 80, g: 80, b: 80}
 }
 
-export def foreground [] {
+export def fg [] {
     # $env.COLORS.FOREGROUND
     {r: 220, g: 223, b: 228}
 }
 
-export def background [] {
+export def bg [] {
     # $env.COLORS.BACKGROUND
     {r: 38, g: 38, b: 38}
 }
