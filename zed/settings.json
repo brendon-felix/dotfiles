@@ -8,7 +8,7 @@
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
   "edit_predictions": {
-    "provider": "copilot",
+    "provider": "zed",
   },
   "project_panel": {
     "dock": "left",
@@ -31,12 +31,11 @@
     "dock": "right",
     "default_profile": "write",
     "default_model": {
-      "effort": "medium",
-      "provider": "copilot_chat",
-      "model": "claude-sonnet-4.6",
+      "effort": "low",
+      "provider": "zed.dev",
+      "model": "claude-sonnet-4-6",
       "enable_thinking": true,
     },
-    "sidebar_side": "right",
     "favorite_models": [],
     "model_parameters": [],
   },

@@ -65,7 +65,7 @@ let paths = [
     /Applications/Android Studio.app/Contents/jbr/Contents/Home/bin
 ] | each { path expand } | where { path exists }
 
-$env.PATH = $env.PATH ++ $paths
+$env.PATH ++= $paths
 
 # ---------------------------------- config ---------------------------------- #
 
