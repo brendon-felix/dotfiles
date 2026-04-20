@@ -70,3 +70,26 @@ export def --env suppress [
         }
     }
 }
+
+export def `progress set` [val: int] {
+    if $val < 0 or $val > 100 {
+        error make {
+            msg: "invalid value"
+            label: {
+                text: "value must be between 0 and 100"
+                span: (metadata $val).span
+            }
+        }
+    }
+    # print $"(ansi osc)9;4;1;($val)(char bel)"
+    print -n $"(ansi osc)9;4;1;($val)(char bel)"
+}
+
+export def `progress unsure` [] {
+    # print $"(ansi osc)9;4;3(char bel)"
+    print =n $"(ansi osc)9;4;3(ansi osc)"
+}
+
+export def `progress clear` [] {
+    print -n $"(ansi osc)9;4;0(ansi osc)"
+}
