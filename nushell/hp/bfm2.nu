@@ -5,7 +5,8 @@
 use ../modules/format.nu 'format hex'
 use ../modules/paint.nu main
 use ../modules/splash.nu *
-use ../modules/path.nu 'path stem-append'
+use ../modules/path.nu ['path highlight' 'path stem-append']
+use ../modules/records.nu 'keys'
 
 const BIOS_DEV_PATH = 'C:\BIOS'
 const LOCAL_BOOTLEGS_PATH = 'C:\BIOS\Bootlegs'

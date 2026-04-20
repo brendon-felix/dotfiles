@@ -1,3 +1,4 @@
+use ../modules/format.nu 'format hex'
 
 use std assert
 

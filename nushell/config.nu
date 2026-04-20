@@ -17,7 +17,7 @@ source (
 
 source (if $nu.os-info.name == macos { 'macos.nu' })
 source (if $nu.os-info.name == windows { 'windows.nu' })
-use (if (sys host | get hostname) in [dirac kepler] { hp * } else { null })
+source (if (sys host | get hostname) in [dirac kepler] { 'hp.nu' } else { null })
 
 use std repeat
 use modules *
