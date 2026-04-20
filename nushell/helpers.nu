@@ -1,6 +1,7 @@
 use modules/status.nu ['status memory' 'status uptime' 'status startup']
 use modules/round.nu 'round duration'
-use modules/paint.nu [main 'paint path']
+use modules/paint.nu main
+use modules/path.nu 'path highlight'
 use modules/git.nu GSTAT_ICONS
 use modules/jobs.nu 'job recv-all'
 
@@ -23,7 +24,7 @@ export def prompt-left []: nothing -> string {
         '' => '~'
         $relative_pwd => ([~ $relative_pwd] | path join)
     }
-    $dir | paint path
+    $dir | path highlight
 }
 
 export def prompt-right []: nothing -> string {

@@ -2,7 +2,8 @@
 #                                    git.nu                                    #
 # ---------------------------------------------------------------------------- #
 
-use paint.nu [main 'paint with' 'paint path']
+use paint.nu [main 'paint with']
+use path.nu 'path highlight'
 
 export const GSTAT_ICONS = [
     [value                  display];
@@ -84,7 +85,7 @@ export def gpsh [
 def display_entry [e type] {
     let state = $STATES | get ($e | get $type)
     let state_str = $state.display | paint with $state.style
-    let file_str = $e.name | paint path -l
+    let file_str = $e.name | path highlight -l
     { state: $state_str, name: $file_str }
 }
 

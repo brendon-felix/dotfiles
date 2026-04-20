@@ -81,15 +81,13 @@ export def `progress set` [val: int] {
             }
         }
     }
-    # print $"(ansi osc)9;4;1;($val)(char bel)"
     print -n $"(ansi osc)9;4;1;($val)(char bel)"
 }
 
 export def `progress unsure` [] {
-    # print $"(ansi osc)9;4;3(char bel)"
-    print =n $"(ansi osc)9;4;3(ansi osc)"
+    print =n $"(ansi osc)9;4;3(char bel)"
 }
 
 export def `progress clear` [] {
-    print -n $"(ansi osc)9;4;0(ansi osc)"
+    print -n $"(ansi osc)9;4;0(char bel)"
 }

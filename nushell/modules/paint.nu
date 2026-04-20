@@ -103,32 +103,3 @@ export def `paint gradient` [
         _ => { error make -u { msg: "Input must be a string or list of strings" } }
     }
 }
-
-# Paint a path with different colors for the dirname, basename, and separator. Optionally use `ls-colorize`
-export def `paint path` [
-    colors: record = {
-        dirname: 'cyan'
-        basename: 'green'
-        separator: 'grey69'
-    }
-    --ls-colorize(-l)  # use ls-colorize to get the color for the basename
-]: [
-    path -> string
-    list<path> -> list<string>
-] {
-    each {|path|
-        mut splits = $path | split row (char path_sep)
-        if $nu.os-info.name == windows {
-            $splits = $splits | split row '/' | flatten # use '\' and '/' on windows
-        }
-        let is_dir = $splits | last | is-empty
-        if $is_dir { $splits = $splits | drop }
-        let last = match $ls_colorize {
-            true => ($splits | last | paint with ($path | ls-colorize --get-color))
-            false => ($splits | last | main $colors.basename)
-        }
-        mut colored = $splits | drop | main $colors.dirname | append $last
-        if $is_dir { $colored = $colored | append '' }
-        $colored | str join (char path_sep | main $colors.separator)
-    }
-}

@@ -17,12 +17,13 @@ source (
 
 source (if $nu.os-info.name == macos { 'macos.nu' })
 source (if $nu.os-info.name == windows { 'windows.nu' })
+use (if (sys host | get hostname) in [dirac kepler] { hp * } else { null })
 
 use std repeat
 use modules *
 use completions *
 use helpers.nu *
-use hp *
+# use hp *
 
 # ------------------------------ env variables ------------------------------- #
 
