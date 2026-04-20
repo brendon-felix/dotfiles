@@ -1,27 +1,27 @@
 [[plugin.deps]]
 use = "yazi-rs/plugins:no-status"
-rev = "9a52857"
-hash = "3e023d31f29201efdac2a6ae35fedb78"
+rev = "442d908"
+hash = "b6467b3358393ba82b38dd9f20915227"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "9a52857"
-hash = "63b6c222bf2103b3023389dde5e2ecfe"
+rev = "442d908"
+hash = "3709900cbad798f05789dc55f3efa9"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:full-border"
-rev = "9a52857"
-hash = "3996fc74044bc44144b323686f887e1"
+rev = "442d908"
+hash = "1e13c39c1ba52ad020e6e26a2dd39ae5"
 
 [[plugin.deps]]
 use = "GrzegorzKozub/mdcat"
 rev = "7b7380a"
-hash = "40c20e6c1085d1f45309b9f148bf4f6e"
+hash = "d009f1ad1ae46e22474f3842c3f1fcd0"
 
 [[plugin.deps]]
 use = "AnirudhG07/nbpreview"
-rev = "7fb073f"
-hash = "a3e32d62ea3cc703e6bf677bdb18a544"
+rev = "b504594"
+hash = "71cac763e1d533b0bedc00c9983e3cd3"
 
 [flavor]
 deps = []
