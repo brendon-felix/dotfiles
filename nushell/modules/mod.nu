@@ -11,6 +11,7 @@ export use monitor.nu *
 export use nushell.nu *
 export use paint.nu *
 export use path.nu *
+export use plugins.nu *
 export use print-utils.nu *
 export use procedure.nu *
 export use records.nu *
