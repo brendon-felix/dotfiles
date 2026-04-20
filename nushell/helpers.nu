@@ -19,7 +19,7 @@ export def pre-execution []: nothing -> list<closure> {
 }
 
 export def prompt-left []: nothing -> string {
-    let dir = match (do -i { $env.PWD | path relative-to $nu.home-dir }) {
+    let dir = match (try { $env.PWD | path relative-to $nu.home-dir }) {
         null => $env.PWD
         '' => '~'
         $relative_pwd => ([~ $relative_pwd] | path join)
