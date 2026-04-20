@@ -49,7 +49,7 @@
     "dark": "Anysphere Dark",
   },
   "title_bar": {
-    "show_branch_icon": true,
+    "show_branch_status_icon": true,
   },
   "use_system_path_prompts": false,
   "use_system_prompts": false,
