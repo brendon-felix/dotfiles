@@ -1,0 +1,6 @@
+
+[flavor]
+dark = "gruvbox-material"
+
+[mgr]
+syntect_theme = "~/Projects/dotfiles/bat/themes/Fleetish.tmTheme"

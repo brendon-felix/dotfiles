@@ -1,27 +1,39 @@
 [[plugin.deps]]
 use = "yazi-rs/plugins:no-status"
-rev = "442d908"
-hash = "b6467b3358393ba82b38dd9f20915227"
+rev = "ac82af3"
+hash = "3e023d31f29201efdac2a6ae35fedb78"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "442d908"
-hash = "3709900cbad798f05789dc55f3efa9"
+rev = "ac82af3"
+hash = "6849444b7c2df08eace83f3f86fb55a3"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:full-border"
-rev = "442d908"
-hash = "1e13c39c1ba52ad020e6e26a2dd39ae5"
+rev = "ac82af3"
+hash = "eff8ff12fa4e5f035a10d8aeeb4c258d"
 
 [[plugin.deps]]
 use = "GrzegorzKozub/mdcat"
 rev = "7b7380a"
-hash = "d009f1ad1ae46e22474f3842c3f1fcd0"
+hash = "40c20e6c1085d1f45309b9f148bf4f6e"
 
 [[plugin.deps]]
 use = "AnirudhG07/nbpreview"
 rev = "b504594"
-hash = "71cac763e1d533b0bedc00c9983e3cd3"
+hash = "b83919985400521dee78e1c352b5d9db"
 
-[flavor]
-deps = []
+[[plugin.deps]]
+use = "yazi-rs/plugins:diff"
+rev = "ac82af3"
+hash = "8b1af6b5a69797ee951f2a80ce570818"
+
+[[flavor.deps]]
+use = "bennyyip/gruvbox-dark"
+rev = "619fdc5"
+hash = "d4c7003ec6dc4efd5d3a050d5c2f2575"
+
+[[flavor.deps]]
+use = "matt-dong-123/gruvbox-material"
+rev = "6c36491"
+hash = "564f2335540ee2c440c3b671bc28ac60"
