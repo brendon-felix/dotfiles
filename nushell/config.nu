@@ -49,6 +49,7 @@ let keys = load keys ~/Vault/keys.toml
 if $keys != null { load-env $keys }
 
 let paths = [
+    ~/.npm/bin/
     ~/.local/bin/
     ~/.cargo/bin/
     ~/neovim/build/bin/

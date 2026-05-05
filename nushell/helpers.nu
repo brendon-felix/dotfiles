@@ -1,3 +1,5 @@
+use std null-device
+
 use modules/status.nu ['status memory' 'status uptime' 'status startup']
 use modules/round.nu 'round duration'
 use modules/paint.nu main
@@ -9,6 +11,7 @@ export def pre-prompt []: nothing -> list<closure> {
     [
         { $env.EXECUTION_TIME = try { (date now) - $env.EXECUTION_START } }
         { job spawn { try { gstat | job send 0 --tag 42 } } }
+        { job spawn { try { git fetch o+e> (null-device) } } }
     ]
 }
 export def pre-execution []: nothing -> list<closure> {
@@ -68,13 +71,14 @@ export def prompt-right []: nothing -> string {
 }
 
 export def prompt-indicator [char: string = '>']: nothing -> string {
-    # let color = (if (is-admin) { ansi red } else { ansi green })
-    # $"(ansi reset)($color)($char)(ansi reset) "
-    if (is-admin) {
-        "!> " | paint red_bold
+    let color = if (is-admin) {
+        'red_bold'
+    } else if ((try { $env.SSH_CONNECTION }) != null) {
+        'magenta_bold'
     } else {
-        $"($char) " | paint cyan_bold
+        'cyan_bold'
     }
+    $"($char) " | paint $color
 }
 
 export def `load ls-colors` [] {

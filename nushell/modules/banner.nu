@@ -38,7 +38,7 @@ def header []: nothing -> list<string> {
 }
 
 def "nu-complete banner-type" [] {
-    ["ellie" "user" "header" "memory"]
+    [ellie user header memory]
 }
 
 # ---------------------------------------------------------------------------- #
@@ -67,7 +67,7 @@ def banner [
 
 # Prints a custom container-based banner
 export def `print banner` [
-    type?: string@"nu-complete banner-type" = 'memory'
+    type?: string@"nu-complete banner-type" = memory
 ] {
     banner $type | contain -p t | container print
 }

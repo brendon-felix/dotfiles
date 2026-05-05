@@ -8,14 +8,14 @@ alias py = python3
 alias tick = automatick
 alias sr = subroutine-cli
 
-# alias `ssh marlin` = ssh bcfelix@marlin.cs.colostate.edu -t 'nu'
-# alias `ssh fermi` = ssh felixb@100.112.215.8
-# alias `ssh server` = ssh felixb@100.112.215.8
+alias tui = cargo run -p tui
+alias desktop = cargo run -p desktop
+alias cli = cargo run -p cli
 
 alias `reload modules` = overlay use ($nu.data-dir | path join 'modules');
 alias `reload bios-modules` = overlay use ($nu.data-dir | path join 'bios');
 
-alias fzf = fzf --height=~80% --layout=reverse --preview 'bat --style=numbers --color=always -r 1:100 --style plain {}' --preview-window=right:60% --bind $"enter:become\(($env.EDITOR) {+}\)"
+alias fzf = fzf --height=~80% --layout=reverse --preview 'bat --style=numbers --color=always -r 1:100 --style plain {}' --preview-window=right:60%
 
 alias `bat update` = bat cache --build
 

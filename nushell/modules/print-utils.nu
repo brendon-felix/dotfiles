@@ -19,6 +19,36 @@ export def blocks [n: int] {
     "" | fill -c '█' -w $n
 }
 
+export def spaces [n: int] {
+    "" | fill -c ' ' -w $n
+}
+
+def "nu-complete reversable-colors" [] {
+    ansi --list | get name | where $it !~ attr | where $it =~ reverse | str replace '_reverse' ''
+}
+
+export def pill [
+    --width(-w): int
+    color: string@"nu-complete reversable-colors" = green
+]: [
+    string -> string
+    list<string> -> list<string>
+] {
+    each {|e|
+        let text = $e
+        let reverse = $color + _reverse
+        let start = $"(ansi $color)(ansi reset)"
+        let end = $"(ansi $color)(ansi reset)"
+        let text = if $width != null {
+            $text | fill -w ([($width - 2) 2] | math max) -a center
+        } else {
+            $text
+        }
+        let text = $"(ansi $reverse)($text)(ansi reset)"
+        $"($start)(ansi $reverse)($text)(ansi reset)($end)"
+    }
+}
+
 export def bar [
     value: float
     --length(-l): int = 12

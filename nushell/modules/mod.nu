@@ -3,12 +3,14 @@ export use banner.nu *
 export use common.nu *
 export use configuration.nu *
 export use container.nu *
+export use fermi.nu *
 export use format.nu *
 export use git.nu *
 export use jobs.nu *
 export use math.nu *
 export use monitor.nu *
 export use nushell.nu *
+export use obsidian.nu *
 export use paint.nu *
 export use path.nu *
 export use plugins.nu *
