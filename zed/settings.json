@@ -9,7 +9,7 @@
 {
   "language_models": {
     "ollama": {
-      "api_url": "http://100.107.36.67:11434"
+      "api_url": "http://100.112.215.8:11434"
     }
   },
   "cli_default_open_behavior": "new_window",
@@ -31,15 +31,12 @@
     }
   },
   "edit_predictions": {
-    "open_ai_compatible_api": {
-      "api_url": ""
-    },
     "ollama": {
-      "api_url": "http://100.107.36.67:11434",
-      "max_output_tokens": 256,
-      "model": "qwen2.5-coder:7b-base"
+      "prompt_format": "infer",
+      "api_url": "http://100.112.215.8:11434",
+      "model": "qwen2.5-coder:3b"
     },
-    "provider": "ollama",
+    "provider": "copilot",
   },
   "project_panel": {
     "dock": "left",
@@ -60,10 +57,10 @@
     },
     "sidebar_side": "right",
     "dock": "right",
-    "default_profile": "ask",
+    "default_profile": "write",
     "default_model": {
       "provider": "ollama",
-      "model": "gemma4:latest",
+      "model": "qwen3.6:27b",
       "enable_thinking": true,
     },
     "favorite_models": [],
@@ -103,9 +100,7 @@
   },
   "terminal": {
     "dock": "right",
-    "shell": {
-      "program": "nu",
-    },
+    "shell": "system",
     "toolbar": {
       "breadcrumbs": false,
     },
