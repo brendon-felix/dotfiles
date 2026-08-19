@@ -7,10 +7,26 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "context_servers": {
+    "nu-mcp-server": {
+      "enabled": true,
+      "remote": false,
+      "command": "nu",
+      "args": [
+        "--mcp"
+      ],
+      "env": {
+        "SHOW_CUSTOM_BANNER": "false"
+      }
+    }
+  },
+  "node": {
+    "ignore_system_version": true,
+  },
   "language_models": {
     "ollama": {
-      "api_url": "http://100.112.215.8:11434"
-    }
+      "api_url": "http://100.112.215.8:11434",
+    },
   },
   "cli_default_open_behavior": "new_window",
   "lsp": {
@@ -18,25 +34,31 @@
       "settings": {
         "typescript": {
           "updateImportsOnFileMove": {
-            "enabled": "always"
-          }
+            "enabled": "always",
+          },
         },
         "javascript": {
           "updateImportsOnFileMove": {
-            "enabled": "always"
-          }
-        }
+            "enabled": "always",
+          },
+        },
       },
-      "enable_lsp_tasks": true
-    }
+      "enable_lsp_tasks": true,
+    },
   },
   "edit_predictions": {
+    "copilot": {
+      "enable_next_edit_suggestions": true,
+    },
+    "codestral": {
+      "api_url": "https://codestral.mistral.ai",
+    },
     "ollama": {
       "prompt_format": "infer",
       "api_url": "http://100.112.215.8:11434",
-      "model": "qwen2.5-coder:3b"
+      "model": "qwen3:4b",
     },
-    "provider": "copilot",
+    "provider": "zed",
   },
   "project_panel": {
     "dock": "left",
@@ -52,6 +74,15 @@
   },
   "colorize_brackets": true,
   "agent": {
+    "sandbox_permissions": {
+      "allow_unsandboxed": true
+    },
+    "show_turn_stats": true,
+    "use_modifier_to_send": true,
+    "thinking_display": "preview",
+    "expand_terminal_card": false,
+    "expand_edit_card": false,
+    "single_file_review": false,
     "tool_permissions": {
       "default": "allow",
     },
@@ -59,15 +90,16 @@
     "dock": "right",
     "default_profile": "write",
     "default_model": {
-      "provider": "ollama",
-      "model": "qwen3.6:27b",
+      "effort": "high",
+      "provider": "copilot_chat",
+      "model": "claude-sonnet-5",
       "enable_thinking": true,
     },
     "favorite_models": [],
     "model_parameters": [],
   },
   "vim_mode": true,
-  "ui_font_size": 15,
+  "ui_font_size": 15.0,
   "buffer_font_family": "FiraCode Nerd Font",
   "buffer_font_size": 13,
   "theme": {
