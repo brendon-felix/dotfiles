@@ -1,5 +1,7 @@
 $env.ANDROID_HOME = '~/Library/Android/sdk' | path expand
 $env.ANDROID_NDK_ROOT = '~/Library/Android/sdk/ndk/27.3.13750724' | path expand
+$env.ANDROID_NDK_HOME = $env.ANDROID_NDK_ROOT
+$env.OPENSSL_DIR = '/opt/homebrew/opt/openssl@3'
 $env.JAVA_HOME = '/Applications/Android Studio.app/Contents/jbr/Contents/Home'
 
 # # Android
@@ -16,3 +18,6 @@ export def `eject installers` [] {
         diskutil unmount $installer
     }
 }
+
+
+alias `update metal` = xcodebuild -downloadComponent MetalToolChain

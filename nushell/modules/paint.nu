@@ -103,3 +103,18 @@ export def `paint gradient` [
         _ => { error make -u { msg: "Input must be a string or list of strings" } }
     }
 }
+
+export def `paint random` [
+    --hsv
+    --strip(-s)     # strip ANSI codes from input before applying color
+    --no-reset(-r)  # do not reset ansi after applying
+] {
+    each {|e|
+        let color = if $hsv {
+            {h: (random float 0..<360), s: (random float 0..<1), v: (random float 0..<1)}
+        } else {
+            {r: (random int 0..255), g: (random int 0..255), b: (random int 0..255)}
+        }
+        $e | paint with $color --strip=$strip --no-reset=$no_reset
+    }
+}

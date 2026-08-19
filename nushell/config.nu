@@ -45,7 +45,7 @@ $env.STOPWATCH_ID = 0
 let ls_colors = load ls-colors
 if $ls_colors != null { $env.LS_COLORS = $ls_colors }
 
-let keys = load keys ~/Vault/keys.toml
+let keys = try { load keys ~/Vault/keys.toml }
 if $keys != null { load-env $keys }
 
 let paths = [
@@ -66,7 +66,7 @@ let paths = [
     /Applications/Android Studio.app/Contents/jbr/Contents/Home/bin
 ] | each { path expand } | where { path exists }
 
-$env.PATH ++= $paths
+append-paths $paths
 
 # ---------------------------------- config ---------------------------------- #
 
@@ -88,4 +88,6 @@ $env.config.plugins.highlight.theme = 'Fleetish'
 
 # ---------------------------------------------------------------------------- #
 
-print banner header
+if ($env.SHOW_CUSTOM_BANNER? | default true | into bool) {
+    print banner header
+}

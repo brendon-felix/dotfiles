@@ -6,8 +6,6 @@ export def `interpolate` [
 ]: [
     int -> int
     float -> float
-    list<int> -> list<int>
-    list<float> -> list<float>
 ] {
     let $start = $in
     if ($end | describe) != ($start | describe) {
@@ -29,19 +27,9 @@ export def `interpolate` [
         }
     }
 
-    match $start {
-        $s if ($s | describe) == "int" => ($start + (($end - $start) * $t) | math round)
-        $s if ($s | describe) == "float" => ($start + (($end - $start) * $t))
-        $s if ($s | describe) == "list<int>" => ($start | zip $end | each {|e|
-            let s = $e.0
-            let e = $e.1
-            ($s + (($e - $s) * $t) | math round)
-        })
-        $s if ($s | describe) == "list<float>" => ($start | zip $end | each {|e|
-            let s = $e.0
-            let e = $e.1
-            ($s + (($e - $s) * $t))
-        })
+    match ($start | describe) {
+        "int" => ($start + (($end - $start) * $t) | math round)
+        "float" => ($start + (($end - $start) * $t))
     }
 }
 
@@ -52,8 +40,6 @@ export def `interpolate-modulus` [
 ]: [
     int -> int
     float -> float
-    list<int> -> list<int>
-    list<float> -> list<float>
 ] {
     let start = $in
     if ($end | describe) != ($start | describe) {
@@ -96,8 +82,6 @@ export def `math clamp` [
 ]: [
     int -> int
     float -> float
-    list<int> -> list<int>
-    list<float> -> list<float>
 ] {
     let $value = $in
     if ($min | describe) != ($value | describe) or ($max | describe) != ($value | describe) {
@@ -126,12 +110,6 @@ export def `math clamp` [
         $v if ($v | describe) == "float" => {
             if $v < $min { $min } else if $v > $max { $max } else { $v }
         }
-        $v if ($v | describe) == "list<int>" => ($value | each {|e|
-            if $e < $min { $min } else if $e > $max { $max } else { $e }
-        }),
-        $v if ($v | describe) == "list<float>" => ($value | each {|e|
-            if $e < $min { $min } else if $e > $max { $max } else { $e }
-        }),
     }
 
 }

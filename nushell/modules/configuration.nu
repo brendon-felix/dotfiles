@@ -17,6 +17,7 @@ const CONFIGS = [
     [ yazi          ~/Projects/dotfiles/yazi/yazi.toml                  ]
     [ nu            ~/Projects/dotfiles/nushell/config.nu               ]
     [ private       ~/Vault/nushell/private.nu                          ]
+    [ keys          ~/Vault/keys.toml                                   ]
     [ helpers       ~/Projects/dotfiles/nushell/helpers.nu              ]
     [ common        ~/Projects/dotfiles/nushell/modules/common.nu       ]
     [ aliases       ~/Projects/dotfiles/nushell/aliases.nu              ]

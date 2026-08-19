@@ -3,7 +3,6 @@ export use banner.nu *
 export use common.nu *
 export use configuration.nu *
 export use container.nu *
-export use fermi.nu *
 export use format.nu *
 export use git.nu *
 export use jobs.nu *
@@ -19,6 +18,7 @@ export use procedure.nu *
 export use records.nu *
 export use color.nu *
 export use round.nu *
+export use server.nu *
 export use splash.nu *
 export use status.nu *
 export use stopwatch.nu *

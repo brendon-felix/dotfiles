@@ -98,10 +98,23 @@ export def `load ls-colors` [] {
 export def `load keys` [file: path]: nothing -> record {
     if ($file | path exists) {
         open $file | items {|k, v|
-            {($k | str upcase): $v}
+            {($k | str uppercase): $v}
         } | into record
     } else {
         warn $"($file) not found"
+    }
+}
+
+export def --env `append-paths` [paths: list<string>] {
+    $paths | each {
+        path expand
+    } | uniq | where { path exists } | match ($env.PATH | describe) {
+        "list<string>" => {
+            $env.PATH ++= $paths
+        }
+        "string" => {
+            $env.PATH = $env.PATH + ($paths | str join ":") # fix for MCP server PATH variable
+        }
     }
 }
 
