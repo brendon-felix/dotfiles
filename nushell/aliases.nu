@@ -1,3 +1,5 @@
+use std/clip
+
 alias c = clear
 alias r = nu ./run.nu
 alias du = dust
@@ -5,8 +7,9 @@ alias vim = nvim
 alias iperf = iperf3
 alias untar = tar -xvf
 alias py = python3
-alias tick = automatick
-alias sr = subroutine-cli
+# alias tick = automatick
+alias copy = clip copy52
+alias paste = clip paste52
 
 alias tui = cargo run -p tui
 alias desktop = cargo run -p desktop
