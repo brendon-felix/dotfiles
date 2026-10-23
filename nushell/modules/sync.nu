@@ -36,11 +36,14 @@ const fermi_excludes = [
     '.DS_Store' '._*' 'desktop.ini' 'Thumbs.db'
 ]
 
+# Each SFTP connection is a separate `ssh` login; rclone's defaults open enough at once to trip sshd's per-source penalties.
+const fermi_limits = [--checkers 2 --transfers 2]
+
 export def --wrapped `sync fermi` [
     --resync # Establish the baseline: first run, or when bisync asks for it
     ...rest
 ] {
     let mode = if $resync { [--resync --resync-mode newer] } else { [--resilient --recover --max-lock 30m] }
     let excludes = $fermi_excludes | each {|pattern| [--exclude $pattern] } | flatten
-    ^rclone bisync ~/Vault/ fermi:Vault/ --conflict-resolve newer --verbose ...$mode ...$excludes ...$rest
+    ^rclone bisync ~/Vault/ fermi:Vault/ --conflict-resolve newer --verbose ...$fermi_limits ...$mode ...$excludes ...$rest
 }
