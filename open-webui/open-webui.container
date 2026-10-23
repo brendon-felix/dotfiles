@@ -1,0 +1,38 @@
+[Unit]
+Description=Open WebUI
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+# Open WebUI v0.12.3-slim (linux/amd64).
+Image=ghcr.io/open-webui/open-webui@sha256:912c133d2dcecb8d74662f9be64b1f00f303a0d8c0836cbb30fd156f65652f5f
+ContainerName=open-webui
+PublishPort=127.0.0.1:8080:8080
+Volume=%h/.local/share/open-webui/data:/app/backend/data:Z
+EnvironmentFile=%h/.config/open-webui/env
+Environment=OLLAMA_BASE_URL=http://host.containers.internal:11434
+Environment=WEBUI_URL=https://chat.felixb.dev
+Environment=WEBUI_AUTH=true
+Environment=ENABLE_SIGNUP=false
+Environment=ENABLE_OPENAI_API=false
+Environment=DEFAULT_MODELS=qwen3.5:0.8b
+Environment=OFFLINE_MODE=true
+Environment=HF_HUB_OFFLINE=1
+Environment=ENABLE_VERSION_UPDATE_CHECK=false
+Environment=ENABLE_TITLE_GENERATION=false
+Environment=ENABLE_TAGS_GENERATION=false
+Environment=ENABLE_FOLLOW_UP_GENERATION=false
+Environment=ENABLE_AUTOCOMPLETE_GENERATION=false
+Environment=CORS_ALLOW_ORIGIN=https://chat.felixb.dev;http://fermi.tail0d3a19.ts.net:8080;http://100.112.215.8:8080;http://fermi:8080;http://127.0.0.1:8080;http://localhost:8080
+HealthCmd=curl --fail --silent http://127.0.0.1:8080/health
+HealthInterval=30s
+HealthStartPeriod=90s
+
+[Service]
+Restart=always
+RestartSec=5
+TimeoutStartSec=300
+UMask=0077
+
+[Install]
+WantedBy=default.target

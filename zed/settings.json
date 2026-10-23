@@ -7,7 +7,34 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "context_server_timeout": 10,
+  "telemetry": {
+    "diagnostics": true,
+    "metrics": true,
+    "anthropic_retention": true
+  },
   "context_servers": {
+    "android-studio": {
+      "enabled": true,
+      "remote": false,
+      "command": "/Users/felixb/Projects/Android-Studio-MCP-Claude-Code/.venv/bin/python",
+      "args": [
+        "-m",
+        "android_studio_mcp"
+      ],
+      "env": {
+        "ASMCP_WORKSPACE_ROOTS": "/Users/felixb/Projects"
+      }
+    },
+    "cloudflare-api": {
+      "enabled": true,
+      "url": "https://mcp.cloudflare.com/mcp"
+    },
+    "gpui-box": {
+      "timeout": 10,
+      "enabled": true,
+      "url": "https://gpui-box.origingame.dev/mcp"
+    },
     "nu-mcp-server": {
       "enabled": true,
       "remote": false,
@@ -25,7 +52,7 @@
   },
   "language_models": {
     "ollama": {
-      "api_url": "http://100.112.215.8:11434",
+      "api_url": "https://ollama.felixb.dev",
     },
   },
   "cli_default_open_behavior": "new_window",
@@ -55,7 +82,7 @@
     },
     "ollama": {
       "prompt_format": "infer",
-      "api_url": "http://100.112.215.8:11434",
+      "api_url": "https://ollama.felixb.dev",
       "model": "qwen3:4b",
     },
     "provider": "zed",
@@ -74,6 +101,17 @@
   },
   "colorize_brackets": true,
   "agent": {
+    "threads_sidebar": {
+      "position": "right"
+    },
+    "profiles": {
+      "write": {
+        "name": "Write",
+        "tools": {},
+        "enable_all_context_servers": false,
+        "context_servers": {}
+      }
+    },
     "sandbox_permissions": {
       "allow_unsandboxed": true
     },
@@ -86,13 +124,12 @@
     "tool_permissions": {
       "default": "allow",
     },
-    "sidebar_side": "right",
     "dock": "right",
     "default_profile": "write",
     "default_model": {
       "effort": "high",
       "provider": "copilot_chat",
-      "model": "claude-sonnet-5",
+      "model": "claude-opus-5.5",
       "enable_thinking": true,
     },
     "favorite_models": [],

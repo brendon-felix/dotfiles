@@ -1,0 +1,27 @@
+[Unit]
+Description=Vaultwarden
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+Image=docker.io/vaultwarden/server@sha256:1e6ebcede9be39fc1a7617eec4c984899edd954c09bd651b121cd89732e7aef4
+ContainerName=vaultwarden
+PublishPort=127.0.0.1:8222:80
+Volume=%h/Vaultwarden/data:/data:Z
+EnvironmentFile=%h/.config/vaultwarden/env
+Environment=DOMAIN=https://vault.felixb.dev
+Environment=SIGNUPS_ALLOWED=false
+Environment=INVITATIONS_ALLOWED=true
+Environment=SHOW_PASSWORD_HINT=false
+Environment=IP_HEADER=CF-Connecting-IP
+HealthCmd=curl --fail --silent http://127.0.0.1:80/alive
+HealthInterval=30s
+HealthStartPeriod=30s
+
+[Service]
+Restart=always
+RestartSec=5
+UMask=0077
+
+[Install]
+WantedBy=default.target
