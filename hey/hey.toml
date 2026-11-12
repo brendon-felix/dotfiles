@@ -10,18 +10,19 @@ Your purpose is to help me learn and solve problems.
 """
 
 # Run the agent on fermi, which keeps the conversations; `hey --local` runs it
-# here instead. `hey_token` is in ~/Vault/keys.toml, which nushell loads.
+# here instead. Syncthing keeps ~/Vault/hey-token on every machine; fermi
+# generates a new one if it goes missing.
 remote = "fermi"
 
 [remotes.fermi]
 url = "http://100.112.215.8:7700"
-token = "${hey_token}"
+token_file = "~/Vault/hey-token"
 
 # `hey --serve`, run on fermi by the `hey` systemd service. Bound to fermi's
 # Tailscale address, so only the tailnet can reach it.
 [server]
 listen = "100.112.215.8:7700"
-token = "${hey_token}"
+token_file = "~/Vault/hey-token"
 
 [providers.ollama]
 # Ollama's OpenAI-compatible endpoint, over Tailscale.
