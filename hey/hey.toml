@@ -1,6 +1,7 @@
-edit_mode = "vi"
+# hey configuration. Every option and its default: defaults.toml in the hey repo.
 
-enter_repl = false
+model = "ollama/qwen3.8:latest"
+greetings = false
 
 system_prompt = """
 You are a virtual assistant named GPT.
@@ -8,9 +9,39 @@ Your goal is to answer my questions as directly and concisely as possible, with 
 Your purpose is to help me learn and solve problems.
 """
 
+# Run the agent on fermi, which keeps the conversations; `hey --local` runs it
+# here instead. `hey_token` is in ~/Vault/keys.toml, which nushell loads.
+remote = "fermi"
+
+[remotes.fermi]
+url = "http://100.112.215.8:7700"
+token = "${hey_token}"
+
+# `hey --serve`, run on fermi by the `hey` systemd service. Bound to fermi's
+# Tailscale address, so only the tailnet can reach it.
+[server]
+listen = "100.112.215.8:7700"
+token = "${hey_token}"
+
+[providers.ollama]
+# Ollama's OpenAI-compatible endpoint, over Tailscale.
+base_url = "https://ollama.felixb.dev/v1"
+
+[display]
 wrap_width = 100
 
-greetings = false
+[editor]
+mode = "vi"
 
-conversations_folder = "~/.hey/conversations"
+[tools]
+# Run every tool without asking, in every conversation.
+allow_all = true
 
+[mcp_servers.nu]
+command = "nu"
+args = ["--mcp"]
+
+[mcp_servers.firecrawl]
+type = "remote"
+url = "https://mcp.firecrawl.dev/v2/mcp"
+headers = { Authorization = "Bearer ${firecrawl_api_key}" }
