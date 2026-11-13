@@ -30,11 +30,6 @@
       "enabled": true,
       "url": "https://mcp.cloudflare.com/mcp"
     },
-    "gpui-box": {
-      "timeout": 10,
-      "enabled": true,
-      "url": "https://gpui-box.origingame.dev/mcp"
-    },
     "nu-mcp-server": {
       "enabled": true,
       "remote": false,
@@ -108,7 +103,7 @@
       "write": {
         "name": "Write",
         "tools": {},
-        "enable_all_context_servers": false,
+        "enable_all_context_servers": true,
         "context_servers": {}
       }
     },

@@ -1,0 +1,25 @@
+[Unit]
+Description=Open WebUI vector store (pgvector)
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+# pgvector on PostgreSQL 18.6 (linux/amd64).
+Image=docker.io/pgvector/pgvector@sha256:ad249f9fb9572979643a47694e59b9a8cdcdf6abc6accebf49bb80ad5f20ff9b
+ContainerName=open-webui-pgvector
+Network=open-webui.network
+Volume=%h/.local/share/open-webui/pgvector:/var/lib/postgresql:Z
+EnvironmentFile=%h/.config/open-webui/pgvector.env
+Environment=POSTGRES_USER=openwebui
+Environment=POSTGRES_DB=openwebui
+HealthCmd=pg_isready -U openwebui -d openwebui
+HealthInterval=30s
+HealthStartPeriod=30s
+
+[Service]
+Restart=always
+RestartSec=5
+UMask=0077
+
+[Install]
+WantedBy=default.target

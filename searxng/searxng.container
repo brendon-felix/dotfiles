@@ -1,0 +1,25 @@
+[Unit]
+Description=SearXNG
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+# SearXNG 2026.10.25-54ca1d9cf (linux/amd64).
+Image=docker.io/searxng/searxng@sha256:a886f6511fd3faf2c9ed921b33a8f0df1c7646e47475b6b309e79cd2887abd9d
+ContainerName=searxng
+Network=open-webui.network
+PublishPort=127.0.0.1:8888:8080
+Volume=%h/.config/searxng/settings.yml:/etc/searxng/settings.yml:ro,Z
+Volume=searxng-cache:/var/cache/searxng
+EnvironmentFile=%h/.config/searxng/env
+HealthCmd=wget -q --spider http://localhost:8080/healthz
+HealthInterval=30s
+HealthStartPeriod=30s
+
+[Service]
+Restart=always
+RestartSec=5
+UMask=0077
+
+[Install]
+WantedBy=default.target

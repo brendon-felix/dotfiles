@@ -1,0 +1,7 @@
+[Unit]
+Description=Snapshot Vaultwarden data into the Syncthing Vault folder
+
+[Service]
+Type=oneshot
+UMask=0077
+ExecStart=/usr/bin/nu %h/.local/bin/vaultwarden-backup.nu

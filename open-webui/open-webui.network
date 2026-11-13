@@ -1,0 +1,5 @@
+[Unit]
+Description=Network shared by Open WebUI and its backing services
+
+[Network]
+NetworkName=open-webui

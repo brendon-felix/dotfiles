@@ -1,0 +1,16 @@
+use_default_settings: true
+
+general:
+  instance_name: "fermi"
+
+search:
+  formats:
+    - html
+    # Open WebUI queries SearXNG through the JSON API; without it requests get 403.
+    - json
+
+server:
+  # Private instance reached only by Open WebUI and the host, so no bot limiter or Valkey.
+  limiter: false
+  public_instance: false
+  image_proxy: true

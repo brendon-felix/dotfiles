@@ -4,7 +4,8 @@ Wants=network-online.target
 After=network-online.target
 
 [Container]
-Image=docker.io/vaultwarden/server@sha256:1e6ebcede9be39fc1a7617eec4c984899edd954c09bd651b121cd89732e7aef4
+# Vaultwarden 1.37.4 (linux/amd64).
+Image=docker.io/vaultwarden/server@sha256:2bb2e0344616c62a6d76ea10558497499f8ed3f731400e143dc7bf17b757b5b9
 ContainerName=vaultwarden
 PublishPort=127.0.0.1:8222:80
 Volume=%h/Vaultwarden/data:/data:Z
