@@ -2,6 +2,8 @@ use std/clip
 
 alias c = clear
 alias r = nu ./run.nu
+alias b = nu ./build.nu
+alias d = nu ./deploy.nu
 alias du = dust
 alias vim = nvim
 alias iperf = iperf3

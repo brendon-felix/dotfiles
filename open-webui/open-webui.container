@@ -1,12 +1,13 @@
 [Unit]
 Description=Open WebUI
-Wants=network-online.target
-After=network-online.target
+Wants=network-online.target open-webui-pgvector.service
+After=network-online.target open-webui-pgvector.service
 
 [Container]
 # Open WebUI v0.12.3-slim (linux/amd64).
 Image=ghcr.io/open-webui/open-webui@sha256:912c133d2dcecb8d74662f9be64b1f00f303a0d8c0836cbb30fd156f65652f5f
 ContainerName=open-webui
+Network=open-webui.network
 PublishPort=127.0.0.1:8080:8080
 Volume=%h/.local/share/open-webui/data:/app/backend/data:Z
 EnvironmentFile=%h/.config/open-webui/env
@@ -23,6 +24,17 @@ Environment=ENABLE_TITLE_GENERATION=false
 Environment=ENABLE_TAGS_GENERATION=false
 Environment=ENABLE_FOLLOW_UP_GENERATION=false
 Environment=ENABLE_AUTOCOMPLETE_GENERATION=false
+Environment=ENABLE_WEB_SEARCH=true
+Environment=WEB_SEARCH_ENGINE=searxng
+Environment=SEARXNG_QUERY_URL=http://searxng:8080/search
+Environment=VECTOR_DB=pgvector
+Environment=PGVECTOR_INDEX_METHOD=hnsw
+Environment=RAG_EMBEDDING_ENGINE=ollama
+Environment=RAG_EMBEDDING_MODEL=qwen3-embedding:0.6b
+Environment=RAG_OLLAMA_BASE_URL=http://host.containers.internal:11434
+Environment=RAG_EMBEDDING_BATCH_SIZE=32
+# Qwen3-Embedding expects an instruction on queries only, not on stored documents.
+Environment="RAG_EMBEDDING_QUERY_PREFIX=Instruct: Given a web search query, retrieve relevant passages that answer the query\nQuery:"
 Environment=CORS_ALLOW_ORIGIN=https://chat.felixb.dev;http://fermi.tail0d3a19.ts.net:8080;http://100.112.215.8:8080;http://fermi:8080;http://127.0.0.1:8080;http://localhost:8080
 HealthCmd=curl --fail --silent http://127.0.0.1:8080/health
 HealthInterval=30s

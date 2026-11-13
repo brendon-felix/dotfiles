@@ -1,7 +1,4 @@
-# hey configuration. Every option and its default: defaults.toml in the hey repo.
-
 model = "ollama/qwen3.8:latest"
-greetings = false
 
 system_prompt = """
 You are a virtual assistant named GPT.
@@ -9,23 +6,18 @@ Your goal is to answer my questions as directly and concisely as possible, with 
 Your purpose is to help me learn and solve problems.
 """
 
-# Run the agent on fermi, which keeps the conversations; `hey --local` runs it
-# here instead. Syncthing keeps ~/Vault/hey-token on every machine; fermi
-# generates a new one if it goes missing.
 remote = "fermi"
 
 [remotes.fermi]
-url = "http://100.112.215.8:7700"
+url = "https://hey.felixb.dev"
 token_file = "~/Vault/hey-token"
+headers = { CF-Access-Client-Id = "${HEY_ACCESS_ID}", CF-Access-Client-Secret = "${HEY_ACCESS_SECRET}" }
 
-# `hey --serve`, run on fermi by the `hey` systemd service. Bound to fermi's
-# Tailscale address, so only the tailnet can reach it.
 [server]
-listen = "100.112.215.8:7700"
+listen = "127.0.0.1:7700"
 token_file = "~/Vault/hey-token"
 
 [providers.ollama]
-# Ollama's OpenAI-compatible endpoint, over Tailscale.
 base_url = "https://ollama.felixb.dev/v1"
 
 [display]
@@ -35,14 +27,8 @@ wrap_width = 100
 mode = "vi"
 
 [tools]
-# Run every tool without asking, in every conversation.
 allow_all = true
 
 [mcp_servers.nu]
 command = "nu"
 args = ["--mcp"]
-
-[mcp_servers.firecrawl]
-type = "remote"
-url = "https://mcp.firecrawl.dev/v2/mcp"
-headers = { Authorization = "Bearer ${firecrawl_api_key}" }
